@@ -1,139 +1,33 @@
-# alexendros.dev
+# Alexendros — webs claras y útiles
 
-### Propósito de este documento
+Sitio profesional de [alexendros.dev](https://alexendros.dev): webs que explican bien el negocio, cargan rápido y facilitan el contacto.
 
-- **Objetivos:** Presentar el sitio, el stack, el CI canónico y el contrato de contacto/reservas para humanos, CI y agentes.
-- **Estructura:** Identidad → stack → desarrollo → CI → deploy y secretos → reservas/webhook → DONE.
-- **Contenido a integrar según contexto:** Adapta badges, URLs y env de este portfolio. No copies tokens/DS de webconfig ni el alcance de otro producto. No muevas pricing ni servicios desde el README.
+## En qué puedo ayudarte
 
-Sitio profesional de Alexendros (conversión + contratación). **Producción:** [https://alexendros.dev](https://alexendros.dev).
+| Servicio                                                                             | Para quién                                                                                 |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| [Web nueva o renovación](https://alexendros.dev/servicios/produccion-sitios-web/)    | Profesionales y negocios locales que necesitan una web clara y lista para captar consultas |
+| [Revisión y plan de mejora](https://alexendros.dev/servicios/auditorias/)            | Quienes quieren saber qué mejorar primero, con prioridades y presupuesto realista          |
+| [Consultoría tecnológica](https://alexendros.dev/servicios/consultoria-tecnologica/) | Decisiones técnicas sin humo: stack, alcance y siguientes pasos                            |
+| [Landing en 10 días](https://alexendros.dev/servicios/landing-10-dias/)              | Una página de oferta concreta, publicada en plazo corto                                    |
 
-**Ref:** [ARCHITECTURE](ARCHITECTURE.md) · [AGENTS](AGENTS.md) · [CONTRIBUTING](CONTRIBUTING.md) · [SECURITY](SECURITY.md) · [SUPPORT](SUPPORT.md) · [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) · [docs/](docs/)
+Más detalle y precios orientativos en [Servicios](https://alexendros.dev/servicios/). Casos reales en [Proyectos](https://alexendros.dev/proyectos/).
 
-|                   |                                                                                                                           |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| Repo canónico     | [`Iniciativas-Alexendros/miwebsite-alexendrosdev`](https://github.com/Iniciativas-Alexendros/miwebsite-alexendrosdev)     |
-| Proyecto Vercel   | **`alexendros-dev`** (Hobby, team `alexendros-team`)                                                                      |
-| Production branch | `main` → deploy automático                                                                                                |
-| Predecesor        | [`nuevowebsite-alexendrosdev`](https://github.com/Iniciativas-Alexendros/nuevowebsite-alexendrosdev) (archivado, Next.js) |
+## Cómo empezamos
 
-## Stack
+1. Cuéntame tu situación en [Contacto](https://alexendros.dev/contacto/) o escribe a [hola@alexendros.dev](mailto:hola@alexendros.dev).
+2. Si prefieres una cita: [diagnóstico](https://cal.com/alexendros/diagnostico) o [sesión técnica](https://cal.com/alexendros/sesion-tecnica).
+3. Acordamos alcance, plazos y entregables antes de empezar.
 
-Astro 4 hybrid + isla React (`ContactForm`, `client:load`) + Tailwind OKLCH + TypeScript estricto + Zod + API serverless en Vercel. Fuentes Inter + JetBrains Mono self-hosted. Sin GA ni cookies de tracking; sí Vercel Analytics y Speed Insights (agregados). Reservas públicas en `/contacto` vía Cal.com (`embed.js` diferido, modal).
+Trabajo desde Valencia (remoto o presencial según el proyecto). Sin tracking invasivo ni cookies de publicidad: el sitio prioriza claridad, accesibilidad y velocidad.
 
-## Dev
+## Este repositorio
+
+Código fuente del sitio en producción. Para contribuir o desplegar, empieza por [CONTRIBUTING](CONTRIBUTING.md). Arquitectura, ADRs y runbooks están en [docs/](docs/) y [ARCHITECTURE.md](ARCHITECTURE.md). Contrato para agentes: [AGENTS.md](AGENTS.md).
 
 ```bash
 pnpm i
-cp .env.example .env   # SMTP_* + UPSTASH_* + CAL_WEBHOOK_SECRET + NOTION_*
-pnpm gen:og            # public/og/default.png
-pnpm dev               # http://localhost:4321
-pnpm build && pnpm preview
-pnpm smoke             # estático + HTTP 200 (job smoke)
-pnpm test:e2e          # opt-in (label e2e / workflow_dispatch)
+pnpm dev    # http://localhost:4321
 ```
 
-`preview` sirve `.vercel/output/static` (el adapter Vercel no soporta `astro preview`). Node **22** (`engines.node` / `.nvmrc`).
-
-## CI
-
-Workflow `.github/workflows/ci.yml`, jobs canónicos:
-
-| Job       | Qué corre                                                 |
-| --------- | --------------------------------------------------------- |
-| `quality` | typecheck, lint, format:check                             |
-| `test`    | Vitest                                                    |
-| `build`   | Astro + artefacto `.vercel/output/static`                 |
-| `smoke`   | `scripts/smoke.sh` (rutas clave HTTP 200)                 |
-| `e2e`     | Playwright (axe + contacto) + LHCI móvil ≥90 — **opt-in** |
-
-e2e/LHCI no bloquean el PR por defecto. Actívalos con la label `e2e` o `workflow_dispatch` (input `e2e`). Dependencias: Renovate (`.github/renovate.json`); sin Dependabot version-updates.
-
-## Deploy
-
-- **Hobby + repo público** → preview automático por PR (`*.vercel.app`). Previews sin SSO (decisión 2A; URLs compartibles).
-- **Promote = merge a `main`** con CI verde. No desplegar a Production desde ramas de feature ni “Promote” ad-hoc sin revisión.
-- **Releases automáticas** con [semantic-release](https://semantic-release.gitbook.io/) en cada push a `main` (`release.yml`): SemVer; `content`/`docs`/`chore`/`style`/`refactor` → patch, `feat` → minor, breaking → major; changelog en español por secciones. **Versionado ≠ deploy** a Vercel.
-- Dominio apex `alexendros.dev` (+ redirect `www` → apex) en el proyecto `alexendros-dev`.
-- Checklist merge: jobs `quality`, `test`, `build`, `smoke` verdes. e2e/axe y LHCI ≥90 móvil si el PR toca UI (label `e2e`).
-
-### Variables de entorno (Production + Preview)
-
-Obligatorias para que el formulario funcione ([issue #13](https://github.com/Iniciativas-Alexendros/miwebsite-alexendrosdev/issues/13)). Cargarlas en el proyecto Vercel **`alexendros-dev`** (panel o `vercel env add`); **nunca** en git:
-
-- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` (Proton app password)
-- `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`
-- `PUBLIC_SITE_URL=https://alexendros.dev`
-- `CAL_WEBHOOK_SECRET` (secreto del webhook en Cal.com; obligatorio para verificar `X-Cal-Signature-256`)
-- `NOTION_TOKEN` (integración interna con acceso a Leads / Bookings)
-- `NOTION_LEADS_DATABASE_ID=84b33eb7-f117-46ad-aedd-120852b5cbb7` — **data source id** para `@notionhq/client` v5 (`Notion-Version: 2025-09-03`). No uses el id de la página contenedora (`7c26e759d97d4f398b7955944a084b69`). Opcional: `NOTION_LEADS_DATA_SOURCE_ID` (gana si ambos existen).
-
-Procedimiento (sin imprimir valores):
-
-1. `vercel link` al proyecto `alexendros-dev`.
-2. `vercel env ls production` / `preview` para comprobar nombres presentes.
-3. Añadir o rotar secretos con `vercel env add <NAME> production` (y Preview solo con sandbox SMTP/Upstash; no reutilizar prod si las previews pueden enviar correo a terceros).
-4. Redeploy Production tras cargar SMTP.
-
-Sin SMTP (o con `SMTP_PORT` inválido), o sin Upstash / Redis caído, `POST /api/contact` responde **HTTP 503** con JSON genérico `{ "error": "Service unavailable" }` (fail-closed antispam; logs `contact_smtp_misconfigured` / `contact_redis_*` sin PII). El resto del sitio sirve con normalidad.
-
-Contrato resumido: solo POST + `Content-Type: application/json`; body ≤ 16 KiB; validación Zod genérica (400); rate limit 10/min → 429 + `Retry-After`; honeypot → 200 sin correo.
-
-```bash
-curl -sS -X POST 'https://alexendros.dev/api/contact' \
-  -H 'Content-Type: application/json' \
-  -d '{"name":"Smoke","email":"test@example.com","subject":"otro","message":"smoke prod alexendros","consent":true}'
-# Con SMTP: {"ok":true} + email en operaciones@alexendros.dev
-# Sin SMTP: {"error":"Service unavailable"} (HTTP 503)
-```
-
-### Reservas públicas (Cal.com)
-
-Enlaces canónicos en `src/content/contact.ts` (la página `/contacto` no sustituye el formulario):
-
-| Evento         | Precio | URL                                       |
-| -------------- | ------ | ----------------------------------------- |
-| Diagnóstico    | 75 €   | https://cal.com/alexendros/diagnostico    |
-| Sesión técnica | 150 €  | https://cal.com/alexendros/sesion-tecnica |
-
-El retainer es privado y **no** se enlaza en el sitio. Los QR se generan en build (`uqr`) apuntando a esas mismas URLs.
-
-### Cal.com → Notion Leads (`POST /api/cal/webhook`)
-
-Webhook firmado (HMAC-SHA256 del body en crudo, cabecera `X-Cal-Signature-256`). Eventos: `BOOKING_CREATED`, `BOOKING_PAID`, `BOOKING_PAYMENT_INITIATED`, `BOOKING_RESCHEDULED`, `BOOKING_CANCELLED`, `BOOKING_REJECTED`. Upsert en la data source [Leads / Bookings](https://app.notion.com/p/7c26e759d97d4f398b7955944a084b69) keyed by `payload.uid` → `cal_booking_id`. Upstash Redis **solo** para idempotencia (`alexendros:cal:uid:{uid}:{trigger}`, TTL 7 días); Notion es la fuente de verdad.
-
-En Cal.com: subscriber URL `https://alexendros.dev/api/cal/webhook` (o la preview `*.vercel.app`) y el mismo secreto que `CAL_WEBHOOK_SECRET`.
-
-Cargar en Vercel (**Production** y **Preview** del proyecto `alexendros-dev`), sin imprimir valores:
-
-```bash
-vercel env add CAL_WEBHOOK_SECRET production
-vercel env add NOTION_TOKEN production
-vercel env add NOTION_LEADS_DATABASE_ID production
-# repetir para preview; el id de data source no es secreto:
-# 84b33eb7-f117-46ad-aedd-120852b5cbb7
-```
-
-Prueba local con firma falsa (el HMAC debe calcularse sobre **exactamente** los mismos bytes que `--data-binary`):
-
-```bash
-# .env con CAL_WEBHOOK_SECRET, NOTION_*, UPSTASH_* (o espera 503 si faltan Notion/Redis)
-export CAL_WEBHOOK_SECRET='test-secret'
-cat > /tmp/cal-body.json <<'EOF'
-{"triggerEvent":"BOOKING_CREATED","createdAt":"2026-09-11T09:00:00.000Z","payload":{"uid":"test-uid-local","type":"diagnostico-web","title":"Diagnóstico","startTime":"2026-09-12T10:00:00.000Z","attendees":[{"name":"Test","email":"test@example.com"}],"metadata":{}}}
-EOF
-SIG=$(node -e "const fs=require('node:fs'); const c=require('node:crypto'); const b=fs.readFileSync('/tmp/cal-body.json'); process.stdout.write(c.createHmac('sha256', process.env.CAL_WEBHOOK_SECRET).update(b).digest('hex'))")
-curl -sS -X POST 'http://localhost:4321/api/cal/webhook' \
-  -H 'Content-Type: application/json' \
-  -H "X-Cal-Signature-256: $SIG" \
-  --data-binary @/tmp/cal-body.json
-```
-
-Sin secreto: HTTP 503 `{ "error": "Service unavailable" }`. Firma inválida: HTTP 401. CI no llama a Notion ni Redis (mocks en vitest).
-
-## DONE
-
-- Build verde, 0 errores TS; axe-core 0 violaciones en 6 rutas; Lighthouse CI ≥90 móvil
-- Formulario (código) → Upstash rate-limit + Proton SMTP (configurado en Vercel; ver issue #13)
-- OG 1200×630, favicon, fonts self-hosted, métricas agregadas Vercel
-- Apex en producción sobre este repo / proyecto `alexendros-dev`
+Node 22. Producción en Vercel (`alexendros-dev`); el merge a `main` publica el sitio.
