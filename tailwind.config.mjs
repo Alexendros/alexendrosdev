@@ -15,7 +15,8 @@ export default {
         primaryGhost: 'var(--primary-ghost)',
         muted: 'var(--muted)',
         border: 'var(--border)',
-        card: 'var(--card)'
+        card: 'var(--card)',
+        ink: 'var(--ink)'
       },
       fontFamily: {
         sans: ['Inter Variable', 'system-ui', 'sans-serif'],

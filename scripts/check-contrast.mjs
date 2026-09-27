@@ -69,7 +69,7 @@ function ratio(a, b) {
 const vars = {};
 for (const m of css.matchAll(/--([\w-]+)\s*:\s*(oklch\([^)]+\))/g)) vars[m[1]] = parseOklch(m[2]);
 
-for (const v of ['bg', 'fg', 'primary', 'muted', 'border', 'card']) {
+for (const v of ['bg', 'fg', 'primary', 'muted', 'border', 'card', 'ink']) {
   if (!vars[v]) throw new Error(`Falta --${v} en :root`);
 }
 
@@ -78,7 +78,7 @@ const bg = composite(vars.bg, [0, 0, 0]);
 const pairs = [
   ['fg/bg (texto principal)', 'fg', 'bg', 4.5],
   ['muted/bg (texto secundario)', 'muted', 'bg', 4.5],
-  ['bg/primary (texto de CTAs)', 'bg', 'primary', 4.5],
+  ['ink/primary (texto de CTAs)', 'ink', 'primary', 4.5],
   ['primary/bg (acento sobre fondo)', 'primary', 'bg', 3.0],
   ['fg/card (texto en tarjetas)', 'fg', 'card', 4.5],
   ['muted/card (secundario en tarjetas)', 'muted', 'card', 4.5]
