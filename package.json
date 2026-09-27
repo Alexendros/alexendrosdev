@@ -17,6 +17,7 @@
     "test": "vitest run",
     "test:contract": "vitest run src/lib/contactSchema.test.ts src/lib/smtpConfig.test.ts src/lib/contactHandler.test.ts src/lib/calSignature.test.ts src/lib/calWebhookSchema.test.ts src/lib/calNotionMapper.test.ts src/lib/calWebhookHandler.test.ts",
     "gen:og": "node scripts/gen-og.mjs",
+    "check:contrast": "node scripts/check-contrast.mjs",
     "smoke": "bash scripts/smoke.sh",
     "test:e2e": "playwright test",
     "lhci": "lhci autorun --config=./lighthouserc.json"

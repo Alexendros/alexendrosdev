@@ -67,7 +67,7 @@ export default function ContactForm({ subjects, calUrl, successMessage, errorMes
 
   if (status === 'ok') {
     return (
-      <div className="border border-primary/30 bg-primary/10 rounded-2xl p-6" role="status">
+      <div className="border border-primarySoft bg-primaryGhost rounded-2xl p-6" role="status">
         ✓ {successMessage}{' '}
         <a
           className="underline rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
@@ -197,7 +197,7 @@ export default function ContactForm({ subjects, calUrl, successMessage, errorMes
       <button
         type="submit"
         disabled={status === 'loading'}
-        className="bg-primary text-bg px-6 py-3 rounded-full font-medium w-full md:w-auto disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        className="bg-primary text-ink px-6 py-3 rounded-full font-medium w-full md:w-auto disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
         {status === 'loading' ? 'Enviando...' : 'Enviar →'}
       </button>
