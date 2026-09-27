@@ -1,0 +1,19 @@
+---
+// Escena Blueprint (Fase 2): capa decorativa no interactiva para secciones.
+// Se coloca como primer hijo de una sección `relative`: retícula tenue,
+// marcas de registro en las esquinas y rótulo de figura. Todo `aria-hidden`.
+// Sin animación: el reveal lo gestiona [data-reveal] (Fase 1, EF-07).
+interface Props {
+  fig: string;
+}
+const { fig } = Astro.props;
+---
+
+<div class="bp-scene" aria-hidden="true">
+  <div class="bp-scene-grid grid-pattern"></div>
+  <span class="bp-tick bp-tick-tl"></span>
+  <span class="bp-tick bp-tick-tr"></span>
+  <span class="bp-tick bp-tick-bl"></span>
+  <span class="bp-tick bp-tick-br"></span>
+  <span class="bp-scene-fig font-mono">FIG. {fig}</span>
+</div>
