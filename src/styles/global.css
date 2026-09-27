@@ -58,21 +58,7 @@ pre,
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
-/* Germen del Blueprint Lab: retícula base. Las variantes por sección
-   (FigureHead/Dimension) llegan en fase 1. El cianotipo añade la
-   retícula mayor (cada 120px, como el papel de plano). */
-.grid-pattern {
-  background-image:
-    linear-gradient(oklch(1 0 0 / 0.12) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(1 0 0 / 0.12) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-.grid-pattern-lg {
-  background-image:
-    linear-gradient(oklch(1 0 0 / 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(1 0 0 / 0.06) 1px, transparent 1px);
-  background-size: 120px 120px;
-}
+
 /* Sombreado diagonal de plano (cianotipo): solo decorativo en
    cabeceras de tarjeta y cajetines; exento de contraste WCAG. */
 .bp-hatch {
@@ -166,7 +152,7 @@ html.banner-visible {
 /* Escenas Blueprint (Fase 2): capa decorativa dentro de secciones `relative`.
    Sin animación y sin colores nuevos: marcas de registro en tokens
    existentes. */
-.bp-scene {
+[data-bp-scene] {
   position: absolute;
   inset: 0;
   overflow: hidden;
