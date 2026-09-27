@@ -152,38 +152,6 @@ html.banner-visible {
   }
 }
 
-.bp-tick {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-color: var(--border);
-  border-style: solid;
-  border-width: 0;
-}
-.bp-tick-tl {
-  top: 12px;
-  left: 4px;
-  border-top-width: 1px;
-  border-left-width: 1px;
-}
-.bp-tick-tr {
-  top: 12px;
-  right: 4px;
-  border-top-width: 1px;
-  border-right-width: 1px;
-}
-.bp-tick-bl {
-  bottom: 12px;
-  left: 4px;
-  border-bottom-width: 1px;
-  border-left-width: 1px;
-}
-.bp-tick-br {
-  bottom: 12px;
-  right: 4px;
-  border-bottom-width: 1px;
-  border-right-width: 1px;
-}
 /* Micro-motion sobria (Blueprint Lab Fase 3): solo transiciones de color,
    sin desplazamientos; el scroll suave solo sin reduced-motion. */
 a,
