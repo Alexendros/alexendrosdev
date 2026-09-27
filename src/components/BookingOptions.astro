@@ -14,14 +14,14 @@ const events = contact.bookings.events.map((event) => ({
   <div class="mt-6 grid gap-6 md:grid-cols-2">
     {
       events.map((event) => (
-        <article class="border border-border rounded-2xl p-6 bg-card flex flex-col sm:flex-row gap-6">
+        <article class="border border-border rounded-none p-6 bg-card flex flex-col sm:flex-row gap-6">
           <div class="min-w-0 flex-1">
             <h3 class="font-bold text-lg leading-tight">{event.title}</h3>
             <p class="mt-1 font-medium text-primary">{event.priceLabel}</p>
             <p class="mt-2 text-sm text-muted">{event.summary}</p>
             <a
               href={event.url}
-              class="mt-4 inline-flex bg-primary text-bg px-5 py-2.5 rounded-full font-medium focus-ring"
+              class="mt-4 inline-flex bg-primary text-ink px-5 py-2.5 rounded-none font-medium focus-ring"
               data-cal-link={event.calLink}
               data-cal-config='{"layout":"month_view","theme":"dark"}'
               target="_blank"

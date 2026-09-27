@@ -1,19 +1,26 @@
 ---
-// Escena Blueprint (Fase 2): capa decorativa no interactiva para secciones.
-// Se coloca como primer hijo de una sección `relative`: retícula tenue,
-// marcas de registro en las esquinas y rótulo de figura. Todo `aria-hidden`.
-// Sin animación: el reveal lo gestiona [data-reveal] (Fase 1, EF-07).
+// Escena Blueprint (cianotipo): capa decorativa no interactiva para secciones.
+// Hoja de plano a sangre: retícula doble tenue, marcas de registro en las
+// esquinas, cajetín inferior con título/figura/escala y rótulo de figura.
+// Todo `aria-hidden`. Sin animación: el reveal lo gestiona [data-reveal].
 interface Props {
   fig: string;
+  title?: string;
 }
-const { fig } = Astro.props;
+const { fig, title = 'PLANO GENERAL' } = Astro.props;
 ---
 
 <div class="bp-scene" aria-hidden="true">
   <div class="bp-scene-grid grid-pattern"></div>
+  <div class="bp-scene-grid grid-pattern-lg"></div>
   <span class="bp-tick bp-tick-tl"></span>
   <span class="bp-tick bp-tick-tr"></span>
   <span class="bp-tick bp-tick-bl"></span>
   <span class="bp-tick bp-tick-br"></span>
+  <div class="bp-titleblock font-mono">
+    <span class="bp-titleblock-head">{title}</span>
+    <span>FIG. {fig}</span>
+    <span>ESC 1:1</span>
+  </div>
   <span class="bp-scene-fig font-mono">FIG. {fig}</span>
 </div>
