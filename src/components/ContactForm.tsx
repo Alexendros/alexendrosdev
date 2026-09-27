@@ -10,7 +10,7 @@ type Props = {
 };
 
 const inputClass =
-  'mt-1 w-full bg-bg border border-border rounded-none px-3 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+  'mt-1 w-full bg-bg border border-border rounded-lg px-3 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
 
 export default function ContactForm({ subjects, calUrl, successMessage, errorMessage }: Props) {
   const [status, setStatus] = useState<
@@ -67,7 +67,7 @@ export default function ContactForm({ subjects, calUrl, successMessage, errorMes
 
   if (status === 'ok') {
     return (
-      <div className="border border-primarySoft bg-primaryGhost rounded-none p-6" role="status">
+      <div className="border border-primarySoft bg-primaryGhost rounded-lg p-6" role="status">
         ✓ {successMessage}{' '}
         <a
           className="underline rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
@@ -83,7 +83,7 @@ export default function ContactForm({ subjects, calUrl, successMessage, errorMes
   return (
     <form
       onSubmit={submit}
-      className="space-y-4 border border-border rounded-none p-6 bg-card"
+      className="space-y-4 border border-border rounded-lg p-6 bg-card"
       noValidate
     >
       <div className="grid md:grid-cols-2 gap-4">
@@ -197,7 +197,7 @@ export default function ContactForm({ subjects, calUrl, successMessage, errorMes
       <button
         type="submit"
         disabled={status === 'loading'}
-        className="bg-primary text-ink px-6 py-3 rounded-none font-medium w-full md:w-auto disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        className="bg-primary text-ink px-6 py-3 rounded-lg font-medium w-full md:w-auto disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       >
         {status === 'loading' ? 'Enviando...' : 'Enviar →'}
       </button>
