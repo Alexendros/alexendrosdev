@@ -202,17 +202,17 @@ export default function ContactForm({ subjects, calUrl, successMessage, errorMes
         {status === 'loading' ? 'Enviando...' : 'Enviar →'}
       </button>
       {status === 'error' && (
-        <div className="text-sm text-red-400" role="alert">
+        <div className="text-sm text-danger" role="alert">
           {errorMessage} Revisa: nombre, email válido, mensaje 20+ chars y consentimiento.
         </div>
       )}
       {status === 'rate_limited' && (
-        <div className="text-sm text-red-400" role="alert">
+        <div className="text-sm text-danger" role="alert">
           Demasiados envíos. Espera un minuto e inténtalo de nuevo.
         </div>
       )}
       {status === 'unavailable' && (
-        <div className="text-sm text-red-400" role="alert">
+        <div className="text-sm text-danger" role="alert">
           El servicio de contacto no está disponible ahora. Escríbenos a operaciones@alexendros.dev
           o reserva en{' '}
           <a className="underline" href={calUrl} target="_blank" rel="noopener noreferrer">
@@ -221,10 +221,6 @@ export default function ContactForm({ subjects, calUrl, successMessage, errorMes
           .
         </div>
       )}
-      <div className="text-xs text-muted">
-        Conversión optimizada: 3 campos obligatorios + select = 3.2% vs 0.8% con 9+. Sin GA ni
-        cookies de tracking.
-      </div>
     </form>
   );
 }
