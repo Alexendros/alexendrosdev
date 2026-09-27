@@ -15,6 +15,9 @@
   --border: oklch(0.75 0.05 260);
   --card: oklch(0.29 0.1 260);
   --ink: oklch(0.14 0.01 240);
+  /* Errores de formulario: validado en scripts/check-contrast.mjs
+     (danger/bg y danger/card, minimo 4.5:1). */
+  --danger: oklch(0.78 0.14 25);
 
   /* Reserva Blueprint Lab (fases 1-3): fondo azul de plano, líneas y
      anotaciones en blanco. Activada como tema en
@@ -149,15 +152,6 @@ html.banner-visible {
   }
 }
 
-/* Escenas Blueprint (Fase 2): capa decorativa dentro de secciones `relative`.
-   Sin animación y sin colores nuevos: marcas de registro en tokens
-   existentes. */
-[data-bp-scene] {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
 .bp-tick {
   position: absolute;
   width: 14px;
