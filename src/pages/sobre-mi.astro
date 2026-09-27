@@ -15,7 +15,7 @@ import { profile } from '../content/profile';
     <div class="mt-4 grid md:grid-cols-3 gap-4">
       {
         profile.workWithMe.map((card) => (
-          <div class="border border-border rounded-none p-5 bg-card">
+          <div class="border border-border rounded-lg p-5 bg-card">
             <strong class="block">{card.title}</strong>
             <p class="text-sm text-muted mt-2">{card.body}</p>
           </div>
@@ -35,7 +35,7 @@ import { profile } from '../content/profile';
       </p>
     </section>
 
-    <details class="mt-10 border border-border rounded-none p-5 bg-card">
+    <details class="mt-10 border border-border rounded-lg p-5 bg-card">
       <summary class="font-bold cursor-pointer focus-ring rounded">
         Cómo compruebo la calidad
       </summary>
@@ -49,7 +49,7 @@ import { profile } from '../content/profile';
     <div class="mt-10">
       <a
         href="/contacto"
-        class="inline-block bg-primary text-ink px-6 py-3 rounded-none font-medium focus-ring"
+        class="inline-block bg-primary text-ink px-6 py-3 rounded-lg font-medium focus-ring"
         >Cuéntame qué necesitas</a
       >
     </div>
