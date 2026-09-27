@@ -37,15 +37,13 @@ html {
   font-family: 'Inter Variable', system-ui, sans-serif;
 }
 body {
-  /* Fondo cianotipo por capas (de arriba a abajo): grano tenue, viñeta
-     luminosa central, retícula menor, retícula mayor y base --bg.
+  /* Fondo cianotipo por capas (de arriba a abajo): viñeta
+     luminosa central, retícula mayor y base --bg.
      Sin background-attachment: fixed (jank en móvil). */
   background:
     radial-gradient(ellipse 120% 90% at 50% 28%, var(--bp-glow) 0%, transparent 60%),
-    repeating-linear-gradient(0deg, oklch(1 0 0 / 0.12) 0 1px, transparent 1px 22px),
-    repeating-linear-gradient(90deg, oklch(1 0 0 / 0.12) 0 1px, transparent 1px 22px),
-    repeating-linear-gradient(0deg, oklch(1 0 0 / 0.15) 0 1px, transparent 1px 120px),
-    repeating-linear-gradient(90deg, oklch(1 0 0 / 0.15) 0 1px, transparent 1px 120px),
+    repeating-linear-gradient(0deg, oklch(1 0 0 / 0.06) 0 1px, transparent 1px 120px),
+    repeating-linear-gradient(90deg, oklch(1 0 0 / 0.06) 0 1px, transparent 1px 120px),
     radial-gradient(ellipse 150% 120% at 50% 40%, transparent 55%, var(--bp-deep) 100%), var(--bg);
 }
 code,
@@ -60,21 +58,7 @@ pre,
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
-/* Germen del Blueprint Lab: retícula base. Las variantes por sección
-   (FigureHead/Dimension) llegan en fase 1. El cianotipo añade la
-   retícula mayor (cada 120px, como el papel de plano). */
-.grid-pattern {
-  background-image:
-    linear-gradient(oklch(1 0 0 / 0.12) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(1 0 0 / 0.12) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-.grid-pattern-lg {
-  background-image:
-    linear-gradient(oklch(1 0 0 / 0.15) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(1 0 0 / 0.15) 1px, transparent 1px);
-  background-size: 120px 120px;
-}
+
 /* Sombreado diagonal de plano (cianotipo): solo decorativo en
    cabeceras de tarjeta y cajetines; exento de contraste WCAG. */
 .bp-hatch {
@@ -166,24 +150,13 @@ html.banner-visible {
 }
 
 /* Escenas Blueprint (Fase 2): capa decorativa dentro de secciones `relative`.
-   Sin animación y sin colores nuevos: retícula tenue + marcas de registro +
-   rótulo en tokens existentes. El fundido de la retícula usa máscara con
-   degradación nativa (sin máscara se muestra la retícula completa). */
-.bp-scene {
+   Sin animación y sin colores nuevos: marcas de registro en tokens
+   existentes. */
+[data-bp-scene] {
   position: absolute;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-}
-.bp-scene-grid {
-  position: absolute;
-  inset: 0;
-  opacity: 0.7;
-}
-@supports (mask-image: linear-gradient(black, black)) {
-  .bp-scene-grid {
-    mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
-  }
 }
 .bp-tick {
   position: absolute;
@@ -217,49 +190,6 @@ html.banner-visible {
   border-bottom-width: 1px;
   border-right-width: 1px;
 }
-.bp-scene-fig {
-  position: absolute;
-  bottom: 10px;
-  right: 8px;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  color: var(--muted);
-}
-/* Cajetín de plano (cianotipo): cartela inferior con título, figura y
-   escala. Solo decorativo (aria-hidden en el componente). */
-.bp-titleblock {
-  position: absolute;
-  left: 8px;
-  bottom: 10px;
-  display: flex;
-  align-items: stretch;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: var(--muted);
-  border: 1px solid var(--border);
-  background-color: color-mix(in srgb, var(--bg) 78%, transparent);
-}
-.bp-titleblock > span {
-  padding: 4px 8px;
-}
-.bp-titleblock > span + span {
-  border-left: 1px solid var(--border);
-}
-.bp-titleblock-head {
-  color: var(--fg);
-}
-
-/* Portadas cianotipo (docs/architecture/decisions/0007-blueprint-cianotipo.md):
-   duotono blanco-sobre-azul solo con soporte de filtros CSS; sin soporte
-   se muestra la imagen original. */
-.bp-duo {
-  filter: none;
-}
-@supports (filter: grayscale(1)) {
-  .bp-duo {
-    filter: grayscale(1) contrast(1.12) brightness(0.62) sepia(1) hue-rotate(185deg) saturate(2.6);
-  }
-}
 /* Micro-motion sobria (Blueprint Lab Fase 3): solo transiciones de color,
    sin desplazamientos; el scroll suave solo sin reduced-motion. */
 a,
@@ -280,34 +210,12 @@ button {
   }
 }
 
-/* Slider de servicios (ADR-0008): las diapositivas comparten la misma celda
-   de rejilla para que el panel conserve la altura máxima sin saltos; las
-   inactivas se ocultan visualmente y el JS les aplica `inert`. Sin JS se
-   muestran todas apiladas como lista. */
-.bp-slide-hidden {
-  visibility: hidden;
-}
-
-/* Titular hero con profundidad (cianotipo): sombra por capas para relieve
-   y contorno de boceto en la segunda cláusula. Contraste heredado de los
-   pares validados en scripts/check-contrast.mjs. */
+/* Titular hero con profundidad (cianotipo): sombra sutil única para relieve.
+   Contraste heredado de los pares validados en scripts/check-contrast.mjs. */
 .bp-h1 {
-  text-shadow:
-    0 1px 0 rgb(255 255 255 / 0.22),
-    0 3px 0 rgb(3 17 38 / 0.6),
-    0 14px 32px rgb(1 8 20 / 0.5);
+  text-shadow: 0 2px 16px rgb(1 8 20 / 0.35);
 }
 .bp-h1-draft {
-  color: transparent;
+  color: var(--fg);
   text-shadow: none;
-}
-@supports (-webkit-text-stroke: 1px white) {
-  .bp-h1-draft {
-    -webkit-text-stroke: 1.5px var(--fg);
-  }
-}
-@supports not (-webkit-text-stroke: 1px white) {
-  .bp-h1-draft {
-    color: var(--muted);
-  }
 }

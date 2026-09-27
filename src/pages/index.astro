@@ -4,7 +4,7 @@ import Hero from '../components/Hero.astro';
 import FigureHead from '../components/FigureHead.astro';
 import Dimension from '../components/Dimension.astro';
 import Scene from '../components/Scene.astro';
-import ServiceSlider from '../components/ServiceSlider.astro';
+import ServiceCard from '../components/ServiceCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import AxisCard from '../components/AxisCard.astro';
 import { services } from '../content/services';
@@ -18,11 +18,11 @@ const featured = getFeaturedProjects().slice(0, 3);
   <Hero />
 
   <div class="mx-auto max-w-6xl px-6 pt-4 md:pt-6">
-    <Dimension label="PLANO Nº 01 — SERVICIOS · CASOS · EJES · CONTACTO" />
+    <Dimension label="Servicios · Casos · Ejes · Contacto" />
   </div>
 
   <section class="relative mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
-    <Scene fig="01" />
+    <Scene />
     <FigureHead
       index="01"
       title="Cómo puedo ayudarte"
@@ -30,8 +30,8 @@ const featured = getFeaturedProjects().slice(0, 3);
       linkHref="/servicios"
       linkText="Ver todo"
     />
-    <div class="mt-6">
-      <ServiceSlider services={services} />
+    <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-services-grid>
+      {services.map((s) => <ServiceCard service={s} />)}
     </div>
     <p class="mt-8 text-sm text-muted max-w-2xl">
       Proceso claro, presupuesto cerrado y entregas definidas.
@@ -40,7 +40,7 @@ const featured = getFeaturedProjects().slice(0, 3);
   </section>
 
   <section class="relative mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
-    <Scene fig="02" />
+    <Scene />
     <FigureHead
       index="02"
       title="Casos reales"
@@ -54,7 +54,7 @@ const featured = getFeaturedProjects().slice(0, 3);
   </section>
 
   <section class="relative mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
-    <Scene fig="03" />
+    <Scene />
     <FigureHead
       index="03"
       title="Ejes de trabajo"

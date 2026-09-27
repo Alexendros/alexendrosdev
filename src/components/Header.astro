@@ -23,11 +23,116 @@ const path = Astro.url.pathname;
         ))
       }
     </nav>
-    <a
-      href="/contacto"
-      class="bg-primary text-ink px-4 py-2 rounded-none text-sm font-medium hover:opacity-90 transition focus-ring shrink-0"
-      >Cuéntame</a
-    >
+    <div class="flex items-center gap-2 shrink-0">
+      <a
+        href="/contacto"
+        class="bg-primary text-ink px-4 py-2 rounded-none text-sm font-medium hover:opacity-90 transition focus-ring"
+        >Cuéntame</a
+      >
+      <button
+        type="button"
+        data-menu-button
+        class="md:hidden inline-flex items-center justify-center w-10 h-10 border border-border hover:border-primary hover:text-primary focus-ring"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        aria-label="Menú"
+      >
+        <svg
+          id="menu-icon-open"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <line x1="4" y1="7" x2="20" y2="7"></line>
+          <line x1="4" y1="12" x2="20" y2="12"></line>
+          <line x1="4" y1="17" x2="20" y2="17"></line>
+        </svg>
+        <svg
+          id="menu-icon-close"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+          class="hidden"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
   </div>
-  <div class="h-[3px] bp-hatch opacity-60" aria-hidden="true"></div>
+  <nav data-mobile-nav class="md:hidden border-t border-border" aria-label="Principal" hidden>
+    <ul class="px-6 py-3 flex flex-col gap-1 text-sm">
+      {
+        site.nav.map((i) => (
+          <li>
+            <a
+              href={i.href}
+              class={`block py-2 hover:text-primary focus-ring rounded ${path.startsWith(i.href) ? 'text-primary' : 'text-muted'}`}
+            >
+              {i.label}
+            </a>
+          </li>
+        ))
+      }
+      <li>
+        <a
+          href="/contacto"
+          class={`block py-2 hover:text-primary focus-ring rounded ${path.startsWith('/contacto') ? 'text-primary' : 'text-muted'}`}
+        >
+          Cuéntame
+        </a>
+      </li>
+    </ul>
+  </nav>
 </header>
+
+<script>
+  function initMobileNav(): void {
+    const menuButton = document.querySelector('[data-menu-button]');
+    const mobileNav = document.querySelector('[data-mobile-nav]');
+    if (!(menuButton instanceof HTMLButtonElement) || !(mobileNav instanceof HTMLElement)) return;
+    const iconOpen = document.getElementById('menu-icon-open');
+    const iconClose = document.getElementById('menu-icon-close');
+    const menuLinks = Array.from(mobileNav.querySelectorAll('a'));
+    const isMenuOpen = (): boolean => menuButton.getAttribute('aria-expanded') === 'true';
+    const setMenuOpen = (open: boolean): void => {
+      menuButton.setAttribute('aria-expanded', String(open));
+      if (open) {
+        mobileNav.removeAttribute('hidden');
+        iconOpen?.classList.add('hidden');
+        iconClose?.classList.remove('hidden');
+        menuLinks[0]?.focus();
+      } else {
+        mobileNav.setAttribute('hidden', '');
+        iconOpen?.classList.remove('hidden');
+        iconClose?.classList.add('hidden');
+      }
+    };
+    menuButton.addEventListener('click', () => setMenuOpen(!isMenuOpen()));
+    mobileNav.addEventListener('keydown', (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMenuOpen(false);
+        menuButton.focus();
+      }
+    });
+    menuLinks.forEach((link) => link.addEventListener('click', () => setMenuOpen(false)));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobileNav, { once: true });
+  } else {
+    initMobileNav();
+  }
+</script>
