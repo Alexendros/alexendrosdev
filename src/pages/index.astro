@@ -3,7 +3,6 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import FigureHead from '../components/FigureHead.astro';
 import Dimension from '../components/Dimension.astro';
-import Scene from '../components/Scene.astro';
 import ServiceSlider from '../components/ServiceSlider.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import AxisCard from '../components/AxisCard.astro';
@@ -21,8 +20,7 @@ const featured = getFeaturedProjects().slice(0, 3);
     <Dimension label="PLANO Nº 01 — SERVICIOS · CASOS · EJES · CONTACTO" />
   </div>
 
-  <section class="relative mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
-    <Scene fig="01" />
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
     <FigureHead
       index="01"
       title="Cómo puedo ayudarte"
@@ -39,8 +37,7 @@ const featured = getFeaturedProjects().slice(0, 3);
     </p>
   </section>
 
-  <section class="relative mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
-    <Scene fig="02" />
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
     <FigureHead
       index="02"
       title="Casos reales"
@@ -53,8 +50,7 @@ const featured = getFeaturedProjects().slice(0, 3);
     </div>
   </section>
 
-  <section class="relative mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
-    <Scene fig="03" />
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
     <FigureHead
       index="03"
       title="Ejes de trabajo"
