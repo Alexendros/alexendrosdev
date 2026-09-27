@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Dimension from '../../components/Dimension.astro';
 import { Image } from 'astro:assets';
 import { projects } from '../../content/projects';
 
@@ -10,20 +11,27 @@ const { project } = Astro.props;
 ---
 
 <Layout title={`${project.title} — Alexendros`} description={project.short}>
-  <div class="mx-auto max-w-4xl px-6 pt-12 pb-16">
+  <div class="mx-auto max-w-4xl px-6 pt-12 pb-16" data-reveal>
     <div class="text-xs text-muted">
-      <a href="/proyectos" class="hover:text-fg focus-ring rounded">Casos</a> / {project.title}
+      <a href="/proyectos" class="hover:text-fg focus-ring rounded">← Todos los casos</a>
     </div>
+    <p class="mt-4 font-mono text-xs tracking-[0.2em] text-primary">CASO · {project.slug}</p>
     <h1 class="mt-3 text-4xl font-bold">{project.title}</h1>
     <p class="mt-3 text-muted">{project.summary}</p>
-    <Image
-      src={project.cover}
-      alt=""
-      widths={[800, 1200]}
-      sizes="(max-width: 768px) 100vw, 800px"
-      class="mt-6 w-full rounded-2xl border border-border"
-      loading="eager"
-    />
+    <div class="mt-4 h-px bg-border" aria-hidden="true"></div>
+    <figure class="mt-6">
+      <Image
+        src={project.cover}
+        alt=""
+        widths={[800, 1200]}
+        sizes="(max-width: 768px) 100vw, 800px"
+        class="w-full rounded-none border border-border bp-duo"
+        loading="eager"
+      />
+      <figcaption class="mt-2 font-mono text-[11px] tracking-[0.2em] text-muted">
+        FIG. · {project.slug}
+      </figcaption>
+    </figure>
     <div class="mt-4">
       <h2 class="font-bold text-sm">Resultados</h2>
       <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
@@ -31,7 +39,11 @@ const { project } = Astro.props;
       </ul>
     </div>
 
-    <div class="mt-10 grid md:grid-cols-[1.2fr_0.8fr] gap-10">
+    <div class="mt-8" data-reveal>
+      <Dimension label="CASO · CONTEXTO — RETO — SOLUCIÓN" />
+    </div>
+
+    <div class="mt-10 grid md:grid-cols-[1.2fr_0.8fr] gap-10" data-reveal>
       <div class="space-y-8 text-sm">
         <div>
           <h2 class="font-bold">El punto de partida</h2>
@@ -53,13 +65,13 @@ const { project } = Astro.props;
         </div>
       </div>
       <div class="space-y-6 cv-auto">
-        <div class="border border-border rounded-2xl p-5 bg-card">
+        <div class="border border-border rounded-none p-5 bg-card">
           <h2 class="font-bold text-sm">Aspectos clave</h2>
           <ul class="mt-2 list-disc pl-5 text-xs text-muted space-y-1">
             {project.highlights.map((h) => <li>{h}</li>)}
           </ul>
         </div>
-        <details class="border border-border rounded-2xl p-5 bg-card">
+        <details class="border border-border rounded-none p-5 bg-card">
           <summary class="font-bold text-sm cursor-pointer focus-ring rounded"
             >Detalles técnicos</summary
           >
@@ -67,7 +79,7 @@ const { project } = Astro.props;
             {project.technologies.map((t) => <p>{t}</p>)}
           </div>
         </details>
-        <div class="border border-border rounded-2xl p-5 bg-card">
+        <div class="border border-border rounded-none p-5 bg-card">
           <h2 class="font-bold text-sm">Enlaces</h2>
           <div class="mt-2 flex gap-3 text-xs">
             {
@@ -98,7 +110,7 @@ const { project } = Astro.props;
         </div>
         <a
           href="/contacto"
-          class="block text-center bg-primary text-bg px-6 py-3 rounded-full font-medium focus-ring"
+          class="block text-center bg-primary text-ink px-6 py-3 rounded-none font-medium focus-ring"
           >Cuéntame un proyecto similar</a
         >
       </div>

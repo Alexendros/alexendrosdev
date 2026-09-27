@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageHead from '../components/PageHead.astro';
 
 const steps = [
   {
@@ -38,16 +39,16 @@ const transparency = [
   description="Un proceso claro por fases: desde entender tu negocio hasta publicar y entregarte lo necesario."
 >
   <div class="mx-auto max-w-4xl px-6 pt-12 pb-16">
-    <h1 class="text-4xl font-bold">Un proceso claro para que sepas qué va a pasar en cada fase.</h1>
-    <p class="mt-4 text-muted max-w-2xl">
-      Sin sorpresas de alcance. Antes de empezar acordamos qué se hace, qué no se hace y cómo
-      validamos cada entrega.
-    </p>
+    <PageHead
+      kicker="PROCESO"
+      title="Un proceso claro para que sepas qué va a pasar en cada fase."
+      description="Sin sorpresas de alcance. Antes de empezar acordamos qué se hace, qué no se hace y cómo validamos cada entrega."
+    />
 
     <ol class="mt-10 space-y-4">
       {
         steps.map((step, i) => (
-          <li class="border border-border rounded-2xl p-5 bg-card">
+          <li class="border border-border rounded-none p-5 bg-card">
             <div class="text-xs text-primary font-medium">Paso {i + 1}</div>
             <h2 class="font-bold mt-1">{step.title}</h2>
             <p class="text-sm text-muted mt-2">{step.desc}</p>
@@ -63,7 +64,7 @@ const transparency = [
       </ul>
     </section>
 
-    <details class="mt-10 border border-border rounded-2xl p-5 bg-card">
+    <details class="mt-10 border border-border rounded-none p-5 bg-card">
       <summary class="font-bold cursor-pointer focus-ring rounded">
         ¿Cómo compruebo la calidad antes de publicar?
       </summary>
@@ -76,7 +77,7 @@ const transparency = [
     <div class="mt-10">
       <a
         href="/contacto"
-        class="inline-block bg-primary text-bg px-6 py-3 rounded-full font-medium focus-ring"
+        class="inline-block bg-primary text-ink px-6 py-3 rounded-none font-medium focus-ring"
         >Cuéntame qué necesitas</a
       >
     </div>

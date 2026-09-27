@@ -1,24 +1,38 @@
 ---
-
+import BlueprintMotif from './BlueprintMotif.astro';
 ---
 
-<section class="mx-auto max-w-3xl px-6 py-16 md:py-24">
+<section class="relative mx-auto max-w-3xl px-6 py-16 md:py-24 overflow-hidden">
+  <BlueprintMotif
+    class="pointer-events-none absolute -right-16 top-0 h-full w-auto opacity-25 md:opacity-100"
+  />
+  <p class="font-mono text-[11px] tracking-[0.25em] text-muted">
+    PLANO GENERAL — DISEÑO WEB · VALENCIA
+  </p>
   <div
-    class="inline-flex items-center gap-2 text-xs font-mono border border-border rounded-full px-3 py-1 text-muted"
+    class="mt-4 inline-flex items-center gap-2 text-xs font-mono border border-border rounded-none px-3 py-1 text-muted"
   >
     <span class="w-2 h-2 rounded-full bg-primary animate-pulse" aria-hidden="true"></span> Disponible
     para nuevos proyectos
   </div>
-  <h1 class="mt-6 text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight max-w-3xl">
-    Tu web debería ayudarte a conseguir clientes, no darte más trabajo.
+  <h1 class="bp-h1 mt-6 text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight max-w-3xl">
+    Tu web debería ayudarte a conseguir clientes,
+    <span class="bp-h1-draft">no darte más trabajo.</span>
   </h1>
   <p class="mt-4 text-lg text-muted max-w-2xl">
     Diseño y mejoro webs para profesionales y pequeños negocios que quieren explicar mejor lo que
     hacen y recibir más contactos.
   </p>
   <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
-    <a href="/contacto" class="bg-primary text-bg px-6 py-3 rounded-full font-medium focus-ring"
-      >Cuéntame qué necesitas</a
+    <a
+      href="/contacto"
+      class="relative bg-primary text-ink px-6 py-3 rounded-none font-medium focus-ring"
+    >
+      <span class="bp-tick bp-tick-tl" aria-hidden="true"></span>
+      <span class="bp-tick bp-tick-tr" aria-hidden="true"></span>
+      <span class="bp-tick bp-tick-bl" aria-hidden="true"></span>
+      <span class="bp-tick bp-tick-br" aria-hidden="true"></span>
+      Cuéntame qué necesitas</a
     >
     <a href="/servicios" class="underline text-muted hover:text-fg focus-ring rounded"
       >Ver cómo puedo ayudarte</a
