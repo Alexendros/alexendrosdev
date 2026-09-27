@@ -113,3 +113,75 @@ html.banner-visible {
     padding-bottom: var(--banner-height, 0px);
   }
 }
+
+/* Escenas Blueprint (Fase 2): capa decorativa dentro de secciones `relative`.
+   Sin animación y sin colores nuevos: retícula tenue + marcas de registro +
+   rótulo en tokens existentes. El fundido de la retícula usa máscara con
+   degradación nativa (sin máscara se muestra la retícula completa). */
+.bp-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.bp-scene-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.7;
+}
+@supports (mask-image: linear-gradient(black, black)) {
+  .bp-scene-grid {
+    mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+  }
+}
+.bp-tick {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--border);
+  border-style: solid;
+  border-width: 0;
+}
+.bp-tick-tl {
+  top: 12px;
+  left: 4px;
+  border-top-width: 1px;
+  border-left-width: 1px;
+}
+.bp-tick-tr {
+  top: 12px;
+  right: 4px;
+  border-top-width: 1px;
+  border-right-width: 1px;
+}
+.bp-tick-bl {
+  bottom: 12px;
+  left: 4px;
+  border-bottom-width: 1px;
+  border-left-width: 1px;
+}
+.bp-tick-br {
+  bottom: 12px;
+  right: 4px;
+  border-bottom-width: 1px;
+  border-right-width: 1px;
+}
+.bp-scene-fig {
+  position: absolute;
+  bottom: 10px;
+  right: 8px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+}
+
+/* Portadas con filtro + fallback (Fase 2): tono de papel ámbar tenue solo
+   con soporte de filtros CSS; sin soporte se muestra la imagen original. */
+.bp-duo {
+  filter: none;
+}
+@supports (filter: sepia(0.3)) {
+  .bp-duo {
+    filter: sepia(0.32) saturate(0.85) contrast(1.03);
+  }
+}

@@ -3,10 +3,13 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import FigureHead from '../components/FigureHead.astro';
 import Dimension from '../components/Dimension.astro';
+import Scene from '../components/Scene.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import AxisCard from '../components/AxisCard.astro';
 import { services } from '../content/services';
 import { getFeaturedProjects } from '../content/projects';
+import { ejes } from '../content/ejes';
 
 const featured = getFeaturedProjects().slice(0, 3);
 ---
@@ -15,10 +18,11 @@ const featured = getFeaturedProjects().slice(0, 3);
   <Hero />
 
   <div class="mx-auto max-w-6xl px-6 pt-4 md:pt-6">
-    <Dimension label="PLANO Nº 01 — SERVICIOS · CASOS · CONTACTO" />
+    <Dimension label="PLANO Nº 01 — SERVICIOS · CASOS · EJES · CONTACTO" />
   </div>
 
-  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
+  <section class="relative mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
+    <Scene fig="01" />
     <FigureHead
       index="01"
       title="Cómo puedo ayudarte"
@@ -35,7 +39,8 @@ const featured = getFeaturedProjects().slice(0, 3);
     </p>
   </section>
 
-  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
+  <section class="relative mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
+    <Scene fig="02" />
     <FigureHead
       index="02"
       title="Casos reales"
@@ -48,9 +53,21 @@ const featured = getFeaturedProjects().slice(0, 3);
     </div>
   </section>
 
-  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 text-center cv-auto" data-reveal>
+  <section class="relative mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
+    <Scene fig="03" />
     <FigureHead
       index="03"
+      title="Ejes de trabajo"
+      description="Tres ejes sostienen cada entrega: claridad, velocidad, y accesibilidad con privacidad."
+    />
+    <div class="mt-6 grid md:grid-cols-3 gap-6">
+      {ejes.map((e) => <AxisCard eje={e} />)}
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 text-center cv-auto" data-reveal>
+    <FigureHead
+      index="04"
       align="center"
       title="¿Encaja con lo que buscas?"
       description="Respuesta directa. Si no encajo, te lo digo en la primera conversación."
