@@ -279,3 +279,35 @@ button {
     transition: none;
   }
 }
+
+/* Slider de servicios (ADR-0008): las diapositivas comparten la misma celda
+   de rejilla para que el panel conserve la altura máxima sin saltos; las
+   inactivas se ocultan visualmente y el JS les aplica `inert`. Sin JS se
+   muestran todas apiladas como lista. */
+.bp-slide-hidden {
+  visibility: hidden;
+}
+
+/* Titular hero con profundidad (cianotipo): sombra por capas para relieve
+   y contorno de boceto en la segunda cláusula. Contraste heredado de los
+   pares validados en scripts/check-contrast.mjs. */
+.bp-h1 {
+  text-shadow:
+    0 1px 0 rgb(255 255 255 / 0.22),
+    0 3px 0 rgb(3 17 38 / 0.6),
+    0 14px 32px rgb(1 8 20 / 0.5);
+}
+.bp-h1-draft {
+  color: transparent;
+  text-shadow: none;
+}
+@supports (-webkit-text-stroke: 1px white) {
+  .bp-h1-draft {
+    -webkit-text-stroke: 1.5px var(--fg);
+  }
+}
+@supports not (-webkit-text-stroke: 1px white) {
+  .bp-h1-draft {
+    color: var(--muted);
+  }
+}

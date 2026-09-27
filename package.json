@@ -20,7 +20,8 @@
     "check:contrast": "node scripts/check-contrast.mjs",
     "smoke": "bash scripts/smoke.sh",
     "test:e2e": "playwright test",
-    "lhci": "lhci autorun --config=./lighthouserc.json"
+    "lhci": "lhci autorun --config=./lighthouserc.json",
+    "prepare": "husky"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
@@ -58,6 +59,8 @@
     "conventional-changelog-conventionalcommits": "^8.0.0",
     "eslint": "^10.10.0",
     "eslint-plugin-astro": "^3.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
     "semantic-release": "^25.0.9",
