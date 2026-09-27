@@ -13,12 +13,8 @@ const Heading = headingLevel;
 
 <a
   href={`/proyectos/${project.slug}`}
-  class="relative border border-border rounded-none overflow-hidden hover:border-primarySoft transition bg-card group flex flex-col focus-ring"
+  class="border border-border rounded-lg overflow-hidden hover:border-primarySoft transition bg-card group flex flex-col focus-ring"
 >
-  <span class="bp-tick bp-tick-tl" aria-hidden="true"></span>
-  <span class="bp-tick bp-tick-tr" aria-hidden="true"></span>
-  <span class="bp-tick bp-tick-bl" aria-hidden="true"></span>
-  <span class="bp-tick bp-tick-br" aria-hidden="true"></span>
   <Image
     src={project.cover}
     alt={`Captura de ${project.title}`}
