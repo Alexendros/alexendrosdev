@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
+import FigureHead from '../components/FigureHead.astro';
+import Dimension from '../components/Dimension.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import { services } from '../content/services';
@@ -12,17 +14,18 @@ const featured = getFeaturedProjects().slice(0, 3);
 <Layout>
   <Hero />
 
-  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto">
-    <div class="flex justify-between items-end gap-4">
-      <h2 class="text-2xl font-bold">Cómo puedo ayudarte</h2>
-      <a href="/servicios" class="text-sm text-muted hover:text-fg focus-ring rounded shrink-0"
-        >Ver todo →</a
-      >
-    </div>
-    <p class="text-sm text-muted mt-2 max-w-2xl">
-      Cuatro formas de trabajar: web nueva o renovación, revisión con plan de mejora, plan digital
-      antes de invertir, o landing en 10 días.
-    </p>
+  <div class="mx-auto max-w-6xl px-6 pt-4 md:pt-6">
+    <Dimension label="PLANO Nº 01 — SERVICIOS · CASOS · CONTACTO" />
+  </div>
+
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
+    <FigureHead
+      index="01"
+      title="Cómo puedo ayudarte"
+      description="Cuatro formas de trabajar: web nueva o renovación, revisión con plan de mejora, plan digital antes de invertir, o landing en 10 días."
+      linkHref="/servicios"
+      linkText="Ver todo"
+    />
     <div class="mt-6 grid md:grid-cols-3 gap-6">
       {services.map((s) => <ServiceCard service={s} />)}
     </div>
@@ -32,26 +35,26 @@ const featured = getFeaturedProjects().slice(0, 3);
     </p>
   </section>
 
-  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto">
-    <div class="flex justify-between items-end gap-4">
-      <h2 class="text-2xl font-bold">Casos reales</h2>
-      <a href="/proyectos" class="text-sm text-muted hover:text-fg focus-ring rounded shrink-0"
-        >Ver todos →</a
-      >
-    </div>
-    <p class="text-sm text-muted mt-2 max-w-2xl">
-      En cada proyecto verás el problema, lo que se hizo y qué cambió.
-    </p>
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
+    <FigureHead
+      index="02"
+      title="Casos reales"
+      description="En cada proyecto verás el problema, lo que se hizo y qué cambió."
+      linkHref="/proyectos"
+      linkText="Ver todos"
+    />
     <div class="mt-6 grid md:grid-cols-2 gap-6 lg:grid-cols-3">
       {featured.map((p) => <ProjectCard project={p} />)}
     </div>
   </section>
 
-  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 text-center cv-auto">
-    <h2 class="text-3xl font-bold">¿Encaja con lo que buscas?</h2>
-    <p class="text-muted mt-2 max-w-2xl mx-auto">
-      Respuesta directa. Si no encajo, te lo digo en la primera conversación.
-    </p>
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 text-center cv-auto" data-reveal>
+    <FigureHead
+      index="03"
+      align="center"
+      title="¿Encaja con lo que buscas?"
+      description="Respuesta directa. Si no encajo, te lo digo en la primera conversación."
+    />
     <div class="mt-6">
       <a href="/contacto" class="bg-primary text-bg px-6 py-3 rounded-full font-medium focus-ring"
         >Cuéntame qué necesitas</a

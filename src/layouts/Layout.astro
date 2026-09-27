@@ -49,6 +49,9 @@ const ogImage = new URL('/og/default.png', site.url).href;
     </main>
     <Footer />
     <LandingBanner pathname={Astro.url.pathname} />
+    <script>
+      import '../scripts/reveal.ts';
+    </script>
     <Analytics />
     <SpeedInsights />
     <script

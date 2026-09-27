@@ -37,6 +37,21 @@ pre,
   content-visibility: auto;
   contain-intrinsic-size: auto 480px;
 }
+
+/* Aparición al hacer scroll (Blueprint Lab Fase 1, EF-07).
+   Solo se oculta el contenido cuando el JS confirma observer activo
+   (clase `reveal-enabled`): sin JS el contenido queda visible. */
+.reveal-enabled [data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 400ms ease-out,
+    transform 400ms ease-out;
+}
+.reveal-enabled [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
 .sr-only {
   position: absolute;
   width: 1px;
