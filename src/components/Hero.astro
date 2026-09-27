@@ -1,8 +1,11 @@
 ---
-
+import BlueprintMotif from './BlueprintMotif.astro';
 ---
 
-<section class="mx-auto max-w-3xl px-6 py-16 md:py-24">
+<section class="relative mx-auto max-w-3xl px-6 py-16 md:py-24 overflow-hidden">
+  <BlueprintMotif
+    class="pointer-events-none absolute -right-16 top-0 h-full w-auto hidden md:block"
+  />
   <div
     class="inline-flex items-center gap-2 text-xs font-mono border border-border rounded-full px-3 py-1 text-muted"
   >

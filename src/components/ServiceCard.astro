@@ -7,9 +7,16 @@ const { service } = Astro.props;
 
 <a
   href={`/servicios/${service.slug}`}
-  class="group border border-border rounded-2xl p-6 hover:border-primarySoft transition bg-card flex flex-col focus-ring"
+  class="group relative border border-border rounded-none p-6 hover:border-primarySoft transition bg-card flex flex-col focus-ring"
 >
-  <h2 class="font-bold text-lg leading-tight group-hover:text-primary transition">
+  <span class="bp-tick bp-tick-tl" aria-hidden="true"></span>
+  <span class="bp-tick bp-tick-tr" aria-hidden="true"></span>
+  <span class="bp-tick bp-tick-bl" aria-hidden="true"></span>
+  <span class="bp-tick bp-tick-br" aria-hidden="true"></span>
+  <p class="font-mono text-[11px] tracking-[0.2em] text-muted">
+    SERVICIO · {service.slug.toUpperCase()}
+  </p>
+  <h2 class="font-bold text-lg leading-tight mt-1 group-hover:text-primary transition">
     {service.title}
   </h2>
   <p class="mt-3 text-sm text-muted">{service.short}</p>

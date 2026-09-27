@@ -23,11 +23,30 @@
      oscuro sobre botones ámbar (antes se usaba --bg para eso). */
   --bp-bg: oklch(0.35 0.12 260);
   --bp-fg: oklch(0.97 0.01 260);
+
+  /* Cianotipo a sangre (docs/architecture/decisions/0007-blueprint-cianotipo.md):
+     matices decorativos del fondo por capas. No son tokens de texto, solo
+     paradas del degradado y la retícula; el contraste de texto lo validan
+     --bg/--fg/--muted/--card en scripts/check-contrast.mjs. */
+  --bp-glow: oklch(0.47 0.13 264);
+  --bp-deep: oklch(0.3 0.1 264);
 }
 html {
   background: var(--bg);
   color: var(--fg);
   font-family: 'Inter Variable', system-ui, sans-serif;
+}
+body {
+  /* Fondo cianotipo por capas (de arriba a abajo): grano tenue, viñeta
+     luminosa central, retícula menor, retícula mayor y base --bg.
+     Sin background-attachment: fixed (jank en móvil). */
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 28%, var(--bp-glow) 0%, transparent 60%),
+    repeating-linear-gradient(0deg, oklch(1 0 0 / 0.12) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(90deg, oklch(1 0 0 / 0.12) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(0deg, oklch(1 0 0 / 0.15) 0 1px, transparent 1px 120px),
+    repeating-linear-gradient(90deg, oklch(1 0 0 / 0.15) 0 1px, transparent 1px 120px),
+    radial-gradient(ellipse 150% 120% at 50% 40%, transparent 55%, var(--bp-deep) 100%), var(--bg);
 }
 code,
 pre,
@@ -42,12 +61,28 @@ pre,
   outline-offset: 2px;
 }
 /* Germen del Blueprint Lab: retícula base. Las variantes por sección
-   (FigureHead/Dimension) llegan en fase 1. */
+   (FigureHead/Dimension) llegan en fase 1. El cianotipo añade la
+   retícula mayor (cada 120px, como el papel de plano). */
 .grid-pattern {
   background-image:
-    linear-gradient(oklch(1 0 0 / 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(1 0 0 / 0.1) 1px, transparent 1px);
+    linear-gradient(oklch(1 0 0 / 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(1 0 0 / 0.12) 1px, transparent 1px);
   background-size: 24px 24px;
+}
+.grid-pattern-lg {
+  background-image:
+    linear-gradient(oklch(1 0 0 / 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(1 0 0 / 0.15) 1px, transparent 1px);
+  background-size: 120px 120px;
+}
+/* Sombreado diagonal de plano (cianotipo): solo decorativo en
+   cabeceras de tarjeta y cajetines; exento de contraste WCAG. */
+.bp-hatch {
+  background-image: repeating-linear-gradient(
+    45deg,
+    oklch(1 0 0 / 0.14) 0 1px,
+    transparent 1px 6px
+  );
 }
 .cv-auto {
   content-visibility: auto;
@@ -190,18 +225,41 @@ html.banner-visible {
   letter-spacing: 0.2em;
   color: var(--muted);
 }
+/* Cajetín de plano (cianotipo): cartela inferior con título, figura y
+   escala. Solo decorativo (aria-hidden en el componente). */
+.bp-titleblock {
+  position: absolute;
+  left: 8px;
+  bottom: 10px;
+  display: flex;
+  align-items: stretch;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  background-color: color-mix(in srgb, var(--bg) 78%, transparent);
+}
+.bp-titleblock > span {
+  padding: 4px 8px;
+}
+.bp-titleblock > span + span {
+  border-left: 1px solid var(--border);
+}
+.bp-titleblock-head {
+  color: var(--fg);
+}
 
-/* Portadas con filtro + fallback (Fase 2): tono de papel ámbar tenue solo
-   con soporte de filtros CSS; sin soporte se muestra la imagen original. */
+/* Portadas cianotipo (docs/architecture/decisions/0007-blueprint-cianotipo.md):
+   duotono blanco-sobre-azul solo con soporte de filtros CSS; sin soporte
+   se muestra la imagen original. */
 .bp-duo {
   filter: none;
 }
-@supports (filter: sepia(0.3)) {
+@supports (filter: grayscale(1)) {
   .bp-duo {
-    filter: sepia(0.32) saturate(0.85) contrast(1.03);
+    filter: grayscale(1) contrast(1.12) brightness(0.62) sepia(1) hue-rotate(185deg) saturate(2.6);
   }
 }
-
 /* Micro-motion sobria (Blueprint Lab Fase 3): solo transiciones de color,
    sin desplazamientos; el scroll suave solo sin reduced-motion. */
 a,

@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PageHead from '../../components/PageHead.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { projects } from '../../content/projects';
 ---
@@ -9,10 +10,11 @@ import { projects } from '../../content/projects';
   description="Casos reales: el problema, lo que se hizo y qué cambió. Detalles técnicos disponibles en cada ficha."
 >
   <div class="mx-auto max-w-6xl px-6 py-16 md:py-24">
-    <h1 class="text-4xl font-bold max-w-3xl">Casos reales</h1>
-    <p class="text-muted mt-3 max-w-2xl">
-      En cada proyecto verás el punto de partida, lo que se hizo y qué cambió.
-    </p>
+    <PageHead
+      kicker="ÍNDICE · CASOS"
+      title="Casos reales"
+      description="En cada proyecto verás el punto de partida, lo que se hizo y qué cambió."
+    />
     <div class="mt-8 grid md:grid-cols-2 gap-6 lg:grid-cols-3">
       {projects.map((p) => <ProjectCard project={p} />)}
     </div>
