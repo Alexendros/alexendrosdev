@@ -3,7 +3,6 @@ import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import FigureHead from '../components/FigureHead.astro';
 import Dimension from '../components/Dimension.astro';
-import Scene from '../components/Scene.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import AxisCard from '../components/AxisCard.astro';
@@ -21,8 +20,7 @@ const featured = getFeaturedProjects().slice(0, 3);
     <Dimension label="Servicios · Casos · Ejes · Contacto" />
   </div>
 
-  <section class="relative mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
-    <Scene />
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
     <FigureHead
       index="01"
       title="Cómo puedo ayudarte"
@@ -31,7 +29,7 @@ const featured = getFeaturedProjects().slice(0, 3);
       linkText="Ver todo"
     />
     <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-services-grid>
-      {services.map((s) => <ServiceCard service={s} />)}
+      {services.map((s) => <ServiceCard service={s} headingLevel="h3" />)}
     </div>
     <p class="mt-8 text-sm text-muted max-w-2xl">
       Proceso claro, presupuesto cerrado y entregas definidas.
@@ -39,8 +37,7 @@ const featured = getFeaturedProjects().slice(0, 3);
     </p>
   </section>
 
-  <section class="relative mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
-    <Scene />
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
     <FigureHead
       index="02"
       title="Casos reales"
@@ -49,12 +46,11 @@ const featured = getFeaturedProjects().slice(0, 3);
       linkText="Ver todos"
     />
     <div class="mt-6 grid md:grid-cols-2 gap-6 lg:grid-cols-3">
-      {featured.map((p) => <ProjectCard project={p} />)}
+      {featured.map((p) => <ProjectCard project={p} headingLevel="h3" />)}
     </div>
   </section>
 
-  <section class="relative mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
-    <Scene />
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
     <FigureHead
       index="03"
       title="Ejes de trabajo"

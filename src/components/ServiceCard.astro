@@ -1,8 +1,11 @@
 ---
 interface Props {
   service: import('../content/services').Service;
+  /** h2 en indices (bajo h1), h3 en home (bajo h2 de seccion) */
+  headingLevel?: 'h2' | 'h3';
 }
-const { service } = Astro.props;
+const { service, headingLevel = 'h2' } = Astro.props;
+const Heading = headingLevel;
 ---
 
 <a
@@ -13,12 +16,9 @@ const { service } = Astro.props;
   <span class="bp-tick bp-tick-tr" aria-hidden="true"></span>
   <span class="bp-tick bp-tick-bl" aria-hidden="true"></span>
   <span class="bp-tick bp-tick-br" aria-hidden="true"></span>
-  <p class="font-mono text-xs tracking-[0.1em] text-muted">
-    SERVICIO · {service.slug.toUpperCase()}
-  </p>
-  <h2 class="font-bold text-lg leading-tight mt-1 group-hover:text-primary transition">
+  <Heading class="font-bold text-lg leading-tight mt-1 group-hover:text-primary transition">
     {service.title}
-  </h2>
+  </Heading>
   <p class="mt-3 text-sm text-muted">{service.short}</p>
   <p class="mt-4 text-sm text-muted">{service.pricingFrom}</p>
   <div class="mt-auto pt-4 text-sm font-medium">Ver qué incluye →</div>
