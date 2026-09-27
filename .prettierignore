@@ -5,6 +5,7 @@ node_modules
 pnpm-lock.yaml
 playwright-report
 test-results
+.playwright-mcp/
 .lighthouseci
 public/og
 *.png

@@ -18,6 +18,7 @@ dist/
 coverage/
 playwright-report/
 test-results/
+.playwright-mcp/
 blob-report/
 playwright/.cache/
 .playwright/
