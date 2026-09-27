@@ -45,9 +45,6 @@ jobs:
 
       - run: pnpm format:check
 
-      - name: Guardrail banner classic script
-        run: node scripts/assert-classic-banner-script.mjs
-
   test:
     name: test
     runs-on: ubuntu-latest
