@@ -288,23 +288,14 @@ button {
   visibility: hidden;
 }
 
-/* Titular hero con profundidad (cianotipo): sombra por capas para relieve,
-   sello ámbar en la promesa y contorno de boceto en la segunda cláusula.
-   Tinta sobre ámbar (9.00) y contorno blanco sobre fondo: contraste
-   heredado de los pares validados en scripts/check-contrast.mjs. */
+/* Titular hero con profundidad (cianotipo): sombra por capas para relieve
+   y contorno de boceto en la segunda cláusula. Contraste heredado de los
+   pares validados en scripts/check-contrast.mjs. */
 .bp-h1 {
   text-shadow:
     0 1px 0 rgb(255 255 255 / 0.22),
     0 3px 0 rgb(3 17 38 / 0.6),
     0 14px 32px rgb(1 8 20 / 0.5);
-}
-.bp-marker {
-  background-color: var(--primary);
-  color: var(--ink);
-  padding: 0 0.12em;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-  text-shadow: none;
 }
 .bp-h1-draft {
   color: transparent;
