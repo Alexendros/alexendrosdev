@@ -5,8 +5,12 @@ interface Props {
 const { pathname } = Astro.props;
 
 const EXCLUDED_PATHS = ['/servicios/landing-10-dias', '/contacto', '/contacto/', '/gracias'];
+const currentPath = Astro.url.pathname || pathname;
 
-const shouldShow = !EXCLUDED_PATHS.some((p) => pathname === p || pathname.startsWith(p + '/'));
+const shouldShow =
+  currentPath !== '/proyectos' &&
+  !currentPath.startsWith('/proyectos/') &&
+  !EXCLUDED_PATHS.some((p) => currentPath === p || currentPath.startsWith(p + '/'));
 const CTA_URL = '/contacto?subject=Landing%20en%2010%20d%C3%ADas';
 ---
 
@@ -19,12 +23,10 @@ const CTA_URL = '/contacto?subject=Landing%20en%2010%20d%C3%ADas';
       aria-label="Oferta Landing en 10 días"
       data-va-track="banner_landing10"
     >
-      <div class="bp-hatch h-1 w-full opacity-60" aria-hidden="true" />
+      <div class="h-1 w-full opacity-60" aria-hidden="true" />
       <div class="mx-auto max-w-6xl px-6 py-3 flex flex-row items-center justify-between gap-3">
         <div class="flex flex-col gap-0.5 text-sm min-w-0">
-          <p class="font-mono text-[10px] tracking-[0.25em] text-primary">
-            OFERTA · LANDING EN 10 DÍAS
-          </p>
+          <p class="font-mono text-xs tracking-[0.1em] text-primary">OFERTA · LANDING EN 10 DÍAS</p>
           <p class="truncate">
             <strong class="font-bold">A/B + leads</strong>
             <span class="hidden sm:inline text-muted"> · Desde 990 € · 10 días laborables</span>
@@ -70,4 +72,107 @@ const CTA_URL = '/contacto?subject=Landing%20en%2010%20d%C3%ADas';
   )
 }
 
-<script is:inline src="/scripts/landing-banner.js"></script>
+<script is:inline>
+  (function () {
+    const STORAGE_KEY = 'alexendros.banner.landing-10-dias.v1';
+    const THRESHOLD = 300;
+    let banner = null;
+    let dismissBtn = null;
+    let ctaBtn = null;
+    const htmlEl = document.documentElement;
+    let shown = false;
+    let dismissed = false;
+    let ticking = false;
+    function getVa() {
+      const va = window.va;
+      return va && typeof va.track === 'function' ? va : null;
+    }
+    function isDismissed() {
+      try {
+        return localStorage.getItem(STORAGE_KEY) === '1';
+      } catch {
+        return false;
+      }
+    }
+    function setDismissed() {
+      try {
+        localStorage.setItem(STORAGE_KEY, '1');
+      } catch {}
+    }
+    function updateBodyPadding() {
+      if (!banner) return;
+      if (htmlEl.classList.contains('banner-visible')) {
+        htmlEl.style.setProperty('--banner-height', banner.offsetHeight + 'px');
+      } else {
+        htmlEl.style.removeProperty('--banner-height');
+      }
+    }
+    function detachScroll() {
+      window.removeEventListener('scroll', onScroll);
+    }
+    function showBanner() {
+      if (shown || dismissed || isDismissed()) return;
+      shown = true;
+      if (banner) {
+        banner.classList.remove('hidden');
+        banner.classList.add('visible');
+      }
+      htmlEl.classList.add('banner-visible');
+      updateBodyPadding();
+      const va = getVa();
+      if (va) va.track('banner_landing10_impression', {});
+    }
+    function hideBanner() {
+      dismissed = true;
+      detachScroll();
+      if (banner) {
+        banner.classList.add('hidden');
+        banner.classList.remove('visible');
+      }
+      htmlEl.classList.remove('banner-visible');
+      updateBodyPadding();
+      setDismissed();
+      const va = getVa();
+      if (va) va.track('banner_landing10_dismiss', {});
+    }
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        ticking = false;
+        if (window.scrollY >= THRESHOLD) {
+          detachScroll();
+          showBanner();
+        }
+      });
+    }
+    function init() {
+      banner = document.getElementById('landing-banner');
+      if (!banner) return;
+      if (isDismissed()) return;
+      dismissBtn = document.getElementById('landing-banner-dismiss');
+      ctaBtn = document.getElementById('landing-banner-cta');
+      if (ctaBtn) {
+        ctaBtn.addEventListener('click', function () {
+          const va = getVa();
+          if (va) va.track('banner_landing10_cta_click', {});
+        });
+      }
+      if (dismissBtn) dismissBtn.addEventListener('click', hideBanner);
+      window.addEventListener('resize', updateBodyPadding);
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        banner.classList.add('reduce-motion');
+      }
+      if (window.scrollY >= THRESHOLD) {
+        showBanner();
+      } else {
+        window.addEventListener('scroll', onScroll, { passive: true });
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>
