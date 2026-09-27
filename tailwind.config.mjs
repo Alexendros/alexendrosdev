@@ -3,13 +3,19 @@ export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {
+      // Fuente única de verdad: :root en src/styles/global.css.
+      // No duplicar valores literales aquí; los translúcidos son tokens
+      // propios (--primary-soft/--primary-ghost) porque Tailwind v3 no
+      // aplica /<alpha> sobre var().
       colors: {
-        bg: 'oklch(0.14 0.01 240)',
-        fg: 'oklch(0.96 0.01 80)',
-        primary: 'oklch(0.75 0.18 95)',
-        muted: 'oklch(0.72 0.02 240)',
-        border: 'oklch(0.25 0.02 240)',
-        card: 'oklch(0.18 0.015 240)'
+        bg: 'var(--bg)',
+        fg: 'var(--fg)',
+        primary: 'var(--primary)',
+        primarySoft: 'var(--primary-soft)',
+        primaryGhost: 'var(--primary-ghost)',
+        muted: 'var(--muted)',
+        border: 'var(--border)',
+        card: 'var(--card)'
       },
       fontFamily: {
         sans: ['Inter Variable', 'system-ui', 'sans-serif'],
