@@ -4,7 +4,7 @@ import Hero from '../components/Hero.astro';
 import FigureHead from '../components/FigureHead.astro';
 import Dimension from '../components/Dimension.astro';
 import Scene from '../components/Scene.astro';
-import ServiceCard from '../components/ServiceCard.astro';
+import ServiceSlider from '../components/ServiceSlider.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import AxisCard from '../components/AxisCard.astro';
 import { services } from '../content/services';
@@ -30,8 +30,8 @@ const featured = getFeaturedProjects().slice(0, 3);
       linkHref="/servicios"
       linkText="Ver todo"
     />
-    <div class="mt-6 grid md:grid-cols-3 gap-6">
-      {services.map((s) => <ServiceCard service={s} />)}
+    <div class="mt-6">
+      <ServiceSlider services={services} />
     </div>
     <p class="mt-8 text-sm text-muted max-w-2xl">
       Proceso claro, presupuesto cerrado y entregas definidas.
@@ -73,7 +73,7 @@ const featured = getFeaturedProjects().slice(0, 3);
       description="Respuesta directa. Si no encajo, te lo digo en la primera conversación."
     />
     <div class="mt-6">
-      <a href="/contacto" class="bg-primary text-ink px-6 py-3 rounded-full font-medium focus-ring"
+      <a href="/contacto" class="bg-primary text-ink px-6 py-3 rounded-none font-medium focus-ring"
         >Cuéntame qué necesitas</a
       >
     </div>

@@ -257,8 +257,7 @@ html.banner-visible {
 }
 @supports (filter: grayscale(1)) {
   .bp-duo {
-    filter: grayscale(1) contrast(1.12) brightness(0.62) sepia(1) hue-rotate(185deg)
-      saturate(2.6);
+    filter: grayscale(1) contrast(1.12) brightness(0.62) sepia(1) hue-rotate(185deg) saturate(2.6);
   }
 }
 /* Micro-motion sobria (Blueprint Lab Fase 3): solo transiciones de color,
@@ -279,4 +278,12 @@ button {
   .reveal-enabled [data-reveal] {
     transition: none;
   }
+}
+
+/* Slider de servicios (ADR-0008): las diapositivas comparten la misma celda
+   de rejilla para que el panel conserve la altura máxima sin saltos; las
+   inactivas se ocultan visualmente y el JS les aplica `inert`. Sin JS se
+   muestran todas apiladas como lista. */
+.bp-slide-hidden {
+  visibility: hidden;
 }
