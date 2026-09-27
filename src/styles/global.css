@@ -185,3 +185,23 @@ html.banner-visible {
     filter: sepia(0.32) saturate(0.85) contrast(1.03);
   }
 }
+
+/* Micro-motion sobria (Blueprint Lab Fase 3): solo transiciones de color,
+   sin desplazamientos; el scroll suave solo sin reduced-motion. */
+a,
+button {
+  transition:
+    color 150ms ease-out,
+    background-color 150ms ease-out,
+    border-color 150ms ease-out;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-enabled [data-reveal] {
+    transition: none;
+  }
+}
