@@ -18,13 +18,14 @@ const { project } = Astro.props;
     <p class="mt-4 font-mono text-xs tracking-[0.2em] text-primary">CASO · {project.slug}</p>
     <h1 class="mt-3 text-4xl font-bold">{project.title}</h1>
     <p class="mt-3 text-muted">{project.summary}</p>
+    <div class="mt-4 h-px bg-border" aria-hidden="true"></div>
     <figure class="mt-6">
       <Image
         src={project.cover}
         alt=""
         widths={[800, 1200]}
         sizes="(max-width: 768px) 100vw, 800px"
-        class="w-full rounded-2xl border border-border bp-duo"
+        class="w-full rounded-none border border-border bp-duo"
         loading="eager"
       />
       <figcaption class="mt-2 font-mono text-[11px] tracking-[0.2em] text-muted">
@@ -64,13 +65,13 @@ const { project } = Astro.props;
         </div>
       </div>
       <div class="space-y-6 cv-auto">
-        <div class="border border-border rounded-2xl p-5 bg-card">
+        <div class="border border-border rounded-none p-5 bg-card">
           <h2 class="font-bold text-sm">Aspectos clave</h2>
           <ul class="mt-2 list-disc pl-5 text-xs text-muted space-y-1">
             {project.highlights.map((h) => <li>{h}</li>)}
           </ul>
         </div>
-        <details class="border border-border rounded-2xl p-5 bg-card">
+        <details class="border border-border rounded-none p-5 bg-card">
           <summary class="font-bold text-sm cursor-pointer focus-ring rounded"
             >Detalles técnicos</summary
           >
@@ -78,7 +79,7 @@ const { project } = Astro.props;
             {project.technologies.map((t) => <p>{t}</p>)}
           </div>
         </details>
-        <div class="border border-border rounded-2xl p-5 bg-card">
+        <div class="border border-border rounded-none p-5 bg-card">
           <h2 class="font-bold text-sm">Enlaces</h2>
           <div class="mt-2 flex gap-3 text-xs">
             {

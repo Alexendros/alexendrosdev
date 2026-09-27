@@ -95,11 +95,28 @@ for (const [name, fgName, bgName, min] of pairs) {
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}: ${r.toFixed(2)}:1 (mínimo ${min}:1)`);
 }
 
-// Par informativo: reserva Blueprint Lab (sin umbral bloqueante hasta fase 1).
+// Par informativo: reserva Blueprint Lab (tema activo desde
+// docs/architecture/decisions/0006-blueprint-tema-azul.md).
 if (vars['bp-bg'] && vars['bp-fg']) {
   const r = ratio(composite(vars['bp-fg'], [0, 0, 0]), composite(vars['bp-bg'], [0, 0, 0]));
   console.log(`INFO  bp-fg/bp-bg (reserva Blueprint Lab): ${r.toFixed(2)}:1`);
 }
+
+// Guardrail cianotipo (docs/architecture/decisions/0007-blueprint-cianotipo.md):
+// los matices del fondo por capas deben existir en :root.
+for (const v of ['bp-glow', 'bp-deep']) {
+  if (!vars[v]) {
+    failed += 1;
+    console.log(`FAIL  falta --${v} en :root (fondo cianotipo por capas)`);
+  } else {
+    console.log(`PASS  --${v} definido en :root (fondo cianotipo por capas)`);
+  }
+}
+
+// Nota: retícula, sombreado .bp-hatch, motivo esquemático y cajetín son
+// decorativos (aria-hidden) y están exentos de contraste WCAG; el texto del
+// cajetín usa --fg/--muted sobre mezcla al 78% de --bg (pares §3.1 cubren
+// el caso estricto sobre --bg puro).
 
 // Guardrail de fuente única: tailwind no debe contener literales oklch.
 const literals = (tailwind.match(/oklch\(/g) ?? []).length;

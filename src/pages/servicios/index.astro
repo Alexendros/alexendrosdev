@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PageHead from '../../components/PageHead.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
 import { services } from '../../content/services';
 ---
@@ -9,11 +10,11 @@ import { services } from '../../content/services';
   description="Web nueva o renovación, revisión y plan de mejora, y plan digital con automatización. Alcance, plazos y precios desde claros."
 >
   <div class="mx-auto max-w-6xl px-6 py-16 md:py-24">
-    <h1 class="text-4xl font-bold max-w-3xl">Cómo puedo ayudarte</h1>
-    <p class="text-muted mt-3 max-w-2xl">
-      Cuatro formas de trabajar: web nueva o renovada, revisión con plan, plan digital antes de
-      invertir, o landing en 10 días.
-    </p>
+    <PageHead
+      kicker="ÍNDICE · SERVICIOS"
+      title="Cómo puedo ayudarte"
+      description="Cuatro formas de trabajar: web nueva o renovada, revisión con plan, plan digital antes de invertir, o landing en 10 días."
+    />
     <div class="mt-8 grid md:grid-cols-3 gap-6">
       {services.map((s) => <ServiceCard service={s} />)}
     </div>
