@@ -1,15 +1,32 @@
 ---
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import { profile } from '../content/profile';
+import headshot from '../assets/headshot-alexendros.webp';
 ---
 
 <Layout title={profile.pageTitle} description={profile.pageDescription}>
   <div class="mx-auto max-w-4xl px-6 py-16 md:py-24">
-    <p class="font-mono text-xs tracking-[0.1em] text-muted">SOBRE MÍ</p>
-    <h1 class="mt-2 text-4xl font-bold max-w-3xl">{profile.headline}</h1>
-    <p class="mt-2 text-lg text-muted">{profile.role}</p>
-    <p class="mt-4 text-muted max-w-2xl">{profile.summary}</p>
-    <p class="mt-3 text-sm text-muted">{profile.metaLine}</p>
+    <div class="grid gap-8 md:grid-cols-[1fr_300px] md:items-start">
+      <div>
+        <p class="font-mono text-xs tracking-[0.1em] text-muted">SOBRE MÍ</p>
+        <h1 class="mt-2 text-4xl font-bold max-w-3xl">{profile.headline}</h1>
+        <p class="mt-2 text-lg text-muted">{profile.role}</p>
+        <p class="mt-4 text-muted max-w-2xl">{profile.summary}</p>
+        <p class="mt-3 text-sm text-muted">{profile.metaLine}</p>
+      </div>
+      <Image
+        src={headshot}
+        alt="Retrato de Alejandro, desarrollador web en Valencia"
+        widths={[360, 480, 640, 960]}
+        sizes="(min-width: 768px) 300px, calc(100vw - 3rem)"
+        width={1152}
+        height={1440}
+        loading="eager"
+        fetchpriority="high"
+        class="w-full max-w-sm rounded-lg"
+      />
+    </div>
 
     <h2 class="mt-10 text-xl font-bold">Cómo es trabajar conmigo</h2>
     <div class="mt-4 grid md:grid-cols-3 gap-4">
