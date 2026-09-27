@@ -257,8 +257,7 @@ html.banner-visible {
 }
 @supports (filter: grayscale(1)) {
   .bp-duo {
-    filter: grayscale(1) contrast(1.12) brightness(0.62) sepia(1) hue-rotate(185deg)
-      saturate(2.6);
+    filter: grayscale(1) contrast(1.12) brightness(0.62) sepia(1) hue-rotate(185deg) saturate(2.6);
   }
 }
 /* Micro-motion sobria (Blueprint Lab Fase 3): solo transiciones de color,
