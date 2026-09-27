@@ -12,8 +12,8 @@ test('home muestra las 4 ofertas en rejilla estática sin autoplay', async ({ pa
 test('navegación móvil abre/cierra con teclado y gestiona el foco', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 740 });
   await page.goto('/');
-  const menuButton = page.locator('#menu-button');
-  const mobileNav = page.locator('#mobile-nav');
+  const menuButton = page.locator('[data-menu-button]');
+  const mobileNav = page.locator('[data-mobile-nav]');
   await expect(menuButton).toBeVisible();
   await expect(mobileNav).toBeHidden();
 

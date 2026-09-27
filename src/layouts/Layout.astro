@@ -45,8 +45,13 @@ const ogImage = new URL('/og/default.png', site.url).href;
     <meta property="og:image:alt" content="Alexendros.dev — webs claras y útiles" />
   </head>
   <body class="bg-bg text-fg antialiased min-h-screen flex flex-col">
+    <a
+      href="#contenido"
+      class="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:top-2 focus-visible:left-2 focus-visible:z-[60] focus-visible:bg-primary focus-visible:text-ink focus-visible:px-4 focus-visible:py-2"
+      >Saltar al contenido</a
+    >
     <Header />
-    <main class="flex-1">
+    <main id="contenido" class="flex-1">
       <slot />
     </main>
     <Footer />

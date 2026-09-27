@@ -69,7 +69,7 @@ function ratio(a, b) {
 const vars = {};
 for (const m of css.matchAll(/--([\w-]+)\s*:\s*(oklch\([^)]+\))/g)) vars[m[1]] = parseOklch(m[2]);
 
-for (const v of ['bg', 'fg', 'primary', 'muted', 'border', 'card', 'ink']) {
+for (const v of ['bg', 'fg', 'primary', 'muted', 'border', 'card', 'ink', 'danger']) {
   if (!vars[v]) throw new Error(`Falta --${v} en :root`);
 }
 
@@ -81,7 +81,9 @@ const pairs = [
   ['ink/primary (texto de CTAs)', 'ink', 'primary', 4.5],
   ['primary/bg (acento sobre fondo)', 'primary', 'bg', 3.0],
   ['fg/card (texto en tarjetas)', 'fg', 'card', 4.5],
-  ['muted/card (secundario en tarjetas)', 'muted', 'card', 4.5]
+  ['muted/card (secundario en tarjetas)', 'muted', 'card', 4.5],
+  ['danger/card (errores en tarjetas)', 'danger', 'card', 4.5],
+  ['danger/bg (errores sobre fondo)', 'danger', 'bg', 4.5]
 ];
 
 let failed = 0;

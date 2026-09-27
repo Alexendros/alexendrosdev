@@ -15,7 +15,6 @@ const { project } = Astro.props;
     <div class="text-xs text-muted">
       <a href="/proyectos" class="hover:text-fg focus-ring rounded">← Todos los casos</a>
     </div>
-    <p class="mt-4 font-mono text-xs tracking-[0.1em] text-primary">CASO · {project.slug}</p>
     <h1 class="mt-3 text-4xl font-bold">{project.title}</h1>
     <p class="mt-3 text-muted">{project.summary}</p>
     <div class="mt-4 h-px bg-border" aria-hidden="true"></div>
@@ -40,7 +39,7 @@ const { project } = Astro.props;
     </div>
 
     <div class="mt-8" data-reveal>
-      <Dimension label="CASO · CONTEXTO — RETO — SOLUCIÓN" />
+      <Dimension label="Contexto — Reto — Solución" />
     </div>
 
     <div class="mt-10 grid md:grid-cols-[1.2fr_0.8fr] gap-10" data-reveal>

@@ -16,7 +16,8 @@ export default {
         muted: 'var(--muted)',
         border: 'var(--border)',
         card: 'var(--card)',
-        ink: 'var(--ink)'
+        ink: 'var(--ink)',
+        danger: 'var(--danger)'
       },
       fontFamily: {
         sans: ['Inter Variable', 'system-ui', 'sans-serif'],

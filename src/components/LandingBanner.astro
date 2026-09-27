@@ -22,7 +22,6 @@ const CTA_URL = '/contacto?subject=Landing%20en%2010%20d%C3%ADas';
       role="region"
       aria-label="Oferta Landing en 10 días"
     >
-      <div class="h-1 w-full opacity-60" aria-hidden="true" />
       <div class="mx-auto max-w-6xl px-6 py-3 flex flex-row items-center justify-between gap-3">
         <div class="flex flex-col gap-0.5 text-sm min-w-0">
           <p class="font-mono text-xs tracking-[0.1em] text-primary">OFERTA · LANDING EN 10 DÍAS</p>
@@ -35,7 +34,7 @@ const CTA_URL = '/contacto?subject=Landing%20en%2010%20d%C3%ADas';
           <a
             id="landing-banner-cta"
             href={CTA_URL}
-            class="relative bg-primary text-ink px-4 py-1.5 rounded-none text-sm font-medium text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-opacity hover:opacity-90"
+            class="relative bg-primary text-ink px-4 py-1.5 rounded-none text-sm font-medium text-center focus-ring transition-opacity hover:opacity-90"
           >
             <span class="bp-tick bp-tick-tl" aria-hidden="true" />
             <span class="bp-tick bp-tick-tr" aria-hidden="true" />
@@ -46,7 +45,7 @@ const CTA_URL = '/contacto?subject=Landing%20en%2010%20d%C3%ADas';
           <button
             id="landing-banner-dismiss"
             type="button"
-            class="text-muted hover:text-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary rounded-none p-1.5 transition-colors shrink-0"
+            class="text-muted hover:text-fg focus-ring rounded-none p-1.5 transition-colors shrink-0"
             aria-label="Cerrar banner"
           >
             <svg
