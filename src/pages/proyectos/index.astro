@@ -1,6 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import PageHead from '../../components/PageHead.astro';
+import Container from '../../components/Container.astro';
+import Grid from '../../components/Grid.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { projects } from '../../content/projects';
 ---
@@ -9,14 +11,14 @@ import { projects } from '../../content/projects';
   title="Casos — Alexendros"
   description="Casos reales: el problema, lo que se hizo y qué cambió. Detalles técnicos disponibles en cada ficha."
 >
-  <div class="mx-auto max-w-6xl px-6 py-16 md:py-24">
+  <Container class="py-16 md:py-24">
     <PageHead
       kicker="ÍNDICE · CASOS"
       title="Casos reales"
       description="En cada proyecto verás el punto de partida, lo que se hizo y qué cambió."
     />
-    <div class="mt-8 grid md:grid-cols-2 gap-6 lg:grid-cols-3">
+    <Grid gap="6" class="mt-8 md:grid-cols-2 lg:grid-cols-3">
       {projects.map((p) => <ProjectCard project={p} />)}
-    </div>
-  </div>
+    </Grid>
+  </Container>
 </Layout>

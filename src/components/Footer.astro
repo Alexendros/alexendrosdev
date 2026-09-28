@@ -1,5 +1,6 @@
 ---
 import { site } from '../content/site';
+import Link from './Link.astro';
 ---
 
 <footer class="border-t border-border mt-0 cv-auto">
@@ -11,19 +12,22 @@ import { site } from '../content/site';
         Webs claras y útiles para profesionales y pequeños negocios. Valencia — remoto.
       </p>
       <div class="mt-4 text-muted">
-        <a href={site.social.email} class="hover:text-fg focus-ring rounded">hola@alexendros.dev</a>
+        <Link href={site.social.email} variant="nav" class="hover:text-fg">hola@alexendros.dev</Link
+        >
         <div class="mt-2 flex gap-3">
-          <a
+          <Link
             href={site.social.github}
-            class="hover:text-fg focus-ring rounded"
+            variant="nav"
+            class="hover:text-fg"
             target="_blank"
-            rel="noopener noreferrer">GitHub</a
+            rel="noopener noreferrer">GitHub</Link
           >
-          <a
+          <Link
             href={site.social.linkedin}
-            class="hover:text-fg focus-ring rounded"
+            variant="nav"
+            class="hover:text-fg"
             target="_blank"
-            rel="noopener noreferrer">LinkedIn</a
+            rel="noopener noreferrer">LinkedIn</Link
           >
         </div>
         <div class="mt-4 text-xs">Sin cookies de seguimiento. Privacidad respetada.</div>
@@ -36,14 +40,14 @@ import { site } from '../content/site';
           {
             site.nav.map((i) => (
               <li>
-                <a href={i.href} class="hover:text-fg focus-ring rounded">
+                <Link href={i.href} variant="nav" class="hover:text-fg">
                   {i.label}
-                </a>
+                </Link>
               </li>
             ))
           }
           <li>
-            <a href="/contacto" class="hover:text-fg focus-ring rounded">Contacto</a>
+            <Link href="/contacto" variant="nav" class="hover:text-fg">Contacto</Link>
           </li>
         </ul>
       </div>
@@ -53,9 +57,9 @@ import { site } from '../content/site';
           {
             site.footerNav.map((i) => (
               <li>
-                <a href={i.href} class="hover:text-fg focus-ring rounded">
+                <Link href={i.href} variant="nav" class="hover:text-fg">
                   {i.label}
-                </a>
+                </Link>
               </li>
             ))
           }

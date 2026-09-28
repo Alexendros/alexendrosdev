@@ -1,6 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import PageHead from '../../components/PageHead.astro';
+import Container from '../../components/Container.astro';
+import Grid from '../../components/Grid.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
 import { services } from '../../content/services';
 ---
@@ -9,14 +11,14 @@ import { services } from '../../content/services';
   title="Cómo puedo ayudarte — Alexendros"
   description="Web nueva o renovación, revisión y plan de mejora, y plan digital con automatización. Alcance, plazos y precios desde claros."
 >
-  <div class="mx-auto max-w-6xl px-6 py-16 md:py-24">
+  <Container class="py-16 md:py-24">
     <PageHead
       kicker="ÍNDICE · SERVICIOS"
       title="Cómo puedo ayudarte"
       description="Cuatro formas de trabajar: web nueva o renovada, revisión con plan, plan digital antes de invertir, o landing en 10 días."
     />
-    <div class="mt-8 grid md:grid-cols-3 gap-6">
+    <Grid gap="6" class="mt-8 md:grid-cols-3">
       {services.map((s) => <ServiceCard service={s} />)}
-    </div>
-  </div>
+    </Grid>
+  </Container>
 </Layout>

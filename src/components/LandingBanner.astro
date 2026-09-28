@@ -2,6 +2,7 @@
 interface Props {
   pathname: string;
 }
+import Button from './Button.astro';
 const { pathname } = Astro.props;
 
 const EXCLUDED_PATHS = ['/servicios/landing-10-dias', '/contacto', '/contacto/', '/gracias'];
@@ -31,13 +32,9 @@ const CTA_URL = '/contacto?subject=Landing%20en%2010%20d%C3%ADas';
           </p>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <a
-            id="landing-banner-cta"
-            href={CTA_URL}
-            class="bg-primary text-ink px-4 py-1.5 rounded-lg text-sm font-medium text-center focus-ring transition-opacity hover:opacity-90"
-          >
+          <Button href={CTA_URL} size="sm" id="landing-banner-cta">
             Quiero mi landing
-          </a>
+          </Button>
           <button
             id="landing-banner-dismiss"
             type="button"

@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PageHead from '../components/PageHead.astro';
+import Container from '../components/Container.astro';
+import Link from '../components/Link.astro';
 import BookingOptions from '../components/BookingOptions.astro';
 import ContactForm from '../components/ContactForm';
 import { contact } from '../content/contact';
@@ -10,7 +12,7 @@ import { contact } from '../content/contact';
   title="Contacto — Alexendros"
   description="Cuéntame qué necesitas. Te responderé con una primera valoración y los siguientes pasos."
 >
-  <div class="mx-auto max-w-4xl px-6 py-16 md:py-24">
+  <Container size="narrow" class="py-16 md:py-24">
     <PageHead
       kicker="CONTACTO"
       title="Cuéntame qué necesitas"
@@ -42,13 +44,14 @@ import { contact } from '../content/contact';
             {
               contact.channels.map((c) => (
                 <li>
-                  <a
+                  <Link
                     href={c.href}
-                    class="hover:text-primary focus-ring rounded"
+                    variant="nav"
+                    class="hover:text-primary"
                     {...(c.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   >
                     {c.label}
-                  </a>
+                  </Link>
                   {c.external ? <span aria-hidden="true"> ↗</span> : ''}
                 </li>
               ))
@@ -66,10 +69,9 @@ import { contact } from '../content/contact';
         </div>
         <div class="border border-dashed border-border rounded-lg p-4 text-sm text-muted">
           Usaré tus datos solo para responder a esta consulta. Puedes consultar la{' '}
-          <a href="/privacidad" class="underline focus-ring rounded">política de privacidad</a> antes
-          de enviar.
+          <Link href="/privacidad" variant="inline">política de privacidad</Link> antes de enviar.
         </div>
       </div>
     </div>
-  </div>
+  </Container>
 </Layout>

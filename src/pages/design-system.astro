@@ -1,0 +1,332 @@
+---
+// Vitrina del design system (ADR 0011). Contenido generado en build a
+// partir de los tokens reales de src/styles/global.css (?raw) y de la
+// misma librería de contraste que valida scripts/check-contrast.mjs.
+// noindex: no aparece en sitemap ni en navegación.
+import Layout from '../layouts/Layout.astro';
+import PageHead from '../components/PageHead.astro';
+import Container from '../components/Container.astro';
+import Stack from '../components/Stack.astro';
+import Grid from '../components/Grid.astro';
+import Button from '../components/Button.astro';
+import Link from '../components/Link.astro';
+import Badge from '../components/Badge.astro';
+import Eyebrow from '../components/Eyebrow.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import AxisCard from '../components/AxisCard.astro';
+import { services } from '../content/services';
+import { ejes } from '../content/ejes';
+import css from '../styles/global.css?raw';
+import {
+  extractThemes,
+  resolveValue,
+  toRgb,
+  ratio,
+  rgbToHex
+} from '../../scripts/contrast-lib.mjs';
+
+const { light } = extractThemes(css);
+const tokens = light as Record<string, string>;
+const raw = (name: string) => (tokens[name] ?? '').replace(/\s+/g, ' ');
+const resolved = (name: string) => toRgb(resolveValue(raw(name), tokens));
+
+const PRIMITIVES = [
+  'blue-950',
+  'blue-900',
+  'blue-700',
+  'blue-500',
+  'blue-100',
+  'ink-900',
+  'ink-700',
+  'ink-500',
+  'paper-0',
+  'paper-50',
+  'line',
+  'ok',
+  'warn',
+  'err'
+];
+const SEMANTICS = [
+  ['bg', 'Fondo de página'],
+  ['bg-subtle', 'Fondo sutil / glow'],
+  ['fg', 'Texto principal'],
+  ['fg-muted', 'Texto secundario'],
+  ['brand', 'Marca (botones, acentos)'],
+  ['brand-hover', 'Marca en hover'],
+  ['brand-fg', 'Texto sobre marca'],
+  ['border', 'Bordes'],
+  ['card', 'Superficie de tarjeta'],
+  ['danger', 'Errores de formulario']
+] as const;
+
+const bgRgb = resolved('bg');
+const cardRgb = resolved('card');
+const ratioVs = (name: string, backdrop: number[]) =>
+  ratio(toRgb(resolveValue(raw(name), tokens)), backdrop);
+
+const STEPS = ['step--1', 'step-0', 'step-1', 'step-2', 'step-3', 'step-4'] as const;
+const SPACES = ['1', '2', '3', '4', '5', '6', '8', '10', '12', '16', '20', '24'] as const;
+const RADIUS = [
+  ['radius-sm', '--radius-sm'],
+  ['radius-md', '--radius-md'],
+  ['radius-lg', '--radius-lg']
+] as const;
+---
+
+<Layout
+  title="Design system — Alexendros"
+  description="Tokens, componentes y reglas del design system del sitio."
+  robots="noindex, nofollow"
+>
+  <Container class="py-16 md:py-24">
+    <PageHead
+      kicker="DESIGN SYSTEM"
+      title="Tokens y componentes"
+      description="Vitrina viva del design system: los valores se leen de src/styles/global.css en build y los ratios los calcula la misma librería que valida pnpm check:contrast. No indexable; no enlazada."
+    />
+
+    <Stack gap="16" class="mt-12">
+      <section aria-labelledby="ds-paleta">
+        <h2 id="ds-paleta" class="text-2xl font-bold">Paleta</h2>
+        <h3 class="mt-6 text-base font-bold">Primitivos</h3>
+        <Grid gap="4" class="mt-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+          {
+            PRIMITIVES.map((name) => (
+              <figure class="border border-border rounded-lg overflow-hidden bg-card">
+                <div class="h-14" style={`background: var(--${name})`} aria-hidden="true" />
+                <figcaption class="px-3 py-2 text-xs">
+                  <code>--{name}</code>
+                  <span class="block text-muted">{raw(name)}</span>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </Grid>
+
+        <h3 class="mt-8 text-base font-bold">Semánticos (los únicos que consumen componentes)</h3>
+        <div class="mt-3 overflow-x-auto">
+          <table class="w-full text-sm border border-border rounded-lg bg-card">
+            <thead>
+              <tr class="text-left text-xs text-muted border-b border-border">
+                <th class="px-3 py-2 font-medium">Token</th>
+                <th class="px-3 py-2 font-medium">Uso</th>
+                <th class="px-3 py-2 font-medium">Valor</th>
+                <th class="px-3 py-2 font-medium">vs --bg</th>
+                <th class="px-3 py-2 font-medium">vs --card</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                SEMANTICS.map(([name, uso]) => (
+                  <tr class="border-b border-border last:border-0">
+                    <td class="px-3 py-2">
+                      <span
+                        class="inline-block w-3.5 h-3.5 rounded-sm border border-border align-middle mr-2"
+                        style={`background: var(--${name})`}
+                        aria-hidden="true"
+                      />
+                      <code>--{name}</code>
+                    </td>
+                    <td class="px-3 py-2 text-muted">{uso}</td>
+                    <td class="px-3 py-2 text-muted">
+                      <code>{rgbToHex(resolved(name))}</code>
+                    </td>
+                    <td class="px-3 py-2">{ratioVs(name, bgRgb).toFixed(2)}:1</td>
+                    <td class="px-3 py-2">{ratioVs(name, cardRgb).toFixed(2)}:1</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-2 text-xs text-muted">
+          Validación completa de pares (fg/bg, brand-fg/brand, danger/card…) en ambos temas:
+          <code>pnpm check:contrast</code>.
+        </p>
+      </section>
+
+      <section aria-labelledby="ds-tipo">
+        <h2 id="ds-tipo" class="text-2xl font-bold">Tipografía fluida</h2>
+        <Stack gap="4" class="mt-4">
+          {
+            STEPS.map((name) => (
+              <div class="border-b border-border pb-2">
+                <p class="text-xs text-muted">
+                  <code>--{name}</code> · {raw(name)}
+                </p>
+                <p style={`font-size: var(--${name}); line-height: var(--leading-tight)`}>
+                  Webs claras y útiles, 0123
+                </p>
+              </div>
+            ))
+          }
+        </Stack>
+        <p class="mt-4 text-sm text-muted">
+          <code>--leading-tight</code>
+          {raw('leading-tight')} · <code>--leading-body</code>
+          {raw('leading-body')} · <code>--tracking-eyebrow</code>
+          {raw('tracking-eyebrow')}
+        </p>
+      </section>
+
+      <section aria-labelledby="ds-espaciado">
+        <h2 id="ds-espaciado" class="text-2xl font-bold">Espaciado, radios y sombras</h2>
+        <div class="mt-4 flex flex-wrap gap-x-6 gap-y-3">
+          {
+            SPACES.map((n) => (
+              <div class="flex items-center gap-2 text-xs text-muted">
+                <code>--space-{n}</code>
+                <span
+                  class="block h-3 bg-primary/60 rounded-sm"
+                  style={`width: var(--space-${n})`}
+                />
+              </div>
+            ))
+          }
+        </div>
+        <div class="mt-8 flex flex-wrap gap-6">
+          {
+            RADIUS.map(([label, token]) => (
+              <figure>
+                <div
+                  class="w-24 h-16 border border-border bg-card"
+                  style={`border-radius: var(${token})`}
+                />
+                <figcaption class="mt-1 text-xs text-muted">
+                  <code>{label}</code>
+                </figcaption>
+              </figure>
+            ))
+          }
+        </div>
+        <div class="mt-8 flex flex-wrap gap-6">
+          <figure>
+            <div class="w-40 h-16 border border-border bg-card" style="box-shadow: var(--shadow-1)">
+            </div>
+            <figcaption class="mt-1 text-xs text-muted">--shadow-1</figcaption>
+          </figure>
+          <figure>
+            <div class="w-40 h-16 border border-border bg-card" style="box-shadow: var(--shadow-2)">
+            </div>
+            <figcaption class="mt-1 text-xs text-muted">--shadow-2</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section aria-labelledby="ds-componentes">
+        <h2 id="ds-componentes" class="text-2xl font-bold">Componentes</h2>
+
+        <h3 class="mt-6 text-base font-bold">Button</h3>
+        <Stack gap="4" class="mt-3">
+          {
+            (['primary', 'secondary', 'ghost'] as const).map((variant) => (
+              <div class="flex flex-wrap items-center gap-4">
+                {(['sm', 'md', 'lg'] as const).map((size) => (
+                  <Button href="#ds-componentes" variant={variant} size={size}>
+                    {variant} · {size}
+                  </Button>
+                ))}
+              </div>
+            ))
+          }
+          <div class="flex flex-wrap items-center gap-4">
+            <Button variant="primary" disabled>Desactivado</Button>
+            <Button variant="primary" loading>Cargando</Button>
+            <Button href="#ds-componentes" variant="secondary" size="sm" disabled>
+              Enlace desactivado
+            </Button>
+          </div>
+        </Stack>
+
+        <h3 class="mt-8 text-base font-bold">Link</h3>
+        <Stack gap="3" class="mt-3">
+          <Link href="#ds-componentes" variant="inline">Inline: política de privacidad</Link>
+          <Link href="#ds-componentes" variant="nav" class="text-muted"
+            >Nav: Cómo puedo ayudarte</Link
+          >
+          <Link href="#ds-componentes" variant="nav" current class="text-muted">
+            Nav activo (aria-current="page")
+          </Link>
+          <Link href="#ds-componentes" variant="arrow" class="text-muted">Ver todo</Link>
+        </Stack>
+
+        <h3 class="mt-8 text-base font-bold">Badge y Eyebrow</h3>
+        <div class="mt-3 flex flex-wrap items-center gap-4">
+          <Badge>Disponible para nuevos proyectos</Badge>
+          <Eyebrow>FIG. 01 · DISEÑO WEB · VALENCIA</Eyebrow>
+        </div>
+
+        <h3 class="mt-8 text-base font-bold">Tarjetas</h3>
+        <Grid gap="6" class="mt-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ServiceCard service={services[0]} headingLevel="h3" />
+          <AxisCard eje={ejes[0]} />
+          <div class="border border-border rounded-lg p-6 bg-card">
+            <h3 class="font-bold text-lg">Card base</h3>
+            <p class="mt-2 text-sm text-muted">
+              Superficie <code>bg-card</code> con <code>border-border</code>: el patrón de tarjeta
+              del sistema.
+            </p>
+          </div>
+        </Grid>
+
+        <h3 class="mt-8 text-base font-bold">Primitivos de layout</h3>
+        <Stack gap="3" class="mt-3 text-sm text-muted">
+          <p>
+            <code>Container</code>: ancho <code>--container</code> (72rem) o <code
+              >--container-narrow</code
+            > (56rem) con gutter <code>--gutter</code>. Esta página vive dentro de uno.
+          </p>
+          <p>
+            <code>Stack</code>: columna con <code>gap: var(--space-*)</code> (esta columna usa space-16
+            entre secciones).
+          </p>
+          <p>
+            <code>Grid</code>: rejilla con gap de token; columnas por clases responsive (las
+            rejillas de tarjetas de arriba son Grid).
+          </p>
+        </Stack>
+      </section>
+
+      <section aria-labelledby="ds-motion">
+        <h2 id="ds-motion" class="text-2xl font-bold">Motion</h2>
+        <p class="mt-3 text-sm text-muted max-w-2xl">
+          Las animaciones reales llegan en Fase 3; aquí se demuestra el estado actual (pulso del
+          badge, spinner de Button, transición reveal) y el contrato de reduced-motion: con el
+          toggle se emula <code>prefers-reduced-motion</code> vía la clase
+          <code>.force-reduced-motion</code>, que las mismas reglas respetan.
+        </p>
+        <div class="mt-4 flex flex-wrap items-center gap-4">
+          <Button id="ds-motion-toggle" variant="secondary" aria-pressed="false">
+            Emular reduced-motion
+          </Button>
+          <Badge>Estado con pulso</Badge>
+          <Button variant="primary" loading>Enviando</Button>
+        </div>
+        <div class="mt-6 reveal-enabled" data-ds-reveal-demo>
+          <div data-reveal class="is-visible border border-border rounded-lg p-6 bg-card max-w-md">
+            Bloque <code>[data-reveal]</code>: reaparece cada pocos segundos. Con reduced-motion
+            activo el cambio es instantáneo (sin transición).
+          </div>
+        </div>
+      </section>
+    </Stack>
+  </Container>
+</Layout>
+
+<script>
+  // Toggle de demo: emula prefers-reduced-motion para las demos de la
+  // página. El estado real del SO sigue gobernando el resto del sitio.
+  const toggle = document.getElementById('ds-motion-toggle');
+  toggle?.addEventListener('click', () => {
+    const on = document.documentElement.classList.toggle('force-reduced-motion');
+    toggle.setAttribute('aria-pressed', String(on));
+  });
+
+  // Replay del reveal para poder apreciar la transición (o su ausencia).
+  const demo = document.querySelector('[data-ds-reveal-demo] [data-reveal]');
+  if (demo instanceof HTMLElement) {
+    setInterval(() => {
+      demo.classList.toggle('is-visible');
+    }, 2200);
+  }
+</script>
