@@ -2,14 +2,17 @@
 // Kicker en mayúsculas mono con tracking del token --tracking-eyebrow.
 // Unifica los patrones "FIG. 0X", "DISEÑO WEB · VALENCIA" y los
 // kickers de portada (PageHead, Hero, design-system).
-interface Props {
-  as?: string;
-  class?: string;
+// Admite atributos nativos (id, data-*, aria-*) vía rest spread.
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'p'> {
+  as?: 'p' | 'span' | 'div';
 }
-const { as: Tag = 'p', class: className = '' } = Astro.props;
+const { as: Tag = 'p', class: className = '', ...attrs } = Astro.props;
 ---
 
 <Tag
+  {...attrs}
   class:list={[
     'font-mono text-xs uppercase tracking-[var(--tracking-eyebrow)] text-muted',
     className

@@ -1,13 +1,15 @@
 ---
 // Insignia de estado: punto (.badge-dot, pulso suave definido en
 // global.css, pausado con reduced-motion) + texto.
-interface Props {
-  class?: string;
-}
-const { class: className = '' } = Astro.props;
+// Admite atributos nativos (id, data-*, aria-*) vía rest spread.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'span'>;
+const { class: className = '', ...attrs } = Astro.props;
 ---
 
 <span
+  {...attrs}
   class:list={[
     'inline-flex items-center gap-2 text-xs font-mono border border-border rounded-lg px-3 py-1 text-muted',
     className

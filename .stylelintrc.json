@@ -4,22 +4,30 @@
   "rules": {
     "at-rule-no-unknown": [
       true,
-      { "ignoreAtRules": ["tailwind", "apply", "layer", "screen", "variants"] }
+      { "ignoreAtRules": ["tailwind", "apply", "layer", "screen", "variants", "view-transition"] }
+    ],
+    "selector-pseudo-element-no-unknown": [
+      true,
+      { "ignorePseudoElements": ["/^view-transition/"] }
     ],
     "alpha-value-notation": null,
     "media-feature-range-notation": null,
     "value-keyword-case": null,
     "declaration-no-important": true,
+    "color-named": ["never", { "ignore": ["inside-function"] }],
     "declaration-property-value-disallowed-list": [
       {
-        "color": ["/^#(?:[0-9a-f]{3,8})$/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
-        "/color$/": ["/^#(?:[0-9a-f]{3,8})$/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "color": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "/color$/": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
         "background": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
         "background-image": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
         "box-shadow": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
         "text-shadow": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
-        "fill": ["/^#(?:[0-9a-f]{3,8})$/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
-        "stroke": ["/^#(?:[0-9a-f]{3,8})$/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "border": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "outline": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "text-decoration": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "fill": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "stroke": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
         "transition": ["/\\ball\\b/i"]
       },
       {

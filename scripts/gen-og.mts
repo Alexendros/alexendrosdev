@@ -21,28 +21,41 @@ function escapeXml(s: string): string {
     .replace(/"/g, '&quot;');
 }
 
-/** Parte un texto en líneas de ~maxChars sin cortar palabras (máx. 2 líneas). */
+/** Parte un texto en líneas de ~maxChars sin cortar palabras (máx. 2 líneas;
+    si hay truncado, la segunda línea cierra con "…"). */
 function wrap(text: string, maxChars: number): string[] {
   const words = text.split(' ');
   const lines: string[] = [];
   let line = '';
+  let truncated = false;
   for (const w of words) {
     const next = line ? `${line} ${w}` : w;
     if (next.length > maxChars && line) {
       lines.push(line);
       line = w;
+      if (lines.length === 2) {
+        truncated = true;
+        break;
+      }
     } else {
       line = next;
     }
-    if (lines.length === 2) break;
   }
-  if (line && lines.length < 2) lines.push(line);
+  if (!truncated && line) {
+    if (lines.length === 2) truncated = true;
+    else lines.push(line);
+  }
+  if (truncated && lines.length > 0) {
+    lines[lines.length - 1] = `${lines[lines.length - 1].replace(/[.,;:]$/, '')}…`;
+  }
   return lines;
 }
 
 function ogSvg(kicker: string, title: string, subtitle: string): string {
-  const titleLines = wrap(title, 30);
-  const subtitleLines = wrap(subtitle, 62);
+  // DejaVu Sans Bold a 68px avanza ~39px/carácter desde x=80: el máximo
+  // seguro antes del borde interior (x=1152) son ~25 caracteres.
+  const titleLines = wrap(title, 25);
+  const subtitleLines = wrap(subtitle, 58);
   const titleTspans = titleLines
     .map(
       (l, i) =>

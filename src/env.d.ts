@@ -19,3 +19,6 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+/** Inyectado por vite.define en astro.config.mjs: true solo en builds de Vercel. */
+declare const __IS_VERCEL__: boolean;

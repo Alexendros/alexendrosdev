@@ -12,16 +12,17 @@ const Heading = headingLevel;
 ---
 
 <article
-  class="group relative border border-border rounded-lg overflow-hidden hover:border-primarySoft transition-[border-color] bg-card flex flex-col focus-within:outline-2 focus-within:outline-primary focus-within:outline-offset-2"
+  class="card-lift group relative border border-border rounded-lg overflow-hidden hover:border-primarySoft bg-card flex flex-col h-full focus-within:outline focus-within:outline-2 focus-within:outline-primary focus-within:outline-offset-2"
 >
   <Image
     src={project.cover}
     alt={project.coverAlt}
     widths={[400, 800]}
     sizes="(max-width: 768px) 100vw, 400px"
-    class="w-full h-40 object-cover border-b border-border"
+    class="card-cover card-img w-full h-40 object-cover border-b border-border"
     loading="lazy"
     decoding="async"
+    onload="this.classList.add('is-loaded')"
   />
   <div class="p-6 flex-1 flex flex-col">
     <Heading class="font-bold text-base mt-1 group-hover:text-primary transition-colors">

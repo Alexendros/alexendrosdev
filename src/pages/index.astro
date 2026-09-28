@@ -35,7 +35,13 @@ const featured = getFeaturedProjects().slice(0, 3);
         linkText="Ver todo"
       />
       <Grid gap="6" class="mt-6 sm:grid-cols-2 lg:grid-cols-4" data-services-grid>
-        {services.map((s) => <ServiceCard service={s} headingLevel="h3" />)}
+        {
+          services.map((s, i) => (
+            <div data-reveal style={`--i:${i}`}>
+              <ServiceCard service={s} headingLevel="h3" />
+            </div>
+          ))
+        }
       </Grid>
       <p class="mt-8 text-sm text-muted max-w-2xl">
         Proceso claro, presupuesto cerrado y entregas definidas.
@@ -54,7 +60,13 @@ const featured = getFeaturedProjects().slice(0, 3);
         linkText="Ver todos"
       />
       <Grid gap="6" class="mt-6 md:grid-cols-2 lg:grid-cols-3">
-        {featured.map((p) => <ProjectCard project={p} headingLevel="h3" />)}
+        {
+          featured.map((p, i) => (
+            <div data-reveal style={`--i:${i}`}>
+              <ProjectCard project={p} headingLevel="h3" />
+            </div>
+          ))
+        }
       </Grid>
     </Container>
   </Section>
@@ -67,7 +79,13 @@ const featured = getFeaturedProjects().slice(0, 3);
         description="Tres ejes sostienen cada entrega: claridad, velocidad, y accesibilidad con privacidad."
       />
       <Grid gap="6" class="mt-6 md:grid-cols-3">
-        {ejes.map((e) => <AxisCard eje={e} />)}
+        {
+          ejes.map((e, i) => (
+            <div data-reveal style={`--i:${i}`}>
+              <AxisCard eje={e} />
+            </div>
+          ))
+        }
       </Grid>
     </Container>
   </Section>

@@ -54,11 +54,19 @@ const ogImageUrl = new URL(ogImage, site.url).href;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="theme-color" content="#f6f8fc" />
+    <meta name="theme-color" content="#f6f8fc" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a1224" media="(prefers-color-scheme: dark)" />
     <meta property="og:image:alt" content="Alexendros.dev — webs claras y útiles" />
+    <script is:inline>
+      // Gate de JS antes del primer paint: activa las animaciones de
+      // entrada del hero y el fundido de imágenes. Sin JS la clase no
+      // existe y todo el contenido se muestra directamente.
+      document.documentElement.classList.add('js');
+    </script>
   </head>
   <body class="bg-bg text-fg antialiased min-h-screen flex flex-col">
     <SkipLink />
+    <div data-header-sentinel class="h-px" aria-hidden="true"></div>
     <Header />
     <main id="contenido" class="flex-1">
       <slot />
@@ -67,9 +75,14 @@ const ogImageUrl = new URL(ogImage, site.url).href;
     <LandingBanner pathname={Astro.url.pathname} />
     <script>
       import '../scripts/reveal.ts';
+      import '../scripts/header.ts';
     </script>
-    <Analytics />
-    <SpeedInsights />
+    {
+      /* Analytics solo en despliegues Vercel: en builds locales/CI los scripts
+        /_vercel/* no existen y ensucian consola (404) y el score de Best Practices. */
+    }
+    {__IS_VERCEL__ && <Analytics />}
+    {__IS_VERCEL__ && <SpeedInsights />}
     <script
       is:inline
       type="application/ld+json"

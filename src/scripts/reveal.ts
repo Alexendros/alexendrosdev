@@ -1,7 +1,8 @@
-// Único IntersectionObserver compartido para apariciones al hacer scroll.
-// Blueprint Lab Fase 1 (EF-07): degradación nativa — sin JS, sin
-// IntersectionObserver o con `prefers-reduced-motion`, el contenido
-// queda visible; el JS solo añade la animación.
+// Único IntersectionObserver compartido para apariciones al hacer
+// scroll. Degradación nativa: sin JS, sin IntersectionObserver o con
+// `prefers-reduced-motion`, el contenido queda visible; el JS solo
+// añade la clase `reveal-enabled` (estado oculto) cuando el observer
+// está activo, y `is-visible` al entrar (con unobserve).
 const SELECTOR = '[data-reveal]';
 
 function init(): void {
@@ -21,7 +22,7 @@ function init(): void {
         }
       }
     },
-    { rootMargin: '0px 0px -8% 0px', threshold: 0.1 }
+    { rootMargin: '0px 0px -10% 0px', threshold: 0.15 }
   );
 
   targets.forEach((target) => {

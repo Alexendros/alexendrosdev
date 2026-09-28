@@ -8,10 +8,10 @@ const { label } = Astro.props;
 <div class="hidden md:block" aria-hidden="true">
   <div class="flex items-center gap-3 font-mono text-xs tracking-[0.1em] text-muted">
     <span class="h-3 w-px bg-border"></span>
-    <span class="h-px flex-1 bg-border"></span>
+    <span class="dimension-line h-px flex-1 bg-border" style="--i:0"></span>
     <span>{label}</span>
-    <span class="h-px flex-1 bg-border"></span>
+    <span class="dimension-line h-px flex-1 bg-border" style="--i:1"></span>
     <span class="h-3 w-px bg-border"></span>
   </div>
-  <div class="mx-10 mt-1 h-px bg-border opacity-50"></div>
+  <div class="dimension-line mx-10 mt-1 h-px bg-border opacity-50" style="--i:2"></div>
 </div>
