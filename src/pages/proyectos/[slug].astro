@@ -10,7 +10,11 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 ---
 
-<Layout title={`${project.title} — Alexendros`} description={project.short}>
+<Layout
+  title={`${project.title} — Alexendros`}
+  description={project.short}
+  ogImage={`/og/proyectos/${project.slug}.png`}
+>
   <div class="mx-auto max-w-4xl px-6 pt-12 pb-16" data-reveal>
     <div class="text-xs text-muted">
       <a href="/proyectos" class="hover:text-fg focus-ring rounded">← Todos los casos</a>
@@ -21,11 +25,12 @@ const { project } = Astro.props;
     <figure class="mt-6">
       <Image
         src={project.cover}
-        alt={`Captura de la página principal de ${project.title}`}
+        alt={project.coverAlt}
         widths={[800, 1200]}
         sizes="(max-width: 768px) 100vw, 800px"
         class="w-full rounded-lg border border-border"
         loading="eager"
+        decoding="async"
       />
       <figcaption class="mt-2 font-mono text-xs tracking-[0.1em] text-muted">
         {project.slug}
