@@ -44,7 +44,7 @@ Todos en `src/components/`. Clases utilidad de Tailwind permitidas; valores de c
 
 ### Eyebrow
 
-- **API:** slot de texto, `as?` (default `p`).
+- **API:** slot de texto, `as?: 'p'|'span'|'div'` (default `p`), rest spread nativo (`id`, `data-*`, `aria-*`).
 - **Patrón:** kicker en mayúsculas mono, `tracking` de `--tracking-eyebrow`, color `--fg-muted`. Unifica `FIG. 0X`, kickers de portada (PageHead) y el del hero.
 
 ### Section / SectionHeader
@@ -61,6 +61,12 @@ Todos en `src/components/`. Clases utilidad de Tailwind permitidas; valores de c
 ### SkipLink
 
 Extraído de Layout: primer foco de la página, salta a `#contenido`, visible solo con teclado (`focus-visible`), z-index máximo. No reordenar en Layout.
+
+### Tarjetas enlazables (ServiceCard / ProjectCard) — patrón card-link
+
+- **Estructura:** el `<article>` no es enlace; el enlace vive en el título y se estira sobre toda la tarjeta con `::after { position:absolute; inset:0 }`. El nombre accesible es el título del servicio/caso (nunca "Ver qué incluye →" repetido: ese texto es `aria-hidden`). El foco se muestra con `focus-within:outline` (estilo + ancho + color: Tailwind `outline-2` solo fija ancho y sin `outline` no se pinta nada).
+- **Contrato:** dentro de una card-link **no puede haber otros elementos interactivos** (el `::after` los taparía) y el texto de la tarjeta **no es seleccionable con ratón** (el pseudo-elemento captura el mousedown). Si una tarjeta necesita un segundo enlace o texto seleccionable, no uses este patrón: enlaces explícitos por elemento.
+- **A11y:** las páginas de detalle (`/servicios/x`) mantienen `aria-current="page"` en el item de sección del header ("Servicios"): marca la sección activa, no la página exacta. Es deliberado.
 
 ## 4. Excepciones de color fijo (deliberadas)
 
