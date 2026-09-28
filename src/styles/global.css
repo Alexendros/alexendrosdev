@@ -141,6 +141,10 @@
     --dur-base: 240ms;
     --dur-slow: 480ms;
     --dur-reveal: 700ms;
+
+    /* Entrada del hero: 4 pasos de --stagger (240ms) + 460ms = 700ms
+       total, dentro del presupuesto de entrada. */
+    --dur-hero: 460ms;
     --stagger: 60ms;
   }
 
@@ -259,6 +263,107 @@
 
   /* Piezas de componentes (Button, Link, Badge). El color hereda del
      contexto (currentColor): sin literales, válido en ambos temas. */
+
+  /* Flecha de Link (variant arrow): desplazamiento sutil al hover/foco
+     del enlace padre (transform, no layout). */
+  .link-arrow {
+    display: inline-block;
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+
+  :hover > .link-arrow,
+  :focus-visible > .link-arrow {
+    transform: translateX(4px);
+  }
+
+  /* Botón: elevación de 1px con sombra en pseudo-elemento (solo su
+     opacity se anima; nunca box-shadow). Active con compresión sutil. */
+  .btn {
+    position: relative;
+    transition:
+      transform var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: var(--shadow-2);
+    opacity: 0;
+    transition: opacity var(--dur-fast) var(--ease-out);
+    pointer-events: none;
+  }
+
+  .btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .btn:hover::after {
+    opacity: 1;
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  /* Tarjeta elevable (ServiceCard/ProjectCard/AxisCard): translateY en
+     el hover con sombra en ::before (la ::after del card-link sigue
+     estirada encima). */
+  .card-lift {
+    isolation: isolate;
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+
+  .card-lift::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    box-shadow: var(--shadow-2);
+    opacity: 0;
+    transition: opacity var(--dur-base) var(--ease-out);
+    pointer-events: none;
+  }
+
+  .card-lift:hover {
+    transform: translateY(-4px);
+  }
+
+  .card-lift:hover::before {
+    opacity: 1;
+  }
+
+  /* Zoom de portada en las cards de proyecto (overflow ya recorta). */
+  .card-cover {
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+
+  .group:hover .card-cover {
+    transform: scale(1.03);
+  }
+
+  /* Fundido de entrada de imágenes lazy (con JS: opacity 0 hasta
+     onload; sin JS la clase .js no existe y la imagen se ve). */
+  .card-img {
+    background: var(--bg-subtle);
+  }
+
+  .js .card-img {
+    opacity: 0;
+    transition: opacity var(--dur-base) var(--ease-out);
+  }
+
+  .js .card-img.is-loaded {
+    opacity: 1;
+  }
+
   .btn-spinner {
     width: 1em;
     height: 1em;
@@ -278,12 +383,6 @@
     animation: badge-pulse 2s var(--ease-in-out) infinite;
   }
 
-  /* Preparado para la animación de Fase 3: el desplazamiento del arrow
-     se ancla aquí para no depender de clases utilidad. */
-  .link-arrow {
-    display: inline-block;
-  }
-
   @keyframes btn-rotate {
     to {
       transform: rotate(1turn);
@@ -294,26 +393,147 @@
     0%,
     100% {
       opacity: 1;
+      transform: scale(1);
     }
 
     50% {
       opacity: 0.45;
+      transform: scale(0.82);
     }
   }
 
-  /* Respeto de reduced-motion: media query del sistema y, para demos
-     (p. ej. /design-system), la clase .force-reduced-motion emula el
-     mismo estado sin depender del SO. */
-  @media (prefers-reduced-motion: reduce) {
-    .btn-spinner,
-    .badge-dot {
-      animation: none;
+  /* Entrada del hero (js-gated: sin JS no hay clase .js y todo se ve).
+     Elementos que no son LCP funden; el H1 (LCP) solo se desplaza:
+     está pintado desde el primer frame y no afecta a LCP ni CLS. */
+  .js [data-hero] [data-hero-item] {
+    animation: hero-in var(--dur-hero) var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * var(--stagger));
+  }
+
+  .js [data-hero] h1[data-hero-item] {
+    animation-name: hero-in-lcp;
+  }
+
+  @keyframes hero-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: none;
     }
   }
 
-  .force-reduced-motion .btn-spinner,
-  .force-reduced-motion .badge-dot {
-    animation: none;
+  @keyframes hero-in-lcp {
+    from {
+      transform: translateY(10px);
+    }
+
+    to {
+      transform: none;
+    }
+  }
+
+  /* Tira Dimension (decorativa): las hairlines crecen con scaleX al
+     cargar, sin JS (animación CSS pura con fill). */
+  @media (prefers-reduced-motion: no-preference) {
+    .dimension-line {
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: line-in var(--dur-slow) var(--ease-out) forwards;
+      animation-delay: calc(var(--i, 0) * var(--stagger));
+    }
+  }
+
+  @keyframes line-in {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  /* Header: sombra de "en scroll" en pseudo-elemento (toggle de clase
+     vía IntersectionObserver sobre un sentinel, sin scroll listener). */
+  #site-header {
+    position: sticky;
+    transition: background-color var(--dur-fast) var(--ease-out);
+  }
+
+  #site-header::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    box-shadow: var(--shadow-1);
+    opacity: 0;
+    transition: opacity var(--dur-base) var(--ease-out);
+    pointer-events: none;
+  }
+
+  #site-header.is-scrolled::after {
+    opacity: 1;
+  }
+
+  /* Indicador de página activa en la nav de escritorio: subrayado que
+     crece con scaleX. */
+  .site-nav a {
+    position: relative;
+  }
+
+  .site-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    border-radius: 9999px;
+    background: var(--brand);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+
+  .site-nav a[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+
+  /* Barra de progreso de lectura: solo soporte nativo
+     (animation-timeline: scroll(root)); sin soporte no se muestra.
+     Global: todas las páginas tienen scroll significativo. */
+  @supports (animation-timeline: scroll(root)) {
+    .reading-progress {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 2px;
+      background: var(--brand);
+      transform-origin: left;
+      animation: reading-progress linear both;
+      animation-timeline: scroll(root);
+    }
+
+    @keyframes reading-progress {
+      from {
+        transform: scaleX(0);
+      }
+
+      to {
+        transform: scaleX(1);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reading-progress {
+        display: none;
+      }
+    }
+
+    .force-reduced-motion .reading-progress {
+      display: none;
+    }
   }
 
   /* Sombreado diagonal de plano: decorativo (aria-hidden en su uso),
@@ -401,15 +621,17 @@
     }
   }
 
-  /* Aparición al hacer scroll: solo se oculta el contenido cuando el JS
-     confirma observer activo (clase `reveal-enabled`): sin JS queda
-     visible. Se refactoriza en Fase 3; timing conservado a propósito. */
+  /* Reveal v2 (scroll): stagger por índice (--i en línea) con tokens.
+     Solo se oculta cuando el JS confirma observer activo (clase
+     `reveal-enabled`): sin JS o sin IntersectionObserver el contenido
+     queda visible desde el primer paint. */
   .reveal-enabled [data-reveal] {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(16px);
     transition:
-      opacity 400ms ease-out,
-      transform 400ms ease-out;
+      opacity var(--dur-reveal) var(--ease-out),
+      transform var(--dur-reveal) var(--ease-out);
+    transition-delay: calc(var(--i, 0) * var(--stagger));
   }
 
   .reveal-enabled [data-reveal].is-visible {
@@ -417,17 +639,83 @@
     transform: none;
   }
 
+  /* Reduced-motion: misma cobertura para la media query del sistema y
+     para .force-reduced-motion (demos de /design-system). Regla
+     general: los desplazamientos desaparecen y lo que funde lo hace
+     ≤150ms y sin delay; lo decorativo se elimina. */
   @media (prefers-reduced-motion: reduce) {
     .reveal-enabled [data-reveal] {
-      transition: none;
+      transform: none;
+      transition-duration: 150ms;
+      transition-delay: 0ms;
+    }
+
+    .js [data-hero] [data-hero-item],
+    .js [data-hero] h1[data-hero-item] {
+      animation: none;
+    }
+
+    .btn-spinner,
+    .badge-dot,
+    .dimension-line {
+      animation: none;
+    }
+
+    .dimension-line {
+      transform: none;
+    }
+
+    .btn,
+    .card-lift,
+    .link-arrow,
+    .site-nav a::after,
+    .js .card-img {
+      transition-duration: 150ms;
+    }
+
+    .btn:hover,
+    .btn:active,
+    .card-lift:hover,
+    .group:hover .card-cover,
+    :hover > .link-arrow,
+    :focus-visible > .link-arrow {
+      transform: none;
     }
   }
 
-  /* Emulación para demos (p. ej. /design-system): misma regla bajo
-     .force-reduced-motion, tras las reglas base para no romper la
-     especificidad descendente. */
   .force-reduced-motion .reveal-enabled [data-reveal] {
-    transition: none;
+    transform: none;
+    transition-duration: 150ms;
+    transition-delay: 0ms;
+  }
+
+  .force-reduced-motion .js [data-hero] [data-hero-item],
+  .force-reduced-motion .js [data-hero] h1[data-hero-item],
+  .force-reduced-motion .btn-spinner,
+  .force-reduced-motion .badge-dot,
+  .force-reduced-motion .dimension-line {
+    animation: none;
+  }
+
+  .force-reduced-motion .dimension-line {
+    transform: none;
+  }
+
+  .force-reduced-motion .btn,
+  .force-reduced-motion .card-lift,
+  .force-reduced-motion .link-arrow,
+  .force-reduced-motion .site-nav a::after,
+  .force-reduced-motion .js .card-img {
+    transition-duration: 150ms;
+  }
+
+  .force-reduced-motion .btn:hover,
+  .force-reduced-motion .btn:active,
+  .force-reduced-motion .card-lift:hover,
+  .force-reduced-motion .group:hover .card-cover,
+  .force-reduced-motion :hover > .link-arrow,
+  .force-reduced-motion :focus-visible > .link-arrow {
+    transform: none;
   }
 }
 
@@ -455,4 +743,27 @@
   .text-brand-line {
     color: var(--brand);
   }
+}
+
+/* Transiciones de vista (MPA): fundido de main a 200ms y nombre propio
+   en el header para que no parpadee con el cross-fade raíz. CSS puro y
+   progresivo: sin soporte se ignora. Solo sin reduced-motion del SO
+   (el at-rule no admite selector de clase). */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+
+main {
+  view-transition-name: main;
+}
+
+#site-header {
+  view-transition-name: site-header;
+}
+
+::view-transition-old(main),
+::view-transition-new(main) {
+  animation-duration: 200ms;
 }

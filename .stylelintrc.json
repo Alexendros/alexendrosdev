@@ -4,7 +4,11 @@
   "rules": {
     "at-rule-no-unknown": [
       true,
-      { "ignoreAtRules": ["tailwind", "apply", "layer", "screen", "variants"] }
+      { "ignoreAtRules": ["tailwind", "apply", "layer", "screen", "variants", "view-transition"] }
+    ],
+    "selector-pseudo-element-no-unknown": [
+      true,
+      { "ignorePseudoElements": ["/^view-transition/"] }
     ],
     "alpha-value-notation": null,
     "media-feature-range-notation": null,

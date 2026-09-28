@@ -56,9 +56,16 @@ const ogImageUrl = new URL(ogImage, site.url).href;
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#f6f8fc" />
     <meta property="og:image:alt" content="Alexendros.dev — webs claras y útiles" />
+    <script is:inline>
+      // Gate de JS antes del primer paint: activa las animaciones de
+      // entrada del hero y el fundido de imágenes. Sin JS la clase no
+      // existe y todo el contenido se muestra directamente.
+      document.documentElement.classList.add('js');
+    </script>
   </head>
   <body class="bg-bg text-fg antialiased min-h-screen flex flex-col">
     <SkipLink />
+    <div data-header-sentinel class="h-px" aria-hidden="true"></div>
     <Header />
     <main id="contenido" class="flex-1">
       <slot />
@@ -67,6 +74,7 @@ const ogImageUrl = new URL(ogImage, site.url).href;
     <LandingBanner pathname={Astro.url.pathname} />
     <script>
       import '../scripts/reveal.ts';
+      import '../scripts/header.ts';
     </script>
     <Analytics />
     <SpeedInsights />
