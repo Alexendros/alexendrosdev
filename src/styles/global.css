@@ -1,183 +1,351 @@
+/* Tema claro editorial azul #0f3778 (ADR 0011, supersedes 0006 y 0007).
+   Fuente única de verdad de color: esta hoja. tailwind.config.mjs solo
+   referencia var(); la validación de contraste vive en
+   scripts/check-contrast.mjs (job quality / pnpm check:contrast). */
+
+/* Capas propias en orden; las directivas @tailwind se integran en las
+   capas base/components/utilities ya ordenadas aquí. */
+@layer reset, tokens, base, components, utilities;
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  /* Fuente única de verdad de color. tailwind.config.mjs referencia
-     estas variables; no duplicar valores. Ver scripts/check-contrast.mjs
-     y docs/architecture/decisions/0002-blueprint-fase-0-fundacion-tokens.md. */
-  --bg: oklch(0.35 0.12 260);
-  --fg: oklch(0.97 0.01 260);
-  --primary: oklch(0.75 0.18 95);
-  --primary-soft: oklch(0.75 0.18 95 / 0.4);
-  --primary-ghost: oklch(0.75 0.18 95 / 0.1);
-  --muted: oklch(0.85 0.03 260);
-  --border: oklch(0.75 0.05 260);
-  --card: oklch(0.29 0.1 260);
-  --ink: oklch(0.14 0.01 240);
-  /* Errores de formulario: validado en scripts/check-contrast.mjs
-     (danger/bg y danger/card, minimo 4.5:1). */
-  --danger: oklch(0.78 0.14 25);
-
-  /* Reserva Blueprint Lab (fases 1-3): fondo azul de plano, líneas y
-     anotaciones en blanco. Activada como tema en
-     docs/architecture/decisions/0006-blueprint-tema-azul.md: --bg/--fg
-     usan los mismos valores que --bp-bg/--bp-fg. --ink es el texto
-     oscuro sobre botones ámbar (antes se usaba --bg para eso). */
-  --bp-bg: oklch(0.35 0.12 260);
-  --bp-fg: oklch(0.97 0.01 260);
-
-  /* Cianotipo a sangre (docs/architecture/decisions/0007-blueprint-cianotipo.md):
-     matices decorativos del fondo por capas. No son tokens de texto, solo
-     paradas del degradado y la retícula; el contraste de texto lo validan
-     --bg/--fg/--muted/--card en scripts/check-contrast.mjs. */
-  --bp-glow: oklch(0.47 0.13 264);
-  --bp-deep: oklch(0.3 0.1 264);
-}
-html {
-  background: var(--bg);
-  color: var(--fg);
-  font-family: 'Inter Variable', system-ui, sans-serif;
-}
-body {
-  /* Fondo cianotipo por capas (de arriba a abajo): viñeta
-     luminosa central, retícula mayor y base --bg.
-     Sin background-attachment: fixed (jank en móvil). */
-  background:
-    radial-gradient(ellipse 120% 90% at 50% 28%, var(--bp-glow) 0%, transparent 60%),
-    repeating-linear-gradient(0deg, oklch(1 0 0 / 0.06) 0 1px, transparent 1px 120px),
-    repeating-linear-gradient(90deg, oklch(1 0 0 / 0.06) 0 1px, transparent 1px 120px),
-    radial-gradient(ellipse 150% 120% at 50% 40%, transparent 55%, var(--bp-deep) 100%), var(--bg);
-}
-code,
-pre,
-.font-mono {
-  font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
-}
-::selection {
-  background: var(--primary-soft);
-}
-.focus-ring:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-
-/* Sombreado diagonal de plano (cianotipo): solo decorativo en
-   cabeceras de tarjeta y cajetines; exento de contraste WCAG. */
-.bp-hatch {
-  background-image: repeating-linear-gradient(
-    45deg,
-    oklch(1 0 0 / 0.14) 0 1px,
-    transparent 1px 6px
-  );
-}
-.cv-auto {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 480px;
-}
-
-/* Aparición al hacer scroll (Blueprint Lab Fase 1, EF-07).
-   Solo se oculta el contenido cuando el JS confirma observer activo
-   (clase `reveal-enabled`): sin JS el contenido queda visible. */
-.reveal-enabled [data-reveal] {
-  opacity: 0;
-  transform: translateY(12px);
-  transition:
-    opacity 400ms ease-out,
-    transform 400ms ease-out;
-}
-.reveal-enabled [data-reveal].is-visible {
-  opacity: 1;
-  transform: none;
-}
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-.legal-prose h1 {
-  font-size: 1.875rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-.legal-prose p {
-  color: var(--muted);
-  line-height: 1.7;
-  font-size: 0.95rem;
-}
-
-/* Landing banner styles */
-#landing-banner {
-  transition: transform 150ms ease-out;
-}
-#landing-banner.visible {
-  transform: translateY(0);
-}
-#landing-banner.hidden {
-  transform: translateY(100%);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  #landing-banner.reduce-motion {
-    transition: opacity 150ms ease-out;
-    transform: none !important;
+/* ------------------------------------------------------------------ */
+/* reset: normalización mínima propia. Preflight de Tailwind (capa      */
+/* base, applyBaseStyles: false) ya cubre lo esencial; esta capa es el  */
+/* punto de extensión para resets de componentes.                       */
+/* ------------------------------------------------------------------ */
+@layer reset {
+  body {
+    margin: 0;
   }
-  #landing-banner.reduce-motion.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-  #landing-banner.reduce-motion.visible {
-    opacity: 1;
-    pointer-events: auto;
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  ul,
+  ol,
+  li,
+  figure,
+  figcaption,
+  blockquote {
+    margin: 0;
+    padding: 0;
   }
 }
 
-.pb-safe {
-  padding-bottom: max(0px, env(safe-area-inset-bottom));
+/* ------------------------------------------------------------------ */
+/* tokens: primitivos (nunca se consumen directamente desde             */
+/* componentes), semánticos (los únicos que usan componentes),          */
+/* tipografía fluida, espaciado, radios, sombras, layout y motion.      */
+/* ------------------------------------------------------------------ */
+@layer tokens {
+  :root {
+    /* Primitivos: paleta editorial azul. */
+    --blue-950: #081f47;
+    --blue-900: #0f3778;
+    --blue-700: #1b56b8;
+    --blue-500: #3f7de0;
+    --blue-100: #e6eefb;
+    --ink-900: #0b1220;
+    --ink-700: #33415c;
+    --ink-500: #5b6885;
+    --paper-0: #ffffff;
+    --paper-50: #f6f8fc;
+    --line: #d9e0ee;
+    --ok: #157347;
+    --warn: #b45309;
+    --err: #b42318;
+
+    /* Semánticos: tema claro (por defecto). */
+    --bg: var(--paper-50);
+    --bg-subtle: var(--blue-100);
+    --fg: var(--ink-900);
+    --fg-muted: var(--ink-500);
+    --brand: var(--blue-900);
+    --brand-hover: var(--blue-700);
+    --brand-fg: var(--paper-0);
+    --border: var(--line);
+    --card: var(--paper-0);
+    /* Errores de formulario: validado en scripts/check-contrast.mjs
+       (danger/bg y danger/card, mínimo 4.5:1). */
+    --danger: var(--err);
+
+    /* Indicador de foco (componentes lo componen con box-shadow). La
+       clase .focus-ring usa outline sólido --brand (≥3:1 en ambos temas,
+       WCAG 1.4.11). El anillo se define sobre --brand (no --blue-500):
+       con blue-500 haría falta ~85% de opacidad para 3:1 y perdería
+       suavidad. */
+    --focus-ring: 0 0 0 3px color-mix(in srgb, var(--brand) 55%, transparent);
+
+    /* Tipografía fluida. */
+    --step--1: clamp(0.875rem, 0.84rem + 0.18vw, 1rem);
+    --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+    --step-1: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+    --step-2: clamp(1.44rem, 1.25rem + 0.95vw, 2rem);
+    --step-3: clamp(1.728rem, 1.4rem + 1.65vw, 2.66rem);
+    --step-4: clamp(2.6rem, 1.8rem + 4vw, 5rem);
+    --leading-tight: 1.08;
+    --leading-body: 1.6;
+    --tracking-eyebrow: 0.14em;
+
+    /* Espaciado (escala 4px). */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    --space-16: 4rem;
+    --space-20: 5rem;
+    --space-24: 6rem;
+
+    /* Radios y sombras suaves. */
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --shadow-1: 0 1px 2px 0 rgb(8 31 71 / 0.05), 0 1px 3px 0 rgb(8 31 71 / 0.08);
+    --shadow-2: 0 2px 6px -2px rgb(8 31 71 / 0.08), 0 8px 24px -6px rgb(8 31 71 / 0.12);
+
+    /* Layout. */
+    --container: 72rem;
+    --gutter: clamp(1rem, 4vw, 2rem);
+    --header-h: 4.5rem;
+
+    /* Motion. */
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+    --dur-fast: 120ms;
+    --dur-base: 240ms;
+    --dur-slow: 480ms;
+    --dur-reveal: 700ms;
+    --stagger: 60ms;
+  }
+
+  /* @tema-oscuro:inicio — publicado condicionado: scripts/check-contrast.mjs
+     valida TODOS los pares semánticos en claro y oscuro; si alguno falla,
+     este bloque se retira (ADR 0011). Sin toggle de UI: media query por
+     defecto + data-theme="dark"/"light" para forzar. */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --bg: #0a1224;
+      --bg-subtle: #0e1830;
+      --fg: #eef2fb;
+      --fg-muted: #9aa7c7;
+      --brand: #8fb4ff;
+      --brand-hover: #a9c6ff;
+      --brand-fg: #0a1224;
+      --border: #2a3a5f;
+      --card: #101c38;
+      --danger: #f97066;
+    }
+  }
+  :root[data-theme='dark'] {
+    --bg: #0a1224;
+    --bg-subtle: #0e1830;
+    --fg: #eef2fb;
+    --fg-muted: #9aa7c7;
+    --brand: #8fb4ff;
+    --brand-hover: #a9c6ff;
+    --brand-fg: #0a1224;
+    --border: #2a3a5f;
+    --card: #101c38;
+    --danger: #f97066;
+  }
+  /* @tema-oscuro:fin */
 }
 
-html.banner-visible {
-  padding-bottom: var(--banner-height, 0px);
+/* ------------------------------------------------------------------ */
+/* base: elementos raíz y texto.                                        */
+/* ------------------------------------------------------------------ */
+@layer base {
+  html {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Inter Variable', system-ui, sans-serif;
+    font-size: var(--step-0);
+    line-height: var(--leading-body);
+  }
+  body {
+    /* Blueprint en claro: glow tenue de --bg-subtle arriba, retícula
+       hairline con --border a baja opacidad y base --bg.
+       Sin background-attachment: fixed (jank en móvil). */
+    background:
+      radial-gradient(
+        ellipse 120% 90% at 50% 0%,
+        color-mix(in srgb, var(--bg-subtle) 70%, transparent) 0%,
+        transparent 60%
+      ),
+      repeating-linear-gradient(
+        0deg,
+        color-mix(in srgb, var(--border) 45%, transparent) 0 1px,
+        transparent 1px 120px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--border) 45%, transparent) 0 1px,
+        transparent 1px 120px
+      ),
+      var(--bg);
+  }
+  code,
+  pre,
+  .font-mono {
+    font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--brand) 25%, transparent);
+  }
+  /* Micro-motion sobria: solo transiciones de color, sin desplazamientos;
+     el scroll suave solo sin reduced-motion. */
+  a,
+  button {
+    transition:
+      color var(--dur-fast) var(--ease-out),
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
 }
 
-@media (max-width: 768px) {
-  html.banner-visible main {
+/* ------------------------------------------------------------------ */
+/* components: foco, piezas blueprint, banner, reveal, prosa legal.     */
+/* ------------------------------------------------------------------ */
+@layer components {
+  /* Foco visible sólido: ≥3:1 sobre fondo y tarjeta en ambos temas
+     (--brand). El token --focus-ring (anillo suave) llega en Fase 3. */
+  .focus-ring:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  /* Sombreado diagonal de plano: decorativo (aria-hidden en su uso),
+     exento de contraste WCAG. */
+  .bp-hatch {
+    background-image: repeating-linear-gradient(
+      45deg,
+      color-mix(in srgb, var(--brand) 8%, transparent) 0 1px,
+      transparent 1px 6px
+    );
+  }
+
+  /* Titular hero: en claro sin sombra de profundidad; la segunda línea
+     (draft) marca en azul de marca. Contraste heredado de los pares
+     validados en scripts/check-contrast.mjs. */
+  .bp-h1 {
+    text-shadow: none;
+  }
+  .bp-h1-draft {
+    color: var(--brand);
+  }
+
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 480px;
+  }
+
+  .legal-prose h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .legal-prose p {
+    color: var(--fg-muted);
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+
+  /* Landing banner. */
+  #landing-banner {
+    transition: transform var(--dur-fast) var(--ease-out);
+  }
+  #landing-banner.visible {
+    transform: translateY(0);
+  }
+  #landing-banner.hidden {
+    transform: translateY(100%);
+  }
+  /* Reduced-motion: el banner deja de deslizarse y funde. Sin
+     !important: estas reglas van tras .visible/.hidden con la misma
+     especificidad (id + clase) y ganan por orden en la capa. */
+  @media (prefers-reduced-motion: reduce) {
+    #landing-banner.reduce-motion {
+      transition: opacity var(--dur-fast) var(--ease-out);
+      transform: none;
+    }
+    #landing-banner.reduce-motion.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #landing-banner.reduce-motion.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  .pb-safe {
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
+
+  html.banner-visible {
     padding-bottom: var(--banner-height, 0px);
   }
-}
 
-/* Micro-motion sobria (Blueprint Lab Fase 3): solo transiciones de color,
-   sin desplazamientos; el scroll suave solo sin reduced-motion. */
-a,
-button {
-  transition:
-    color 150ms ease-out,
-    background-color 150ms ease-out,
-    border-color 150ms ease-out;
-}
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
+  @media (max-width: 768px) {
+    html.banner-visible main {
+      padding-bottom: var(--banner-height, 0px);
+    }
   }
-}
-@media (prefers-reduced-motion: reduce) {
+
+  /* Aparición al hacer scroll: solo se oculta el contenido cuando el JS
+     confirma observer activo (clase `reveal-enabled`): sin JS queda
+     visible. Se refactoriza en Fase 3; timing conservado a propósito. */
   .reveal-enabled [data-reveal] {
-    transition: none;
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 400ms ease-out,
+      transform 400ms ease-out;
+  }
+  .reveal-enabled [data-reveal].is-visible {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-enabled [data-reveal] {
+      transition: none;
+    }
   }
 }
 
-/* Titular hero con profundidad (cianotipo): sombra sutil única para relieve.
-   Contraste heredado de los pares validados en scripts/check-contrast.mjs. */
-.bp-h1 {
-  text-shadow: 0 2px 16px rgb(1 8 20 / 0.35);
-}
-.bp-h1-draft {
-  color: var(--fg);
-  text-shadow: none;
+/* ------------------------------------------------------------------ */
+/* utilities: ayudas de accesibilidad y línea de marca.                 */
+/* ------------------------------------------------------------------ */
+@layer utilities {
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  /* Linework azul tenue para el motivo esquemático (aria-hidden). El SVG
+     aplica stroke-opacity 0.14 (y fade 0.35 en desktop): el color se da
+     sólido para que el trazo se perciba como azul pálido sobre papel. */
+  .text-brand-line {
+    color: var(--brand);
+  }
 }
