@@ -6,23 +6,29 @@ import Button from './Button.astro';
 import Link from './Link.astro';
 ---
 
-<section class="relative mx-auto max-w-3xl px-6 py-16 md:py-24 overflow-hidden">
+<section class="relative mx-auto max-w-3xl px-6 py-16 md:py-24 overflow-hidden" data-hero>
   <BlueprintMotif
     class="pointer-events-none absolute -right-16 top-4 h-56 w-auto aspect-[4/3] text-brand-line md:-right-20 md:top-8 md:h-96"
   />
-  <Eyebrow>DISEÑO WEB · VALENCIA</Eyebrow>
-  <div class="mt-4">
+  <div data-hero-item style="--i:0">
+    <Eyebrow>DISEÑO WEB · VALENCIA</Eyebrow>
+  </div>
+  <div class="mt-4" data-hero-item style="--i:1">
     <Badge>Disponible para nuevos proyectos</Badge>
   </div>
-  <h1 class="bp-h1 mt-6 text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight max-w-3xl">
+  <h1
+    class="bp-h1 mt-6 text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight max-w-3xl"
+    data-hero-item
+    style="--i:2"
+  >
     Tu web debería ayudarte a conseguir clientes,
     <span class="bp-h1-draft">no darte más trabajo.</span>
   </h1>
-  <p class="mt-4 text-lg text-muted max-w-2xl">
+  <p class="mt-4 text-lg text-muted max-w-2xl" data-hero-item style="--i:3">
     Diseño y mejoro webs para profesionales y pequeños negocios que quieren explicar mejor lo que
     hacen y recibir más contactos.
   </p>
-  <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
+  <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3" data-hero-item style="--i:4">
     <Button href="/contacto">Cuéntame qué necesitas</Button>
     <Link href="/servicios" variant="inline" class="text-muted hover:text-fg"
       >Ver cómo puedo ayudarte</Link
