@@ -67,7 +67,7 @@ export const contact = contactSchema.parse({
   bookings: {
     heading: 'Reserva una sesión',
     intro:
-      'Dos opciones con horario en Cal.com. El pago (75 € o 150 €) se confirma al reservar. Si todavía no encaja, el formulario de abajo sigue disponible.',
+      'Dos opciones con horario en Cal.com. El pago (75 € o 150 €) se confirma al reservar. Si todavía no encaja, el formulario de abajo sigue disponible.',
     scanLabel: 'Escanea para reservar',
     events: [
       {
@@ -75,22 +75,22 @@ export const contact = contactSchema.parse({
         calLink: 'alexendros/diagnostico',
         url: calEventUrl('alexendros/diagnostico'),
         title: 'Diagnóstico',
-        priceLabel: '75 €',
+        priceLabel: '75 €',
         summary:
           'Una sesión de diagnóstico técnico para entender tu situación y salir con siguientes pasos claros.',
         cta: 'Reservar diagnóstico',
-        qrLabel: 'Código QR para reservar Diagnóstico (75 €) en Cal.com'
+        qrLabel: 'Código QR para reservar Diagnóstico (75 €) en Cal.com'
       },
       {
         id: 'sesion-tecnica',
         calLink: 'alexendros/sesion-tecnica',
         url: calEventUrl('alexendros/sesion-tecnica'),
         title: 'Sesión técnica',
-        priceLabel: '150 €',
+        priceLabel: '150 €',
         summary:
           'Una sesión de trabajo para desbloquear un problema concreto o decidir el siguiente paso técnico.',
         cta: 'Reservar sesión técnica',
-        qrLabel: 'Código QR para reservar Sesión técnica (150 €) en Cal.com'
+        qrLabel: 'Código QR para reservar Sesión técnica (150 €) en Cal.com'
       }
     ]
   }
