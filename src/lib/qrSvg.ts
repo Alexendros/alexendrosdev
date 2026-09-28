@@ -1,5 +1,7 @@
 import { renderSVG } from 'uqr';
 
+/** Colores fijos a propósito: el QR necesita contraste máximo y fondo claro
+    para ser escaneable con cualquier tema del sitio (ver BookingOptions). */
 const QR_OPTIONS = {
   ecc: 'M' as const,
   border: 2,
