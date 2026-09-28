@@ -14,6 +14,7 @@ import Badge from '../components/Badge.astro';
 import Eyebrow from '../components/Eyebrow.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import AxisCard from '../components/AxisCard.astro';
+import Dimension from '../components/Dimension.astro';
 import { services } from '../content/services';
 import { ejes } from '../content/ejes';
 import css from '../styles/global.css?raw';
@@ -290,43 +291,130 @@ const RADIUS = [
       <section aria-labelledby="ds-motion">
         <h2 id="ds-motion" class="text-2xl font-bold">Motion</h2>
         <p class="mt-3 text-sm text-muted max-w-2xl">
-          Las animaciones reales llegan en Fase 3; aquí se demuestra el estado actual (pulso del
-          badge, spinner de Button, transición reveal) y el contrato de reduced-motion: con el
-          toggle se emula <code>prefers-reduced-motion</code> vía la clase
-          <code>.force-reduced-motion</code>, que las mismas reglas respetan.
+          Catálogo completo de Fase 3: entrada del hero, reveal con stagger, microinteracciones
+          (button, link arrow, cards), pulso del badge, spinner, barra de progreso de lectura y view
+          transitions. Regla transversal: solo <code>transform</code> y <code>opacity</code>;
+          reduced-motion sustituye los desplazamientos por fundidos ≤150ms o los elimina. El toggle
+          emula <code>prefers-reduced-motion</code> vía <code>.force-reduced-motion</code> en todos los
+          efectos demostrables aquí (la barra de progreso y las view transitions solo siguen al SO, no
+          admiten selector de clase).
         </p>
-        <div class="mt-4 flex flex-wrap items-center gap-4">
+        <div class="mt-4">
           <Button id="ds-motion-toggle" variant="secondary" aria-pressed="false">
             Emular reduced-motion
           </Button>
+        </div>
+
+        <h3 class="mt-8 text-base font-bold">Entrada del hero</h3>
+        <p class="mt-2 text-sm text-muted max-w-2xl">
+          Escalonada con <code>--stagger</code> (60ms por ítem, 700ms total). En el hero real el H1 (LCP)
+          solo se desplaza, nunca funde desde <code>opacity: 0</code>.
+        </p>
+        <div data-hero data-ds-hero-demo class="mt-3 border border-border rounded-lg p-6 bg-card">
+          <p data-hero-item style="--i:0"><Eyebrow>DISEÑO WEB · VALENCIA</Eyebrow></p>
+          <p class="mt-3" data-hero-item style="--i:1">
+            <Badge>Disponible para nuevos proyectos</Badge>
+          </p>
+          <p class="mt-3 text-2xl font-bold" data-hero-item style="--i:2">
+            Tu web debería ayudarte a conseguir clientes
+          </p>
+          <p class="mt-2 text-muted" data-hero-item style="--i:3">
+            Diseño y mejoro webs para profesionales y pequeños negocios.
+          </p>
+        </div>
+        <div class="mt-3">
+          <Button id="ds-hero-replay" variant="ghost" size="sm">Repetir entrada</Button>
+        </div>
+
+        <h3 class="mt-8 text-base font-bold">Reveal con stagger</h3>
+        <p class="mt-2 text-sm text-muted max-w-2xl">
+          <code>data-reveal</code> + <code>--i</code> por ítem: cada tarjeta entra 60ms después de la
+          anterior (<code>--dur-reveal</code> 700ms, <code>--ease-out</code>).
+        </p>
+        <Grid gap="4" class="mt-3 sm:grid-cols-4" data-ds-reveal-grid>
+          {
+            [0, 1, 2, 3].map((i) => (
+              <div
+                data-reveal
+                style={`--i:${i}`}
+                class="is-visible border border-border rounded-lg p-4 bg-card text-sm text-muted"
+              >
+                Ítem {i + 1}
+              </div>
+            ))
+          }
+        </Grid>
+        <div class="mt-3">
+          <Button id="ds-reveal-replay" variant="ghost" size="sm">Repetir reveal</Button>
+        </div>
+
+        <h3 class="mt-8 text-base font-bold">Microinteracciones</h3>
+        <p class="mt-2 text-sm text-muted max-w-2xl">
+          Button: elevación de 1px con sombra en pseudo-elemento (solo su opacity se anima) y
+          <code>:active</code> a escala 0.98. Link arrow: la flecha avanza 4px. Card: se eleva 4px y la
+          imagen hace zoom 1.03. Pasa el cursor o tabula por ellos.
+        </p>
+        <div class="mt-3 flex flex-wrap items-center gap-4">
+          <Button href="#ds-motion" variant="primary">Button primary</Button>
+          <Button href="#ds-motion" variant="secondary">Button secondary</Button>
+          <Link href="#ds-motion" variant="arrow" class="text-muted">Ver todo</Link>
           <Badge>Estado con pulso</Badge>
           <Button variant="primary" loading>Enviando</Button>
         </div>
-        <div class="mt-6 reveal-enabled" data-ds-reveal-demo>
-          <div data-reveal class="is-visible border border-border rounded-lg p-6 bg-card max-w-md">
-            Bloque <code>[data-reveal]</code>: reaparece cada pocos segundos. Con reduced-motion
-            activo el cambio es instantáneo (sin transición).
-          </div>
+        <div class="mt-4 max-w-sm">
+          <ServiceCard service={services[0]} headingLevel="h3" />
         </div>
+
+        <h3 class="mt-8 text-base font-bold">Barra de progreso y view transitions</h3>
+        <p class="mt-2 text-sm text-muted max-w-2xl">
+          La barra de 2px bajo el header avanza con el scroll de esta página (<code
+            >animation-timeline: scroll(root)</code
+          >, solo navegadores con soporte; sin soporte no se muestra). Las view transitions funden <code
+            >main</code
+          > (200ms) al navegar: se comprueba yendo a la <Link href="/" variant="inline">home</Link> y
+          volviendo atrás.
+        </p>
+
+        <h3 class="mt-8 text-base font-bold">Dimension (decorativa)</h3>
+        <div class="mt-3 hidden md:block">
+          <Dimension label="Contexto — Reto — Solución" />
+        </div>
+        <p class="mt-2 text-xs text-muted md:hidden">Solo visible en viewport de escritorio.</p>
       </section>
     </Stack>
   </Container>
 </Layout>
 
 <script>
-  // Toggle de demo: emula prefers-reduced-motion para las demos de la
-  // página. El estado real del SO sigue gobernando el resto del sitio.
+  // Toggle de demo: emula prefers-reduced-motion para los efectos de la
+  // página. El estado real del SO sigue gobernando la barra de progreso
+  // y las view transitions.
   const toggle = document.getElementById('ds-motion-toggle');
   toggle?.addEventListener('click', () => {
     const on = document.documentElement.classList.toggle('force-reduced-motion');
     toggle.setAttribute('aria-pressed', String(on));
   });
 
-  // Replay del reveal para poder apreciar la transición (o su ausencia).
-  const demo = document.querySelector('[data-ds-reveal-demo] [data-reveal]');
-  if (demo instanceof HTMLElement) {
-    setInterval(() => {
-      demo.classList.toggle('is-visible');
-    }, 2200);
-  }
+  // Replay de la entrada del hero: quitar y devolver data-hero reinicia
+  // las animaciones CSS.
+  const heroReplay = document.getElementById('ds-hero-replay');
+  heroReplay?.addEventListener('click', () => {
+    const demo = document.querySelector('[data-ds-hero-demo]');
+    if (!(demo instanceof HTMLElement)) return;
+    demo.removeAttribute('data-hero');
+    void demo.offsetWidth;
+    demo.setAttribute('data-hero', '');
+  });
+
+  // Replay del reveal con stagger.
+  const revealReplay = document.getElementById('ds-reveal-replay');
+  revealReplay?.addEventListener('click', () => {
+    const tiles = document.querySelectorAll('[data-ds-reveal-grid] [data-reveal]');
+    tiles.forEach((t) => t.classList.remove('is-visible'));
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        tiles.forEach((t) => t.classList.add('is-visible'));
+      });
+    });
+  });
 </script>
