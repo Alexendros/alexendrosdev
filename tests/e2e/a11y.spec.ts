@@ -14,10 +14,11 @@ const routes = [
 
 for (const route of routes) {
   test(`a11y ${route} - 0 violaciones`, async ({ page }) => {
+    // Reduced-motion: reveal (700ms) y entrada del hero quedan en su
+    // estado final de inmediato — axe analiza el contenido completo y
+    // se valida de paso el camino prefers-reduced-motion.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto(route);
-    // El reveal de entrada (400 ms, solo no-preference) deja texto
-    // semitransparente durante la animación; se analiza el estado final.
-    await page.waitForTimeout(600);
     const results = await new AxeBuilder({ page }).analyze();
     expect(
       results.violations,

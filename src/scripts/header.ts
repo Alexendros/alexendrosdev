@@ -17,10 +17,15 @@ function init(): void {
         header.classList.toggle('is-scrolled', !entry.isIntersecting);
       }
     },
-    { threshold: 0 }
+    // Histeresis de 1px: evita el parpadeo de .is-scrolled cuando el
+    // borde del sentinel coincide exactamente con el del viewport.
+    { threshold: 0, rootMargin: '0px 0px -1px 0px' }
   );
 
   observer.observe(sentinel);
+  // MPA: cada navegación descarta el documento, pero si se adopta el
+  // router de Astro el observer no debe acumularse entre swaps.
+  window.addEventListener('pagehide', () => observer.disconnect(), { once: true });
 }
 
 if (document.readyState === 'loading') {

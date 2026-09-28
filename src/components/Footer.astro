@@ -12,22 +12,13 @@ import Link from './Link.astro';
         Webs claras y útiles para profesionales y pequeños negocios. Valencia — remoto.
       </p>
       <div class="mt-4 text-muted">
-        <Link href={site.social.email} variant="nav" class="hover:text-fg">hola@alexendros.dev</Link
-        >
+        <Link href={site.social.email} variant="nav">hola@alexendros.dev</Link>
         <div class="mt-2 flex gap-3">
-          <Link
-            href={site.social.github}
-            variant="nav"
-            class="hover:text-fg"
-            target="_blank"
-            rel="noopener noreferrer">GitHub</Link
+          <Link href={site.social.github} variant="nav" target="_blank" rel="noopener noreferrer"
+            >GitHub</Link
           >
-          <Link
-            href={site.social.linkedin}
-            variant="nav"
-            class="hover:text-fg"
-            target="_blank"
-            rel="noopener noreferrer">LinkedIn</Link
+          <Link href={site.social.linkedin} variant="nav" target="_blank" rel="noopener noreferrer"
+            >LinkedIn</Link
           >
         </div>
         <div class="mt-4 text-xs">Sin cookies de seguimiento. Privacidad respetada.</div>
@@ -40,14 +31,14 @@ import Link from './Link.astro';
           {
             site.nav.map((i) => (
               <li>
-                <Link href={i.href} variant="nav" class="hover:text-fg">
+                <Link href={i.href} variant="nav">
                   {i.label}
                 </Link>
               </li>
             ))
           }
           <li>
-            <Link href="/contacto" variant="nav" class="hover:text-fg">Contacto</Link>
+            <Link href="/contacto" variant="nav">Contacto</Link>
           </li>
         </ul>
       </div>
@@ -57,7 +48,7 @@ import Link from './Link.astro';
           {
             site.footerNav.map((i) => (
               <li>
-                <Link href={i.href} variant="nav" class="hover:text-fg">
+                <Link href={i.href} variant="nav">
                   {i.label}
                 </Link>
               </li>

@@ -37,10 +37,13 @@ export function rgbToHex([r, g, b]) {
 /* ---------- parsing de tokens ---------- */
 
 export function parseDeclarations(block) {
+  // Sin comentarios: un `--x: y;` dentro de un comentario no debe
+  // inyectar tokens basura ni romper la comparación de variantes.
+  const clean = block.replace(/\/\*[\s\S]*?\*\//g, '');
   const props = {};
   const re = /--([\w-]+)\s*:\s*([^;]+);/g;
   let m;
-  while ((m = re.exec(block)) !== null) props[m[1]] = m[2].trim();
+  while ((m = re.exec(clean)) !== null) props[m[1]] = m[2].trim();
   return props;
 }
 
@@ -101,16 +104,21 @@ export function extractThemes(css) {
   const darkSectionMatch = css.match(/\/\*\s*@tema-oscuro:inicio[\s\S]*?@tema-oscuro:fin\s*\*\//);
   let dark = null;
   let darkConsistent = false;
+  let darkPartial = false;
   if (darkSectionMatch) {
     const section = darkSectionMatch[0];
     const mediaBlock = extractBlock(section, /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{/);
     const dataBlock = extractBlock(section, /:root\[data-theme='dark'\]\s*\{/);
+    darkPartial = Boolean(mediaBlock) !== Boolean(dataBlock);
     if (mediaBlock && dataBlock) {
       const mediaProps = parseDeclarations(mediaBlock);
       const dataProps = parseDeclarations(dataBlock);
-      darkConsistent = JSON.stringify(mediaProps) === JSON.stringify(dataProps);
+      // Comparación insensible al orden de declaraciones.
+      const sorted = (o) =>
+        Object.fromEntries(Object.entries(o).sort(([a], [b]) => a.localeCompare(b)));
+      darkConsistent = JSON.stringify(sorted(mediaProps)) === JSON.stringify(sorted(dataProps));
       dark = { ...light, ...mediaProps };
     }
   }
-  return { light, dark, darkConsistent };
+  return { light, dark, darkConsistent, darkPartial };
 }

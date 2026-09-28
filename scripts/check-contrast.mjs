@@ -24,12 +24,15 @@ const SEMANTIC = [
   'brand-hover',
   'brand-fg',
   'border',
+  'border-strong',
   'card',
   'danger'
 ];
 
 // [nombre, texto, fondo, mínimo]. --brand se usa como color de texto
 // (precios, enlaces, kickers), así que su mínimo es 4.5:1, no 3:1.
+// --border-strong es la frontera de componentes interactivos (inputs):
+// WCAG 1.4.11 pide 3:1 contra el fondo que la rodea (card y bg).
 const PAIRS = [
   ['fg/bg (texto principal)', 'fg', 'bg', 4.5],
   ['fg-muted/bg (texto secundario)', 'fg-muted', 'bg', 4.5],
@@ -39,7 +42,9 @@ const PAIRS = [
   ['fg-muted/card (secundario en tarjetas)', 'fg-muted', 'card', 4.5],
   ['danger/card (errores en tarjetas)', 'danger', 'card', 4.5],
   ['danger/bg (errores sobre fondo)', 'danger', 'bg', 4.5],
-  ['brand-fg/brand-hover (CTAs en hover)', 'brand-fg', 'brand-hover', 4.5]
+  ['brand-fg/brand-hover (CTAs en hover)', 'brand-fg', 'brand-hover', 4.5],
+  ['border-strong/card (frontera de inputs)', 'border-strong', 'card', 3.0],
+  ['border-strong/bg (frontera de inputs)', 'border-strong', 'bg', 3.0]
 ];
 
 let failed = 0;
@@ -99,9 +104,14 @@ function validateTheme(label, props) {
   }
 }
 
-const { light, dark, darkConsistent } = extractThemes(css);
-validateTheme('claro ', light);
-if (dark && Object.keys(dark).length > 0) {
+const { light, dark, darkConsistent, darkPartial } = extractThemes(css);
+validateTheme('claro', light);
+if (darkPartial) {
+  failed += 1;
+  console.log(
+    'FAIL  tema oscuro: existe @tema-oscuro pero falta una de las dos variantes (@media o data-theme)'
+  );
+} else if (dark && Object.keys(dark).length > 0) {
   if (!darkConsistent) {
     failed += 1;
     console.log('FAIL  tema oscuro: las variantes @media y data-theme no coinciden');
