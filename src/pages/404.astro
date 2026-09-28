@@ -1,22 +1,23 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PageHead from '../components/PageHead.astro';
+import Container from '../components/Container.astro';
+import Button from '../components/Button.astro';
+import Link from '../components/Link.astro';
 ---
 
 <Layout title="Página no encontrada — Alexendros" description="Esta página no existe.">
-  <div class="mx-auto max-w-4xl px-6 py-16 md:py-24">
+  <Container size="narrow" class="py-16 md:py-24">
     <PageHead
       kicker="NO ENCONTRADA"
       title="Esta página no existe"
       description="La página que buscas se ha movido o ya no existe. Estas son las páginas disponibles."
     />
-    <div class="mt-8 flex flex-wrap gap-x-5 gap-y-3">
-      <a href="/" class="bg-primary text-ink px-6 py-3 rounded-lg font-medium focus-ring"
-        >Volver al inicio</a
-      >
-      <a href="/contacto" class="underline text-muted hover:text-fg focus-ring rounded"
-        >Cuéntame qué buscabas</a
+    <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
+      <Button href="/">Volver al inicio</Button>
+      <Link href="/contacto" variant="inline" class="text-muted hover:text-fg"
+        >Cuéntame qué buscabas</Link
       >
     </div>
-  </div>
+  </Container>
 </Layout>

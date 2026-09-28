@@ -1,6 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PageHead from '../components/PageHead.astro';
+import Container from '../components/Container.astro';
+import Stack from '../components/Stack.astro';
+import Button from '../components/Button.astro';
 
 const steps = [
   {
@@ -38,14 +41,14 @@ const transparency = [
   title="Cómo trabajo — Alexendros"
   description="Un proceso claro por fases: desde entender tu negocio hasta publicar y entregarte lo necesario."
 >
-  <div class="mx-auto max-w-4xl px-6 pt-12 pb-16">
+  <Container size="narrow" class="pt-12 pb-16">
     <PageHead
       kicker="PROCESO"
       title="Un proceso claro para que sepas qué va a pasar en cada fase."
       description="Sin sorpresas de alcance. Antes de empezar acordamos qué se hace, qué no se hace y cómo validamos cada entrega."
     />
 
-    <ol class="mt-10 space-y-4">
+    <Stack as="ol" gap="4" class="mt-10">
       {
         steps.map((step, i) => (
           <li class="border border-border rounded-lg p-5 bg-card">
@@ -55,7 +58,7 @@ const transparency = [
           </li>
         ))
       }
-    </ol>
+    </Stack>
 
     <section class="mt-12">
       <h2 class="text-2xl font-bold">Lo que siempre tendrás claro</h2>
@@ -75,11 +78,7 @@ const transparency = [
     </details>
 
     <div class="mt-10">
-      <a
-        href="/contacto"
-        class="inline-block bg-primary text-ink px-6 py-3 rounded-lg font-medium focus-ring"
-        >Cuéntame qué necesitas</a
-      >
+      <Button href="/contacto">Cuéntame qué necesitas</Button>
     </div>
-  </div>
+  </Container>
 </Layout>

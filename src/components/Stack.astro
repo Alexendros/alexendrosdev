@@ -1,0 +1,15 @@
+---
+// Pila vertical con ritmo desde la escala de espaciado (--space-*).
+// Admite atributos extra (data-*, aria-*) vía rest spread.
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: 'div' | 'section' | 'ul' | 'ol' | 'article';
+  gap?: string;
+}
+const { as: Tag = 'div', gap = '4', class: className = '', ...attrs } = Astro.props;
+---
+
+<Tag {...attrs} class:list={['flex flex-col', className]} style={`gap: var(--space-${gap})`}>
+  <slot />
+</Tag>

@@ -1,7 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
-import FigureHead from '../components/FigureHead.astro';
+import Section from '../components/Section.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import Container from '../components/Container.astro';
+import Grid from '../components/Grid.astro';
+import Button from '../components/Button.astro';
+import Link from '../components/Link.astro';
 import Dimension from '../components/Dimension.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
@@ -16,62 +21,68 @@ const featured = getFeaturedProjects().slice(0, 3);
 <Layout>
   <Hero />
 
-  <div class="mx-auto max-w-6xl px-6 pt-4 md:pt-6">
+  <Container class="pt-4 md:pt-6">
     <Dimension label="Servicios · Casos · Ejes · Contacto" />
-  </div>
+  </Container>
 
-  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
-    <FigureHead
-      index="01"
-      title="Cómo puedo ayudarte"
-      description="Cuatro formas de trabajar: web nueva o renovación, revisión con plan de mejora, plan digital antes de invertir, o landing en 10 días."
-      linkHref="/servicios"
-      linkText="Ver todo"
-    />
-    <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-services-grid>
-      {services.map((s) => <ServiceCard service={s} headingLevel="h3" />)}
-    </div>
-    <p class="mt-8 text-sm text-muted max-w-2xl">
-      Proceso claro, presupuesto cerrado y entregas definidas.
-      <a href="/como-trabajo" class="underline focus-ring rounded">Cómo trabajo</a>
-    </p>
-  </section>
+  <Section reveal>
+    <Container>
+      <SectionHeader
+        index="01"
+        title="Cómo puedo ayudarte"
+        description="Cuatro formas de trabajar: web nueva o renovación, revisión con plan de mejora, plan digital antes de invertir, o landing en 10 días."
+        linkHref="/servicios"
+        linkText="Ver todo"
+      />
+      <Grid gap="6" class="mt-6 sm:grid-cols-2 lg:grid-cols-4" data-services-grid>
+        {services.map((s) => <ServiceCard service={s} headingLevel="h3" />)}
+      </Grid>
+      <p class="mt-8 text-sm text-muted max-w-2xl">
+        Proceso claro, presupuesto cerrado y entregas definidas.
+        <Link href="/como-trabajo" variant="inline" class="text-fg">Cómo trabajo</Link>
+      </p>
+    </Container>
+  </Section>
 
-  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
-    <FigureHead
-      index="02"
-      title="Casos reales"
-      description="En cada proyecto verás el problema, lo que se hizo y qué cambió."
-      linkHref="/proyectos"
-      linkText="Ver todos"
-    />
-    <div class="mt-6 grid md:grid-cols-2 gap-6 lg:grid-cols-3">
-      {featured.map((p) => <ProjectCard project={p} headingLevel="h3" />)}
-    </div>
-  </section>
+  <Section reveal>
+    <Container>
+      <SectionHeader
+        index="02"
+        title="Casos reales"
+        description="En cada proyecto verás el problema, lo que se hizo y qué cambió."
+        linkHref="/proyectos"
+        linkText="Ver todos"
+      />
+      <Grid gap="6" class="mt-6 md:grid-cols-2 lg:grid-cols-3">
+        {featured.map((p) => <ProjectCard project={p} headingLevel="h3" />)}
+      </Grid>
+    </Container>
+  </Section>
 
-  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 cv-auto" data-reveal>
-    <FigureHead
-      index="03"
-      title="Ejes de trabajo"
-      description="Tres ejes sostienen cada entrega: claridad, velocidad, y accesibilidad con privacidad."
-    />
-    <div class="mt-6 grid md:grid-cols-3 gap-6">
-      {ejes.map((e) => <AxisCard eje={e} />)}
-    </div>
-  </section>
+  <Section reveal>
+    <Container>
+      <SectionHeader
+        index="03"
+        title="Ejes de trabajo"
+        description="Tres ejes sostienen cada entrega: claridad, velocidad, y accesibilidad con privacidad."
+      />
+      <Grid gap="6" class="mt-6 md:grid-cols-3">
+        {ejes.map((e) => <AxisCard eje={e} />)}
+      </Grid>
+    </Container>
+  </Section>
 
-  <section class="mx-auto max-w-6xl px-6 py-16 md:py-24 text-center cv-auto" data-reveal>
-    <FigureHead
-      index="04"
-      align="center"
-      title="¿Encaja con lo que buscas?"
-      description="Respuesta directa. Si no encajo, te lo digo en la primera conversación."
-    />
-    <div class="mt-6">
-      <a href="/contacto" class="bg-primary text-ink px-6 py-3 rounded-lg font-medium focus-ring"
-        >Cuéntame qué necesitas</a
-      >
-    </div>
-  </section>
+  <Section reveal>
+    <Container class="text-center">
+      <SectionHeader
+        index="04"
+        align="center"
+        title="¿Encaja con lo que buscas?"
+        description="Respuesta directa. Si no encajo, te lo digo en la primera conversación."
+      />
+      <div class="mt-6">
+        <Button href="/contacto">Cuéntame qué necesitas</Button>
+      </div>
+    </Container>
+  </Section>
 </Layout>

@@ -1,5 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Container from '../../components/Container.astro';
+import Button from '../../components/Button.astro';
+import Link from '../../components/Link.astro';
 import { services } from '../../content/services';
 export async function getStaticPaths() {
   return services.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
@@ -16,9 +19,9 @@ const audienceItems = service.audience
   description={service.short}
   ogImage={`/og/servicios/${service.slug}.png`}
 >
-  <div class="mx-auto max-w-4xl px-6 py-16 md:py-24">
+  <Container size="narrow" class="py-16 md:py-24">
     <div class="text-xs text-muted">
-      <a href="/servicios" class="hover:text-fg focus-ring rounded">Cómo puedo ayudarte</a> / {
+      <Link href="/servicios" variant="nav" class="hover:text-fg">Cómo puedo ayudarte</Link> / {
         service.title
       }
     </div>
@@ -67,11 +70,7 @@ const audienceItems = service.audience
         · {service.timeline}
       </p>
 
-      <a
-        href={service.cta}
-        class="inline-block bg-primary text-ink px-6 py-3 rounded-lg font-medium focus-ring"
-        >Solicita información sobre este servicio</a
-      >
+      <Button href={service.cta}>Solicita información sobre este servicio</Button>
 
       <details class="border border-border rounded-lg p-5 bg-card">
         <summary class="font-bold cursor-pointer focus-ring rounded">Detalles técnicos</summary>
@@ -80,5 +79,5 @@ const audienceItems = service.audience
         </div>
       </details>
     </div>
-  </div>
+  </Container>
 </Layout>

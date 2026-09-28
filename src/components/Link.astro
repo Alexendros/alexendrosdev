@@ -1,0 +1,43 @@
+---
+// Enlace con variantes del design system:
+// - inline: subrayado (cuerpo de texto, notas legales).
+// - nav: sin subrayado, hover en brand (cabecera, pie).
+// - arrow: nav + "→" en .link-arrow (aria-hidden), listo para la
+//   animación de Fase 3.
+// `current` marca el enlace activo con aria-current="page". Admite los
+// atributos nativos de <a> (target, rel, data-*, aria-*...).
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  variant?: 'inline' | 'nav' | 'arrow';
+  current?: boolean;
+}
+const { href, variant = 'inline', current = false, class: className = '', ...attrs } = Astro.props;
+const variants = {
+  inline: 'underline underline-offset-2 hover:text-primaryHover',
+  nav: 'hover:text-primary',
+  arrow: 'hover:text-primary'
+};
+---
+
+<a
+  {...attrs}
+  href={href}
+  aria-current={current ? 'page' : undefined}
+  class:list={[
+    'focus-ring rounded transition-colors',
+    variants[variant],
+    current && 'text-primary',
+    className
+  ]}
+>
+  <slot />
+  {
+    variant === 'arrow' && (
+      <span class="link-arrow" aria-hidden="true">
+        &nbsp;→
+      </span>
+    )
+  }
+</a>

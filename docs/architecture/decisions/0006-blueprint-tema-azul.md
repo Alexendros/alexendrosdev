@@ -1,5 +1,9 @@
 # ADR 0006: Activación del tema azul blueprint
 
+> Estado: superseded por [ADR 0011](0011-tema-claro-editorial.md)
+> (2026-09-28). Se conserva como historial; el tema activo es el claro
+> editorial definido en el ADR 0011.
+
 Fecha: 2026-09-27 — Rama: `cursor/blueprint-tema-azul`
 
 ## Contexto

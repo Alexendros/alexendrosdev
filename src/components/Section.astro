@@ -1,0 +1,28 @@
+---
+// Sección de página: padding vertical desde tokens (--space-16 /
+// --space-24) y content-visibility (cv-auto) para el render. Componer
+// con Container para el ancho y SectionHeader para el encabezado.
+// Admite atributos extra (id, data-*, aria-*) vía rest spread.
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'section'> {
+  as?: 'section' | 'div';
+  cv?: boolean;
+  reveal?: boolean;
+}
+const {
+  as: Tag = 'section',
+  cv = true,
+  reveal = false,
+  class: className = '',
+  ...attrs
+} = Astro.props;
+---
+
+<Tag
+  {...attrs}
+  data-reveal={reveal || undefined}
+  class:list={['py-[var(--space-16)] md:py-[var(--space-24)]', cv && 'cv-auto', className]}
+>
+  <slot />
+</Tag>

@@ -1,0 +1,31 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "ignoreFiles": ["node_modules/**", ".vercel/**", "dist/**", ".astro/**", "coverage/**"],
+  "rules": {
+    "at-rule-no-unknown": [
+      true,
+      { "ignoreAtRules": ["tailwind", "apply", "layer", "screen", "variants"] }
+    ],
+    "alpha-value-notation": null,
+    "media-feature-range-notation": null,
+    "value-keyword-case": null,
+    "declaration-no-important": true,
+    "declaration-property-value-disallowed-list": [
+      {
+        "color": ["/^#(?:[0-9a-f]{3,8})$/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "/color$/": ["/^#(?:[0-9a-f]{3,8})$/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "background": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "background-image": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "box-shadow": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "text-shadow": ["/#(?:[0-9a-f]{3,8})/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "fill": ["/^#(?:[0-9a-f]{3,8})$/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "stroke": ["/^#(?:[0-9a-f]{3,8})$/i", "/^rgba?\\(/i", "/^oklch\\(/i"],
+        "transition": ["/\\ball\\b/i"]
+      },
+      {
+        "severity": "error",
+        "message": "Color literal, oklch/rgb() o transition:all fuera de @layer tokens: usa tokens semánticos (var()) o color-mix (docs/design-system.md)"
+      }
+    ]
+  }
+}

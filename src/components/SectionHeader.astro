@@ -1,0 +1,44 @@
+---
+// Cabecera de sección: kicker mono ("FIG. 0X" vía Eyebrow), H2, intro
+// opcional y enlace "Ver todo →" (Link variant arrow). Sustituye al
+// FigureHead original (conservado como wrapper por compatibilidad).
+import Eyebrow from './Eyebrow.astro';
+import Link from './Link.astro';
+
+interface Props {
+  index: string;
+  title: string;
+  description?: string;
+  linkHref?: string;
+  linkText?: string;
+  align?: 'start' | 'center';
+}
+const { index, title, description, linkHref, linkText, align = 'start' } = Astro.props;
+const centered = align === 'center';
+---
+
+<div
+  class:list={[
+    'flex gap-4',
+    centered ? 'flex-col items-center text-center' : 'justify-between items-end'
+  ]}
+>
+  <div class:list={[centered && 'flex flex-col items-center']}>
+    <Eyebrow>FIG. {index}</Eyebrow>
+    <h2 class="text-2xl font-bold mt-2">{title}</h2>
+    {
+      description && (
+        <p class:list={['text-sm text-muted mt-2 max-w-2xl', centered && 'mx-auto']}>
+          {description}
+        </p>
+      )
+    }
+  </div>
+  {
+    linkHref && linkText && (
+      <Link href={linkHref} variant="arrow" class="text-sm text-muted shrink-0">
+        {linkText}
+      </Link>
+    )
+  }
+</div>

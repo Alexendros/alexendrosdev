@@ -1,5 +1,7 @@
 ---
 import { site } from '../content/site';
+import Link from './Link.astro';
+import Button from './Button.astro';
 const path = Astro.url.pathname;
 ---
 
@@ -16,23 +18,15 @@ const path = Astro.url.pathname;
         site.nav.map((i) => {
           const current = path.startsWith(i.href);
           return (
-            <a
-              href={i.href}
-              aria-current={current ? 'page' : undefined}
-              class={`hover:text-primary transition focus-ring rounded ${current ? 'text-primary' : 'text-muted'}`}
-            >
+            <Link href={i.href} variant="nav" current={current} class="text-muted">
               {i.label}
-            </a>
+            </Link>
           );
         })
       }
     </nav>
     <div class="flex items-center gap-2 shrink-0">
-      <a
-        href="/contacto"
-        class="bg-primary text-ink px-4 py-2 rounded-lg text-sm font-medium hover:opacity-90 transition focus-ring"
-        >Cuéntame</a
-      >
+      <Button href="/contacto" size="sm">Cuéntame</Button>
       <button
         type="button"
         data-menu-button
@@ -67,6 +61,7 @@ const path = Astro.url.pathname;
           stroke="currentColor"
           stroke-width="2"
           stroke-linecap="round"
+          stroke-linejoin="round"
           aria-hidden="true"
           class="hidden"
         >
@@ -81,22 +76,26 @@ const path = Astro.url.pathname;
       {
         site.nav.map((i) => (
           <li>
-            <a
+            <Link
               href={i.href}
-              class={`block py-2 hover:text-primary focus-ring rounded ${path.startsWith(i.href) ? 'text-primary' : 'text-muted'}`}
+              variant="nav"
+              current={path.startsWith(i.href)}
+              class="block py-2 text-muted"
             >
               {i.label}
-            </a>
+            </Link>
           </li>
         ))
       }
       <li>
-        <a
+        <Link
           href="/contacto"
-          class={`block py-2 hover:text-primary focus-ring rounded ${path.startsWith('/contacto') ? 'text-primary' : 'text-muted'}`}
+          variant="nav"
+          current={path.startsWith('/contacto')}
+          class="block py-2 text-muted"
         >
           Cuéntame
-        </a>
+        </Link>
       </li>
     </ul>
   </nav>

@@ -1,132 +1,137 @@
-// Valida el contraste WCAG de los pares de color del design system (§3.1)
-// y el guardrail de fuente única (los literales viven en global.css :root,
-// tailwind.config.mjs solo referencia var()).
-// Uso: node scripts/check-contrast.mjs
+// Valida el contraste WCAG de los pares semánticos del design system
+// (ADR 0011, tema claro editorial + tema oscuro opcional) y los
+// guardrails de fuente única: los literales viven en global.css
+// (primitivos hex + semánticos por var()); tailwind.config.mjs solo
+// referencia var()/color-mix. La matemática de color y el parsing de
+// tokens se comparten con src/pages/design-system.astro vía
+// scripts/contrast-lib.mjs.
+// Uso: node scripts/check-contrast.mjs — sale con 1 si algún par falla.
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { extractThemes, resolveValue, toRgb, ratio } from './contrast-lib.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const css = readFileSync(join(root, 'src/styles/global.css'), 'utf8');
 const tailwind = readFileSync(join(root, 'tailwind.config.mjs'), 'utf8');
 
-function parseOklch(value) {
-  const m = value
-    .trim()
-    .match(/^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\s*\)$/);
-  if (!m) throw new Error(`No es oklch: ${value}`);
-  return {
-    L: Number(m[1]),
-    C: Number(m[2]),
-    H: Number(m[3]),
-    A: m[4] === undefined ? 1 : Number(m[4])
-  };
-}
+const SEMANTIC = [
+  'bg',
+  'bg-subtle',
+  'fg',
+  'fg-muted',
+  'brand',
+  'brand-hover',
+  'brand-fg',
+  'border',
+  'card',
+  'danger'
+];
 
-function oklchToLinearSrbg({ L, C, H }) {
-  const rad = (H * Math.PI) / 180;
-  const a = C * Math.cos(rad);
-  const b = C * Math.sin(rad);
-  const l_ = L + 0.3963377774 * a + 0.2158037573 * b;
-  const m_ = L - 0.1055613458 * a - 0.0638541728 * b;
-  const s_ = L - 0.0894841775 * a - 1.291485548 * b;
-  const l = l_ ** 3;
-  const m = m_ ** 3;
-  const s = s_ ** 3;
-  return [
-    4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
-    -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
-    -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s
-  ];
-}
-
-const toSrgb = (c) => {
-  const cl = Math.min(1, Math.max(0, c));
-  return cl <= 0.0031308 ? 12.92 * cl : 1.055 * cl ** (1 / 2.4) - 0.055;
-};
-
-// Compone un color con alfa sobre un fondo opaco (ambos en sRGB 0-1).
-function composite(fg, bg) {
-  const [fr, fgg, fb] = oklchToLinearSrbg(fg).map(toSrgb);
-  if (fg.A >= 1) return [fr, fgg, fb];
-  return [
-    fr * fg.A + bg[0] * (1 - fg.A),
-    fgg * fg.A + bg[1] * (1 - fg.A),
-    fb * fg.A + bg[2] * (1 - fg.A)
-  ];
-}
-
-function luminance([r, g, b]) {
-  const f = (c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
-  return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
-}
-
-function ratio(a, b) {
-  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
-  return (hi + 0.05) / (lo + 0.05);
-}
-
-const vars = {};
-for (const m of css.matchAll(/--([\w-]+)\s*:\s*(oklch\([^)]+\))/g)) vars[m[1]] = parseOklch(m[2]);
-
-for (const v of ['bg', 'fg', 'primary', 'muted', 'border', 'card', 'ink', 'danger']) {
-  if (!vars[v]) throw new Error(`Falta --${v} en :root`);
-}
-
-const bg = composite(vars.bg, [0, 0, 0]);
-// Pares §3.1: [nombre, color texto (o fondo), fondo, mínimo AA]
-const pairs = [
+// [nombre, texto, fondo, mínimo]. --brand se usa como color de texto
+// (precios, enlaces, kickers), así que su mínimo es 4.5:1, no 3:1.
+const PAIRS = [
   ['fg/bg (texto principal)', 'fg', 'bg', 4.5],
-  ['muted/bg (texto secundario)', 'muted', 'bg', 4.5],
-  ['ink/primary (texto de CTAs)', 'ink', 'primary', 4.5],
-  ['primary/bg (acento sobre fondo)', 'primary', 'bg', 3.0],
+  ['fg-muted/bg (texto secundario)', 'fg-muted', 'bg', 4.5],
+  ['brand-fg/brand (texto de CTAs)', 'brand-fg', 'brand', 4.5],
+  ['brand/bg (acento como texto)', 'brand', 'bg', 4.5],
   ['fg/card (texto en tarjetas)', 'fg', 'card', 4.5],
-  ['muted/card (secundario en tarjetas)', 'muted', 'card', 4.5],
+  ['fg-muted/card (secundario en tarjetas)', 'fg-muted', 'card', 4.5],
   ['danger/card (errores en tarjetas)', 'danger', 'card', 4.5],
-  ['danger/bg (errores sobre fondo)', 'danger', 'bg', 4.5]
+  ['danger/bg (errores sobre fondo)', 'danger', 'bg', 4.5],
+  ['brand-fg/brand-hover (CTAs en hover)', 'brand-fg', 'brand-hover', 4.5]
 ];
 
 let failed = 0;
-for (const [name, fgName, bgName, min] of pairs) {
-  const bgRgb = bgName === 'bg' ? bg : composite(vars[bgName], bg);
-  const fgRgb = composite(vars[fgName], bgName === 'bg' ? bg : composite(vars[bgName], bg));
-  void bgRgb;
-  const r = ratio(fgRgb, bgName === 'bg' ? bg : composite(vars[bgName], bg));
-  const ok = r >= min;
-  if (!ok) failed += 1;
-  console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}: ${r.toFixed(2)}:1 (mínimo ${min}:1)`);
-}
 
-// Par informativo: reserva Blueprint Lab (tema activo desde
-// docs/architecture/decisions/0006-blueprint-tema-azul.md).
-if (vars['bp-bg'] && vars['bp-fg']) {
-  const r = ratio(composite(vars['bp-fg'], [0, 0, 0]), composite(vars['bp-bg'], [0, 0, 0]));
-  console.log(`INFO  bp-fg/bp-bg (reserva Blueprint Lab): ${r.toFixed(2)}:1`);
-}
+function validateTheme(label, props) {
+  const resolved = {};
+  for (const name of SEMANTIC) {
+    if (!(name in props)) {
+      failed += 1;
+      console.log(`FAIL  ${label}: falta --${name}`);
+      continue;
+    }
+    try {
+      resolved[name] = resolveValue(props[name], props);
+    } catch (err) {
+      failed += 1;
+      console.log(`FAIL  ${label}: no se pudo resolver --${name}: ${err.message}`);
+    }
+  }
+  const bg = toRgb(resolved.bg, [255, 255, 255]);
+  const card = toRgb(resolved.card, bg);
 
-// Guardrail cianotipo (docs/architecture/decisions/0007-blueprint-cianotipo.md):
-// los matices del fondo por capas deben existir en :root.
-for (const v of ['bp-glow', 'bp-deep']) {
-  if (!vars[v]) {
-    failed += 1;
-    console.log(`FAIL  falta --${v} en :root (fondo cianotipo por capas)`);
-  } else {
-    console.log(`PASS  --${v} definido en :root (fondo cianotipo por capas)`);
+  for (const [name, fgName, bgName, min] of PAIRS) {
+    if (!resolved[fgName] || !resolved[bgName]) continue;
+    // Los pares son colores opacos: se comparan directamente sobre el
+    // fondo del propio par (bg, card, brand o brand-hover).
+    const fgRgb = toRgb(resolved[fgName], bg);
+    const backdrop = toRgb(resolved[bgName], bg);
+    const r = ratio(fgRgb, backdrop);
+    const ok = r >= min;
+    if (!ok) failed += 1;
+    console.log(`${ok ? 'PASS' : 'FAIL'}  ${label} ${name}: ${r.toFixed(2)}:1 (mínimo ${min}:1)`);
+  }
+
+  // Indicador de foco: la clase .focus-ring usa outline sólido --brand
+  // (WCAG 1.4.11, ≥3:1 sobre fondo y tarjeta). El token --focus-ring es
+  // un color-mix al 55%: se informa compuesto sobre ambos fondos.
+  if (resolved.brand) {
+    const ringRaw = props['focus-ring'] ?? '';
+    const ringMatch = ringRaw.match(
+      /color-mix\(in srgb, var\([^)]+\)\s+[\d.]+%\s*,\s*transparent\)/
+    );
+    if (!ringMatch) {
+      failed += 1;
+      console.log(`FAIL  ${label}: --focus-ring sin color-mix reconocible`);
+    } else {
+      const ring = resolveValue(ringMatch[0], props);
+      const ringRgb = toRgb(ring, bg);
+      const rBg = ratio(ringRgb, bg);
+      const rCard = ratio(ringRgb, card);
+      const ok = Math.min(rBg, rCard) >= 3.0;
+      if (!ok) failed += 1;
+      console.log(
+        `${ok ? 'PASS' : 'FAIL'}  ${label} focus-ring sobre bg/card: ${Math.min(rBg, rCard).toFixed(2)}:1 (mínimo 3:1)`
+      );
+    }
   }
 }
 
-// Nota: retícula, sombreado .bp-hatch, motivo esquemático y cajetín son
-// decorativos (aria-hidden) y están exentos de contraste WCAG; el texto del
-// cajetín usa --fg/--muted sobre mezcla al 78% de --bg (pares §3.1 cubren
-// el caso estricto sobre --bg puro).
-
-// Guardrail de fuente única: tailwind no debe contener literales oklch.
-const literals = (tailwind.match(/oklch\(/g) ?? []).length;
-if (literals > 0) {
-  failed += 1;
-  console.log(`FAIL  tailwind.config.mjs contiene ${literals} literal(es) oklch (usar var())`);
+const { light, dark, darkConsistent } = extractThemes(css);
+validateTheme('claro ', light);
+if (dark && Object.keys(dark).length > 0) {
+  if (!darkConsistent) {
+    failed += 1;
+    console.log('FAIL  tema oscuro: las variantes @media y data-theme no coinciden');
+  }
+  validateTheme('oscuro', dark);
 } else {
-  console.log('PASS  tailwind.config.mjs sin literales oklch (referencia var())');
+  console.log('INFO  tema oscuro no publicado (sin bloque @tema-oscuro)');
+}
+
+/* ---------- guardrails de fuente única ---------- */
+
+const oklchInCss = (css.match(/oklch\(/g) ?? []).length;
+if (oklchInCss > 0) {
+  failed += 1;
+  console.log(
+    `FAIL  global.css contiene ${oklchInCss} literal(es) oklch (la paleta es hex en :root)`
+  );
+} else {
+  console.log('PASS  global.css sin literales oklch (paleta hex en :root)');
+}
+
+const hexInTailwind = (tailwind.match(/#[0-9a-f]{3,8}\b/gi) ?? []).length;
+const oklchInTailwind = (tailwind.match(/oklch\(/g) ?? []).length;
+if (hexInTailwind + oklchInTailwind > 0) {
+  failed += 1;
+  console.log(
+    `FAIL  tailwind.config.mjs contiene ${hexInTailwind} hex y ${oklchInTailwind} oklch (usar var()/color-mix)`
+  );
+} else {
+  console.log('PASS  tailwind.config.mjs sin literales de color (referencia var()/color-mix)');
 }
 
 if (failed > 0) {

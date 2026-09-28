@@ -1,15 +1,18 @@
 ---
 import BlueprintMotif from './BlueprintMotif.astro';
+import Eyebrow from './Eyebrow.astro';
+import Badge from './Badge.astro';
+import Button from './Button.astro';
+import Link from './Link.astro';
 ---
 
 <section class="relative mx-auto max-w-3xl px-6 py-16 md:py-24 overflow-hidden">
-  <BlueprintMotif class="pointer-events-none absolute -right-16 top-0 h-full w-auto opacity-25" />
-  <p class="font-mono text-xs tracking-[0.1em] text-muted">DISEÑO WEB · VALENCIA</p>
-  <div
-    class="mt-4 inline-flex items-center gap-2 text-xs font-mono border border-border rounded-lg px-3 py-1 text-muted"
-  >
-    <span class="w-2 h-2 rounded-full bg-primary motion-safe:animate-pulse" aria-hidden="true"
-    ></span> Disponible para nuevos proyectos
+  <BlueprintMotif
+    class="pointer-events-none absolute -right-16 top-4 h-56 w-auto aspect-[4/3] text-brand-line md:-right-20 md:top-8 md:h-96"
+  />
+  <Eyebrow>DISEÑO WEB · VALENCIA</Eyebrow>
+  <div class="mt-4">
+    <Badge>Disponible para nuevos proyectos</Badge>
   </div>
   <h1 class="bp-h1 mt-6 text-4xl md:text-5xl font-bold leading-[1.05] tracking-tight max-w-3xl">
     Tu web debería ayudarte a conseguir clientes,
@@ -20,11 +23,9 @@ import BlueprintMotif from './BlueprintMotif.astro';
     hacen y recibir más contactos.
   </p>
   <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3">
-    <a href="/contacto" class="bg-primary text-ink px-6 py-3 rounded-lg font-medium focus-ring">
-      Cuéntame qué necesitas</a
-    >
-    <a href="/servicios" class="underline text-muted hover:text-fg focus-ring rounded"
-      >Ver cómo puedo ayudarte</a
+    <Button href="/contacto">Cuéntame qué necesitas</Button>
+    <Link href="/servicios" variant="inline" class="text-muted hover:text-fg"
+      >Ver cómo puedo ayudarte</Link
     >
   </div>
 </section>

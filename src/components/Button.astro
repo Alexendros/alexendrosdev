@@ -1,0 +1,80 @@
+---
+// Botón del design system. Con `href` renderiza <a>; sin él, <button>.
+// - variant: primary (bg-brand/texto sobre brand), secondary (borde +
+//   texto brand sobre transparente), ghost (solo texto).
+// - size: sm (36px, solo contextos densos como el banner), md/lg
+//   (objetivo táctil ≥ 44×44px). Los tamaños usan min-h-*: el ancho
+//   depende del contenido, nunca menor que el objetivo táctil.
+// - loading (solo <button>): spinner CSS (.btn-spinner en global.css)
+//   y aria-busy; el botón queda deshabilitado mientras carga.
+// - disabled: en <button> usa el atributo; en <a> usa aria-disabled y
+//   sale del orden de tabulación.
+// Admite atributos nativos del elemento que renderice (target, rel,
+// data-*, aria-*) vía rest spread.
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'a'> {
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'sm' | 'md' | 'lg';
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+  loading?: boolean;
+}
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  type = 'button',
+  disabled = false,
+  loading = false,
+  class: className = '',
+  ...attrs
+} = Astro.props;
+const sizes = {
+  sm: 'min-h-9 px-4 py-1.5 text-sm',
+  md: 'min-h-11 px-6 py-3',
+  lg: 'min-h-11 px-8 py-3.5 text-lg'
+};
+const variants = {
+  primary: 'bg-primary text-ink hover:bg-primaryHover',
+  secondary: 'border border-border text-brand hover:bg-primaryGhost hover:border-primarySoft',
+  ghost: 'text-brand hover:bg-primaryGhost'
+};
+const classes = [
+  'inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors select-none',
+  sizes[size],
+  variants[variant],
+  disabled && 'opacity-50 pointer-events-none',
+  className
+];
+---
+
+{
+  href ? (
+    <a
+      {...attrs}
+      href={href}
+      class:list={classes}
+      aria-disabled={disabled || undefined}
+      tabindex={disabled ? -1 : undefined}
+    >
+      <span>
+        <slot />
+      </span>
+    </a>
+  ) : (
+    <button
+      {...attrs}
+      type={type}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
+      class:list={classes}
+    >
+      {loading && <span class="btn-spinner" aria-hidden="true" />}
+      <span>
+        <slot />
+      </span>
+    </button>
+  )
+}

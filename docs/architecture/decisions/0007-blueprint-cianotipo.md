@@ -1,5 +1,9 @@
 # ADR 0007: cianotipo denso a sangre estilo imagen de referencia
 
+> Estado: superseded por [ADR 0011](0011-tema-claro-editorial.md)
+> (2026-09-28). Se conserva como historial; el tema activo es el claro
+> editorial definido en el ADR 0011.
+
 - Estado: aceptado
 - Fecha: 2026-09-27
 - Rama: `cursor/blueprint-cianotipo` (desde `cursor/blueprint-tema-azul`)

@@ -1,9 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Container from '../components/Container.astro';
 ---
 
 <Layout title="Aviso legal">
-  <div class="mx-auto max-w-3xl px-6 pt-12 legal-prose">
+  <Container size="narrow" class="pt-12 legal-prose">
     <p class="font-mono">LEGAL</p>
     <h1>Aviso legal</h1>
     <p>
@@ -11,5 +12,5 @@ import Layout from '../layouts/Layout.astro';
       Valencia. Email hola@alexendros.dev. Objeto: presentación servicios profesionales, no
       SaaS/ecommerce. Sin alta de autónomo mientras se mantenga bajo el umbral aplicable.
     </p>
-  </div>
+  </Container>
 </Layout>
