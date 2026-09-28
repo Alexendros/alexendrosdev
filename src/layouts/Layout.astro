@@ -3,6 +3,8 @@ import Analytics from '@vercel/analytics/astro';
 import SpeedInsights from '@vercel/speed-insights/astro';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/jetbrains-mono';
+import interLatinUrl from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import jetbrainsMonoLatinUrl from '@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -32,6 +34,8 @@ const ogImageUrl = new URL(ogImage, site.url).href;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="preload" href={interLatinUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={jetbrainsMonoLatinUrl} as="font" type="font/woff2" crossorigin />
     <title>{title}</title>
     <meta name="description" content={description} />
     {robots && <meta name="robots" content={robots} />}
