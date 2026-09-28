@@ -11,7 +11,11 @@ const audienceItems = service.audience
   .filter(Boolean);
 ---
 
-<Layout title={`${service.title} — Alexendros`} description={service.short}>
+<Layout
+  title={`${service.title} — Alexendros`}
+  description={service.short}
+  ogImage={`/og/servicios/${service.slug}.png`}
+>
   <div class="mx-auto max-w-4xl px-6 py-16 md:py-24">
     <div class="text-xs text-muted">
       <a href="/servicios" class="hover:text-fg focus-ring rounded">Cómo puedo ayudarte</a> / {

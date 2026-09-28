@@ -11,23 +11,25 @@ const { project, headingLevel = 'h2' } = Astro.props;
 const Heading = headingLevel;
 ---
 
-<a
-  href={`/proyectos/${project.slug}`}
-  class="border border-border rounded-lg overflow-hidden hover:border-primarySoft transition bg-card group flex flex-col focus-ring"
+<article
+  class="group relative border border-border rounded-lg overflow-hidden hover:border-primarySoft transition-[border-color] bg-card flex flex-col focus-within:outline-2 focus-within:outline-primary focus-within:outline-offset-2"
 >
   <Image
     src={project.cover}
-    alt={`Captura de ${project.title}`}
+    alt={project.coverAlt}
     widths={[400, 800]}
     sizes="(max-width: 768px) 100vw, 400px"
     class="w-full h-40 object-cover border-b border-border"
     loading="lazy"
+    decoding="async"
   />
   <div class="p-6 flex-1 flex flex-col">
-    <Heading class="font-bold text-base mt-1 group-hover:text-primary transition"
-      >{project.title}</Heading
-    >
+    <Heading class="font-bold text-base mt-1 group-hover:text-primary transition-colors">
+      <a href={`/proyectos/${project.slug}`} class="rounded after:absolute after:inset-0">
+        {project.title}
+      </a>
+    </Heading>
     <p class="mt-2 text-sm text-muted">{project.short}</p>
-    <div class="mt-auto pt-4 text-sm font-medium">Ver caso →</div>
+    <div class="mt-auto pt-4 text-sm font-medium" aria-hidden="true">Ver caso →</div>
   </div>
-</a>
+</article>

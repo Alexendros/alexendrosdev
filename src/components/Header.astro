@@ -13,14 +13,18 @@ const path = Astro.url.pathname;
       aria-label="Principal"
     >
       {
-        site.nav.map((i) => (
-          <a
-            href={i.href}
-            class={`hover:text-primary transition focus-ring rounded ${path.startsWith(i.href) ? 'text-primary' : 'text-muted'}`}
-          >
-            {i.label}
-          </a>
-        ))
+        site.nav.map((i) => {
+          const current = path.startsWith(i.href);
+          return (
+            <a
+              href={i.href}
+              aria-current={current ? 'page' : undefined}
+              class={`hover:text-primary transition focus-ring rounded ${current ? 'text-primary' : 'text-muted'}`}
+            >
+              {i.label}
+            </a>
+          );
+        })
       }
     </nav>
     <div class="flex items-center gap-2 shrink-0">

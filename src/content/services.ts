@@ -61,7 +61,7 @@ export const services: Service[] = [
     exclusions: [
       'No incluye tienda online completa ni mantenimiento continuo (disponible como servicio aparte).'
     ],
-    pricingFrom: 'Desde 1.500 €',
+    pricingFrom: 'Desde 1.500 €',
     timeline: '1–4 semanas según alcance',
     cta: '/contacto',
     metrics: [
@@ -110,7 +110,7 @@ export const services: Service[] = [
       'No incluye pruebas de seguridad avanzadas',
       'No incluye certificación oficial de accesibilidad'
     ],
-    pricingFrom: 'Desde 650 €',
+    pricingFrom: 'Desde 650 €',
     timeline: '3–5 días',
     cta: '/contacto',
     metrics: [
@@ -158,7 +158,7 @@ export const services: Service[] = [
       'No incluye infraestructura ni alojamiento',
       'No incluye entrenamiento avanzado de modelos de IA'
     ],
-    pricingFrom: 'Desde 900 €',
+    pricingFrom: 'Desde 900 €',
     timeline: '1–2 semanas',
     cta: '/contacto',
     metrics: [
@@ -217,7 +217,7 @@ export const services: Service[] = [
       'No tienda ni pasarela de pago (salvo enlace a contacto/calendario)',
       'No reescritura total de marca desde cero si faltan textos/logo'
     ],
-    pricingFrom: 'Desde 990 €',
+    pricingFrom: 'Desde 990 €',
     timeline: '10 días laborables desde brief + materiales de marca',
     cta: '/contacto',
     metrics: [

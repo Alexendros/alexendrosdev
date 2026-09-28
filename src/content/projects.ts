@@ -23,7 +23,8 @@ export const projectSchema = z.object({
     github: z.string().url().optional()
   }),
   published: z.string().min(1),
-  featured: z.boolean()
+  featured: z.boolean(),
+  coverAlt: z.string().min(1)
 });
 
 export type Project = z.infer<typeof projectSchema> & { cover: ImageMetadata };
@@ -63,7 +64,9 @@ export const projects: Project[] = [
     links: { prod: 'https://frontvalencia.com/' },
     published: '2024-03-15',
     featured: true,
-    cover: coverFront
+    cover: coverFront,
+    coverAlt:
+      'Home de la web del restaurante Front Valencia: cabecera con foto del local, menú destacado y botón de reserva.'
   },
   {
     slug: 'graficas-nasve',
@@ -103,7 +106,9 @@ export const projects: Project[] = [
     },
     published: '2023-11-20',
     featured: true,
-    cover: coverNasve
+    cover: coverNasve,
+    coverAlt:
+      'Tienda online de Gráficas Nasve: catálogo de productos con precios calculados al momento y pago online.'
   },
   {
     slug: 'vcf-cribador',
@@ -137,7 +142,9 @@ export const projects: Project[] = [
     links: { github: 'https://github.com/Iniciativas-Alexendros/zedazo' },
     published: '2024-01-10',
     featured: false,
-    cover: coverVcf
+    cover: coverVcf,
+    coverAlt:
+      'Interfaz de VCF Cribador, herramienta de código abierto para limpiar y unificar listados de contactos.'
   },
   {
     slug: 'alexendros-me',
@@ -176,7 +183,9 @@ export const projects: Project[] = [
     },
     published: '2024-01-15',
     featured: true,
-    cover: coverMe
+    cover: coverMe,
+    coverAlt:
+      'Home de Alexendros.me, web personal centrada en lectura cómoda, buen contraste y privacidad.'
   }
 ];
 

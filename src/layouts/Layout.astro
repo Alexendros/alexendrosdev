@@ -13,11 +13,18 @@ import { profile } from '../content/profile';
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
+  robots?: string;
 }
-const { title = site.titleDefault, description = site.descriptionDefault } = Astro.props;
+const {
+  title = site.titleDefault,
+  description = site.descriptionDefault,
+  ogImage = '/og/default.png',
+  robots
+} = Astro.props;
 const pathname = Astro.url.pathname;
 const canonical = new URL(pathname, site.url).href;
-const ogImage = new URL('/og/default.png', site.url).href;
+const ogImageUrl = new URL(ogImage, site.url).href;
 ---
 
 <!doctype html>
@@ -27,19 +34,20 @@ const ogImage = new URL('/og/default.png', site.url).href;
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {robots && <meta name="robots" content={robots} />}
     <link rel="canonical" href={canonical} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content={site.ogLocale} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={ogImageUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image" content={ogImageUrl} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="theme-color" content="#0f3778" />
     <meta property="og:image:alt" content="Alexendros.dev — webs claras y útiles" />
@@ -66,19 +74,38 @@ const ogImage = new URL('/og/default.png', site.url).href;
       type="application/ld+json"
       set:html={JSON.stringify({
         '@context': 'https://schema.org',
-        '@type': 'Person',
-        name: profile.name,
-        alternateName: profile.alternateName,
-        jobTitle: profile.role,
-        description: profile.summary,
-        url: site.url,
-        sameAs: [site.social.github, site.social.linkedin],
-        email: 'hola@alexendros.dev',
-        address: {
-          '@type': 'PostalAddress',
-          addressLocality: 'Valencia',
-          addressCountry: 'ES'
-        }
+        '@graph': [
+          {
+            '@type': 'Person',
+            name: profile.name,
+            alternateName: profile.alternateName,
+            jobTitle: profile.role,
+            description: profile.summary,
+            url: site.url,
+            sameAs: [site.social.github, site.social.linkedin],
+            email: 'hola@alexendros.dev',
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: 'Valencia',
+              addressCountry: 'ES'
+            }
+          },
+          {
+            '@type': 'ProfessionalService',
+            name: 'Alexendros',
+            description: site.descriptionDefault,
+            url: site.url,
+            email: 'hola@alexendros.dev',
+            areaServed: { '@type': 'City', name: 'Valencia' },
+            priceRange: '€€',
+            sameAs: [site.social.github, site.social.linkedin],
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: 'Valencia',
+              addressCountry: 'ES'
+            }
+          }
+        ]
       })}
     />
   </body>

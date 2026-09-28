@@ -49,7 +49,7 @@ import { contact } from '../content/contact';
                   >
                     {c.label}
                   </a>
-                  {c.external ? ' ↗' : ''}
+                  {c.external ? <span aria-hidden="true"> ↗</span> : ''}
                 </li>
               ))
             }
