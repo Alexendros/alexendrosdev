@@ -1,0 +1,24 @@
+---
+// Contenedor de página: ancho máximo y gutters desde tokens de layout
+// (--container / --container-narrow / --gutter). No añade padding
+// vertical: eso lo da Section o la propia página. Admite atributos
+// extra (id, data-*, aria-*) vía rest spread.
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'div'> {
+  as?: 'div' | 'section' | 'article' | 'footer' | 'main';
+  size?: 'default' | 'narrow';
+}
+const { as: Tag = 'div', size = 'default', class: className = '', ...attrs } = Astro.props;
+---
+
+<Tag
+  {...attrs}
+  class:list={[
+    'mx-auto max-w-[var(--container)] px-[var(--gutter)]',
+    size === 'narrow' && 'max-w-[var(--container-narrow)]',
+    className
+  ]}
+>
+  <slot />
+</Tag>
