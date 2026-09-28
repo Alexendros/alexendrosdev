@@ -71,7 +71,13 @@ const path = Astro.url.pathname;
       </button>
     </div>
   </div>
-  <nav data-mobile-nav class="md:hidden border-t border-border" aria-label="Principal" hidden>
+  <nav
+    data-mobile-nav
+    id="mobile-nav"
+    class="md:hidden border-t border-border"
+    aria-label="Principal"
+    hidden
+  >
     <ul class="px-6 py-3 flex flex-col gap-1 text-sm">
       {
         site.nav.map((i) => (

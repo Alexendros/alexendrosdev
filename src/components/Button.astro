@@ -71,8 +71,13 @@ const classes = [
       aria-busy={loading || undefined}
       class:list={classes}
     >
-      {loading && <span class="btn-spinner" aria-hidden="true" />}
-      <span>
+      {loading && (
+        <>
+          <span class="btn-spinner" aria-hidden="true" />
+          <span class="sr-only">Cargando…</span>
+        </>
+      )}
+      <span aria-hidden={loading || undefined}>
         <slot />
       </span>
     </button>

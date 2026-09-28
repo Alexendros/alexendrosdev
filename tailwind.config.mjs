@@ -16,6 +16,7 @@ export default {
         primaryGhost: 'color-mix(in srgb, var(--brand) 8%, transparent)',
         muted: 'var(--fg-muted)',
         border: 'var(--border)',
+        'border-strong': 'var(--border-strong)',
         card: 'var(--card)',
         ink: 'var(--brand-fg)',
         danger: 'var(--danger)'

@@ -10,7 +10,7 @@ type Props = {
 };
 
 const inputClass =
-  'mt-1 w-full bg-bg border border-border rounded-lg px-3 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+  'mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
 
 export default function ContactForm({ subjects, calUrl, successMessage, errorMessage }: Props) {
   const [status, setStatus] = useState<
