@@ -6,8 +6,8 @@
     </linearGradient>
   </defs>
   <rect width="800" height="500" fill="url(#g)"/>
-  <text x="48" y="80" fill="#FFC53D" font-family="monospace" font-size="28" font-weight="700">vcf-cribador</text>
-  <text x="48" y="140" fill="#e8eaed" font-family="monospace" font-size="20">Contactos limpios · Menos errores</text>
+  <text x="48" y="80" fill="#FFC53D" font-family="monospace" font-size="28" font-weight="700">zedazo</text>
+  <text x="48" y="140" fill="#e8eaed" font-family="monospace" font-size="20">Contactos limpios Â· Menos errores</text>
   <rect x="48" y="200" width="240" height="12" rx="6" fill="#FFC53D" fill-opacity="0.8"/>
   <rect x="48" y="232" width="160" height="12" rx="6" fill="#FFC53D" fill-opacity="0.4"/>
 </svg>

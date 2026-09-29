@@ -11,7 +11,7 @@ Sitio profesional de [alexendros.dev](https://alexendros.dev): webs que explican
 | [Consultoría tecnológica](https://alexendros.dev/servicios/consultoria-tecnologica/) | Decisiones técnicas sin humo: stack, alcance y siguientes pasos                            |
 | [Landing en 10 días](https://alexendros.dev/servicios/landing-10-dias/)              | Una página de oferta concreta, publicada en plazo corto                                    |
 
-Más detalle y precios orientativos en [Servicios](https://alexendros.dev/servicios/). Casos reales en [Proyectos](https://alexendros.dev/proyectos/).
+Más detalle y precios orientativos en [Servicios](https://alexendros.dev/servicios/). Proyectos reales en [Proyectos](https://alexendros.dev/proyectos/).
 
 ## Cómo empezamos
 

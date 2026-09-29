@@ -97,5 +97,5 @@ for (const s of services) {
   await writeOg(`servicios/${s.slug}.png`, 'SERVICIO', s.title, s.short);
 }
 for (const p of projects) {
-  await writeOg(`proyectos/${p.slug}.png`, 'CASO', p.title, p.short);
+  await writeOg(`proyectos/${p.slug}.png`, 'PROYECTO', p.title, p.short);
 }
