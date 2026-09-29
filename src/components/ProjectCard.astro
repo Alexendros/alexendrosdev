@@ -6,8 +6,10 @@ interface Props {
   project: Project;
   /** h2 en indices (bajo h1), h3 en home (bajo h2 de seccion) */
   headingLevel?: 'h2' | 'h3';
+  /** Carga inmediata (LCP) para la primera tarjeta visible del indice */
+  priority?: boolean;
 }
-const { project, headingLevel = 'h2' } = Astro.props;
+const { project, headingLevel = 'h2', priority = false } = Astro.props;
 const Heading = headingLevel;
 ---
 
@@ -19,8 +21,9 @@ const Heading = headingLevel;
     alt={project.coverAlt}
     widths={[400, 800]}
     sizes="(max-width: 768px) 100vw, 400px"
-    class="card-cover card-img w-full h-40 object-cover border-b border-border"
-    loading="lazy"
+    class="card-cover card-img w-full aspect-[16/10] object-cover border-b border-border"
+    loading={priority ? 'eager' : 'lazy'}
+    fetchpriority={priority ? 'high' : 'auto'}
     decoding="async"
     onload="this.classList.add('is-loaded')"
   />
