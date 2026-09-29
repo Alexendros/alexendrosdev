@@ -18,7 +18,9 @@ describe('CSP para embed Cal.com', () => {
     headers: { headers: { key: string; value: string }[] }[];
   };
   const csp =
-    vercel.headers[0]?.headers.find((h) => h.key === 'Content-Security-Policy')?.value ?? '';
+    vercel.headers
+      .flatMap((block) => block.headers)
+      .find((h) => h.key === 'Content-Security-Policy')?.value ?? '';
 
   it('permite script, connect y frame de app.cal.com y cal.com', () => {
     expect(CAL_ORIGIN).toBe('https://cal.com');

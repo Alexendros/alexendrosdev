@@ -29,11 +29,12 @@ import { contact } from '../content/contact';
         </p>
         <div class="mt-6">
           <ContactForm
-            client:load
+            client:visible
             subjects={[...contact.subjects]}
             calUrl="#reservar"
             successMessage={contact.messages.success}
             errorMessage={contact.messages.error}
+            turnstileSiteKey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
           />
         </div>
       </div>

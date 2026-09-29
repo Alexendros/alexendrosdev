@@ -1,18 +1,26 @@
 import { useState, type FormEvent } from 'react';
 import { track } from '@vercel/analytics';
 import { parseContactBody } from '../lib/contactSchema';
+import TurnstileWidget from './TurnstileWidget';
 
 type Props = {
   subjects: string[];
   calUrl: string;
   successMessage: string;
   errorMessage: string;
+  turnstileSiteKey?: string;
 };
 
 const inputClass =
   'mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
 
-export default function ContactForm({ subjects, calUrl, successMessage, errorMessage }: Props) {
+export default function ContactForm({
+  subjects,
+  calUrl,
+  successMessage,
+  errorMessage,
+  turnstileSiteKey
+}: Props) {
   const [status, setStatus] = useState<
     'idle' | 'ok' | 'error' | 'rate_limited' | 'unavailable' | 'loading'
   >('idle');
@@ -25,13 +33,21 @@ export default function ContactForm({ subjects, calUrl, successMessage, errorMes
     consent: false,
     honeypot: ''
   });
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileKey, setTurnstileKey] = useState(0);
+
+  const resetTurnstile = () => {
+    setTurnstileToken('');
+    setTurnstileKey((k) => k + 1);
+  };
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     const parsed = parseContactBody({
       ...form,
       company: form.company || undefined,
-      consent: form.consent ? true : undefined
+      consent: form.consent ? true : undefined,
+      turnstileToken: turnstileToken || undefined
     });
     if (!parsed.success) {
       setStatus('error');
@@ -45,20 +61,24 @@ export default function ContactForm({ subjects, calUrl, successMessage, errorMes
         body: JSON.stringify(parsed.data)
       });
       if (res.status === 429) {
+        resetTurnstile();
         setStatus('rate_limited');
         return;
       }
       if (res.status === 503) {
+        resetTurnstile();
         setStatus('unavailable');
         return;
       }
       if (!res.ok) {
+        resetTurnstile();
         setStatus('error');
         return;
       }
       track('contact_form_success');
       setStatus('ok');
     } catch {
+      resetTurnstile();
       setStatus('unavailable');
     }
   };
@@ -194,6 +214,7 @@ export default function ContactForm({ subjects, calUrl, successMessage, errorMes
           — datos para responder, máx 12 meses, sin marketing.
         </label>
       </div>
+      <TurnstileWidget key={turnstileKey} siteKey={turnstileSiteKey} onToken={setTurnstileToken} />
       <button
         type="submit"
         disabled={status === 'loading'}

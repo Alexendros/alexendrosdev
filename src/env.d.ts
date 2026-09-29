@@ -14,6 +14,22 @@ interface ImportMetaEnv {
   /** Data source id (API 2025-09-03). Alias: NOTION_LEADS_DATA_SOURCE_ID. */
   readonly NOTION_LEADS_DATABASE_ID?: string;
   readonly NOTION_LEADS_DATA_SOURCE_ID?: string;
+  /** Cloudflare Turnstile */
+  readonly PUBLIC_TURNSTILE_SITE_KEY?: string;
+  readonly TURNSTILE_SECRET_KEY?: string;
+  /** Tracking (Meta CAPI server-side) */
+  readonly META_PIXEL_ID?: string;
+  readonly META_CAPI_TOKEN?: string;
+  /** Tracking client-side (loaders, gated by consent) */
+  readonly PUBLIC_GA4_ID?: string;
+  readonly PUBLIC_GTM_ID?: string;
+  readonly PUBLIC_GTM_SS_DOMAIN?: string;
+  readonly PUBLIC_META_PIXEL_ID?: string;
+  readonly PUBLIC_CLARITY_ID?: string;
+  readonly PUBLIC_POSTHOG_KEY?: string;
+  readonly PUBLIC_POSTHOG_HOST?: string;
+  readonly PUBLIC_LINKEDIN_PARTNER_ID?: string;
+  readonly PUBLIC_COOKIE_CONSENT_VERSION?: string;
 }
 
 interface ImportMeta {

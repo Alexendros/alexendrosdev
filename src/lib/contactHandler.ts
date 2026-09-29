@@ -12,6 +12,8 @@ export type ContactEnv = {
   SMTP_PASS?: string;
   UPSTASH_REDIS_REST_URL?: string;
   UPSTASH_REDIS_REST_TOKEN?: string;
+  /** Si está definido, se exige y verifica un token de Cloudflare Turnstile. */
+  TURNSTILE_SECRET_KEY?: string;
 };
 
 export type RateLimitResult = {
@@ -33,6 +35,8 @@ export type ContactDeps = {
   getEnv: () => ContactEnv;
   rateLimit: (ip: string) => Promise<RateLimitResult>;
   sendMail: (payload: ContactMailPayload) => Promise<void>;
+  /** Verificación Turnstile server-side; solo se invoca si hay TURNSTILE_SECRET_KEY. */
+  verifyTurnstile?: (token: string, ip: string) => Promise<boolean>;
   createRequestId?: () => string;
   nowMs?: () => number;
 };
@@ -122,12 +126,24 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
   }
 
   const env = deps.getEnv();
+  const ip = clientIp(request);
+
+  if (env.TURNSTILE_SECRET_KEY) {
+    const token = parsed.data.turnstileToken;
+    const verified =
+      typeof token === 'string' && token.length > 0 && deps.verifyTurnstile
+        ? await deps.verifyTurnstile(token, ip).catch(() => false)
+        : false;
+    if (!verified) {
+      logEvent('info', 'contact_turnstile_failed', requestId, false);
+      return json(400, { error: 'Captcha verification failed' });
+    }
+  }
+
   if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
     logEvent('error', 'contact_redis_misconfigured', requestId, false);
     return json(503, { error: 'Service unavailable' });
   }
-
-  const ip = clientIp(request);
   let limited: RateLimitResult;
   try {
     limited = await deps.rateLimit(ip);

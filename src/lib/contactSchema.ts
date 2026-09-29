@@ -10,7 +10,8 @@ export const contactSchema = z.object({
   subject: z.string().trim().min(1).max(200),
   message: z.string().trim().min(20).max(2000),
   consent: z.literal(true),
-  honeypot: z.string().optional()
+  honeypot: z.string().optional(),
+  turnstileToken: z.string().max(4096).optional()
 });
 
 export type ContactInput = z.infer<typeof contactSchema>;
