@@ -86,12 +86,14 @@ export default function CookieBanner() {
                 },
                 {
                   title: 'Analítica',
-                  description: 'Nos permiten medir el uso del sitio de forma agregada y anónima.',
+                  description:
+                    'Nos permiten medir el uso del sitio de forma agregada (Google Analytics, Microsoft Clarity y PostHog).',
                   linkedCategory: 'analytics'
                 },
                 {
                   title: 'Marketing',
-                  description: 'Se usan para medir y personalizar campañas publicitarias.',
+                  description:
+                    'Se usan para medir y personalizar campañas publicitarias (Meta y LinkedIn).',
                   linkedCategory: 'marketing'
                 }
               ]
