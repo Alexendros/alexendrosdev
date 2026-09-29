@@ -10,6 +10,7 @@ import {
 } from '../../lib/contactHandler';
 import { verifyTurnstileToken } from '../../lib/turnstile';
 import { isCapiConfigured, sendCapiEvent } from '../../lib/tracking/capi';
+import { createNotionLeadsStore } from '../../lib/calNotionClient';
 
 export const prerender = false;
 
@@ -62,6 +63,26 @@ function createProductionDeps(): ContactDeps {
         eventName: 'Lead',
         eventSourceUrl: sourceUrl ?? undefined,
         userData: { email, ip, userAgent: userAgent ?? undefined }
+      });
+    },
+    saveLead: async ({ name, email, company, subject, message, budget, vertical }) => {
+      const token = import.meta.env.NOTION_TOKEN;
+      const dataSourceId =
+        import.meta.env.NOTION_LEADS_DATA_SOURCE_ID ?? import.meta.env.NOTION_LEADS_DATABASE_ID;
+      if (!token || !dataSourceId) return;
+      const store = createNotionLeadsStore(token, dataSourceId);
+      await store.create({
+        nombre: name,
+        email,
+        canal: 'Formulario',
+        tipo: 'Lead contacto',
+        estado: 'Nuevo',
+        asunto: subject,
+        mensaje: company ? `${message}\n\nEmpresa: ${company}` : message,
+        fuente: vertical ? `formulario/${vertical}` : 'formulario',
+        vertical,
+        budget,
+        consentMarketing: false
       });
     },
     sendMail: async ({ name, email, company, subject, message, smtp }) => {

@@ -39,6 +39,8 @@ export type ContactDeps = {
   verifyTurnstile?: (token: string, ip: string) => Promise<boolean>;
   /** Evento de conversión server-side (Meta CAPI); best-effort, no bloquea la respuesta. */
   sendLeadEvent?: (input: ContactLeadEvent) => Promise<void>;
+  /** Alta del lead en el CRM (Notion); best-effort, no bloquea la respuesta. */
+  saveLead?: (input: ContactLeadInput) => Promise<void>;
   createRequestId?: () => string;
   nowMs?: () => number;
 };
@@ -48,6 +50,17 @@ export type ContactLeadEvent = {
   ip: string;
   userAgent: string | null;
   sourceUrl: string | null;
+};
+
+export type ContactLeadInput = {
+  name: string;
+  email: string;
+  company?: string;
+  subject: string;
+  message: string;
+  budget?: string;
+  vertical?: string;
+  consent: boolean;
 };
 
 function json(status: number, body: unknown, extraHeaders?: HeadersInit): Response {
@@ -198,6 +211,21 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
         ip,
         userAgent: request.headers.get('user-agent'),
         sourceUrl: request.headers.get('referer')
+      })
+      .catch(() => {});
+  }
+
+  if (deps.saveLead) {
+    void deps
+      .saveLead({
+        name,
+        email,
+        company,
+        subject,
+        message,
+        budget: parsed.data.budget,
+        vertical: parsed.data.vertical,
+        consent: parsed.data.consent
       })
       .catch(() => {});
   }
