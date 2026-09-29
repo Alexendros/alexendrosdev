@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { track } from '@vercel/analytics';
+import { track } from '../lib/tracking/events';
 import { parseContactBody } from '../lib/contactSchema';
 import TurnstileWidget from './TurnstileWidget';
 
@@ -35,6 +35,13 @@ export default function ContactForm({
   });
   const [turnstileToken, setTurnstileToken] = useState('');
   const [turnstileKey, setTurnstileKey] = useState(0);
+  const [started, setStarted] = useState(false);
+
+  const markStart = () => {
+    if (started) return;
+    setStarted(true);
+    track('form_start');
+  };
 
   const resetTurnstile = () => {
     setTurnstileToken('');
@@ -54,6 +61,7 @@ export default function ContactForm({
       return;
     }
     setStatus('loading');
+    track('form_submit', { subject: form.subject });
     try {
       const res = await fetch('/api/contact', {
         method: 'POST',
@@ -103,6 +111,7 @@ export default function ContactForm({
   return (
     <form
       onSubmit={submit}
+      onFocus={markStart}
       className="space-y-4 border border-border rounded-lg p-6 bg-card"
       noValidate
     >

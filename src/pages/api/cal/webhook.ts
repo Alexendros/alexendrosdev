@@ -8,8 +8,14 @@ import {
   resolveLeadsDataSourceId,
   type CalWebhookDeps
 } from '../../../lib/calWebhookHandler';
+import { isCapiConfigured, sendCapiEvent, type CapiEventName } from '../../../lib/tracking/capi';
 
 export const prerender = false;
+
+const CONVERSION_EVENT_BY_TRIGGER: Record<string, CapiEventName> = {
+  BOOKING_CREATED: 'Schedule',
+  BOOKING_PAID: 'Purchase'
+};
 
 function createProductionDeps(): CalWebhookDeps {
   return {
@@ -45,6 +51,21 @@ function createProductionDeps(): CalWebhookDeps {
       },
       create: async (write) => notionStore().create(write),
       update: async (pageId, write) => notionStore().update(pageId, write)
+    },
+    sendConversionEvent: async ({ trigger, uid, email }) => {
+      const eventName = CONVERSION_EVENT_BY_TRIGGER[trigger];
+      if (!eventName) return;
+      const cfg = {
+        pixelId: import.meta.env.META_PIXEL_ID ?? import.meta.env.PUBLIC_META_PIXEL_ID,
+        accessToken: import.meta.env.META_CAPI_TOKEN,
+        testEventCode: import.meta.env.META_CAPI_TEST_EVENT_CODE
+      };
+      if (!isCapiConfigured(cfg)) return;
+      await sendCapiEvent(cfg, {
+        eventName,
+        eventId: uid,
+        userData: { email }
+      });
     }
   };
 }

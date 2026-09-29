@@ -9,6 +9,7 @@ import {
   type ContactDeps
 } from '../../lib/contactHandler';
 import { verifyTurnstileToken } from '../../lib/turnstile';
+import { isCapiConfigured, sendCapiEvent } from '../../lib/tracking/capi';
 
 export const prerender = false;
 
@@ -49,6 +50,19 @@ function createProductionDeps(): ContactDeps {
       const secret = import.meta.env.TURNSTILE_SECRET_KEY;
       if (!secret) return false;
       return verifyTurnstileToken(secret, token, ip);
+    },
+    sendLeadEvent: async ({ email, ip, userAgent, sourceUrl }) => {
+      const cfg = {
+        pixelId: import.meta.env.META_PIXEL_ID ?? import.meta.env.PUBLIC_META_PIXEL_ID,
+        accessToken: import.meta.env.META_CAPI_TOKEN,
+        testEventCode: import.meta.env.META_CAPI_TEST_EVENT_CODE
+      };
+      if (!isCapiConfigured(cfg)) return;
+      await sendCapiEvent(cfg, {
+        eventName: 'Lead',
+        eventSourceUrl: sourceUrl ?? undefined,
+        userData: { email, ip, userAgent: userAgent ?? undefined }
+      });
     },
     sendMail: async ({ name, email, company, subject, message, smtp }) => {
       const { html, text, mailSubject } = buildContactEmailHtml({

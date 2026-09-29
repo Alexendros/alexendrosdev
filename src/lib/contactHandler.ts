@@ -37,8 +37,17 @@ export type ContactDeps = {
   sendMail: (payload: ContactMailPayload) => Promise<void>;
   /** Verificación Turnstile server-side; solo se invoca si hay TURNSTILE_SECRET_KEY. */
   verifyTurnstile?: (token: string, ip: string) => Promise<boolean>;
+  /** Evento de conversión server-side (Meta CAPI); best-effort, no bloquea la respuesta. */
+  sendLeadEvent?: (input: ContactLeadEvent) => Promise<void>;
   createRequestId?: () => string;
   nowMs?: () => number;
+};
+
+export type ContactLeadEvent = {
+  email: string;
+  ip: string;
+  userAgent: string | null;
+  sourceUrl: string | null;
 };
 
 function json(status: number, body: unknown, extraHeaders?: HeadersInit): Response {
@@ -181,6 +190,17 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
     subjectLen: subject.length,
     messageLen: message.length
   });
+
+  if (deps.sendLeadEvent) {
+    void deps
+      .sendLeadEvent({
+        email,
+        ip,
+        userAgent: request.headers.get('user-agent'),
+        sourceUrl: request.headers.get('referer')
+      })
+      .catch(() => {});
+  }
 
   return json(200, { ok: true });
 }

@@ -20,6 +20,7 @@ interface ImportMetaEnv {
   /** Tracking (Meta CAPI server-side) */
   readonly META_PIXEL_ID?: string;
   readonly META_CAPI_TOKEN?: string;
+  readonly META_CAPI_TEST_EVENT_CODE?: string;
   /** Tracking client-side (loaders, gated by consent) */
   readonly PUBLIC_GA4_ID?: string;
   readonly PUBLIC_GTM_ID?: string;
