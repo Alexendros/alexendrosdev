@@ -11,7 +11,15 @@ export const contactSchema = z.object({
   message: z.string().trim().min(20).max(2000),
   consent: z.literal(true),
   honeypot: z.string().optional(),
-  turnstileToken: z.string().max(4096).optional()
+  turnstileToken: z.string().max(4096).optional(),
+  budget: z.preprocess(
+    (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
+    z.string().trim().max(100).optional()
+  ),
+  vertical: z.preprocess(
+    (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
+    z.string().trim().max(100).optional()
+  )
 });
 
 export type ContactInput = z.infer<typeof contactSchema>;
