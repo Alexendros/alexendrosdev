@@ -60,6 +60,7 @@ export type ContactLeadInput = {
   message: string;
   budget?: string;
   vertical?: string;
+  referralCode?: string;
   consent: boolean;
 };
 
@@ -225,6 +226,7 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
         message,
         budget: parsed.data.budget,
         vertical: parsed.data.vertical,
+        referralCode: parsed.data.referralCode,
         consent: parsed.data.consent
       })
       .catch(() => {});

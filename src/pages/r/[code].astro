@@ -1,0 +1,19 @@
+---
+export const prerender = false;
+
+import { normalizeReferralCode } from '../../lib/referral';
+
+const raw = Astro.params.code ?? '';
+const code = normalizeReferralCode(raw);
+
+if (code) {
+  Astro.cookies.set('alexendros_ref', code, {
+    path: '/',
+    maxAge: 90 * 24 * 60 * 60,
+    sameSite: 'lax'
+  });
+  return Astro.redirect('/contacto?ref=' + encodeURIComponent(code), 302);
+}
+
+return Astro.redirect('/', 302);
+---

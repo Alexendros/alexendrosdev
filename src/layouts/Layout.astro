@@ -87,8 +87,10 @@ const ogImageUrl = new URL(ogImage, site.url).href;
       import '../scripts/header.ts';
       import { initTracking } from '../lib/tracking/loaders';
       import { setupFunnelTracking } from '../lib/tracking/events';
+      import { captureReferralFromLocation } from '../lib/referral';
       initTracking();
       setupFunnelTracking();
+      captureReferralFromLocation();
     </script>
     {
       /* Analytics solo en despliegues Vercel: en builds locales/CI los scripts

@@ -19,6 +19,10 @@ export const contactSchema = z.object({
   vertical: z.preprocess(
     (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
     z.string().trim().max(100).optional()
+  ),
+  referralCode: z.preprocess(
+    (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
+    z.string().trim().max(64).optional()
   )
 });
 

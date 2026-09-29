@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { track } from '../lib/tracking/events';
 import { contactSchema, parseContactBody } from '../lib/contactSchema';
+import { readReferralCookie } from '../lib/referral';
 import TurnstileWidget from './TurnstileWidget';
 
 type Props = {
@@ -118,6 +119,7 @@ export default function ContactForm({
       ...form,
       company: form.company || undefined,
       budget: form.budget || undefined,
+      referralCode: readReferralCookie() || undefined,
       consent: form.consent ? true : undefined,
       turnstileToken: turnstileToken || undefined
     });

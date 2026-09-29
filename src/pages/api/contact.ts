@@ -65,7 +65,16 @@ function createProductionDeps(): ContactDeps {
         userData: { email, ip, userAgent: userAgent ?? undefined }
       });
     },
-    saveLead: async ({ name, email, company, subject, message, budget, vertical }) => {
+    saveLead: async ({
+      name,
+      email,
+      company,
+      subject,
+      message,
+      budget,
+      vertical,
+      referralCode
+    }) => {
       const token = import.meta.env.NOTION_TOKEN;
       const dataSourceId =
         import.meta.env.NOTION_LEADS_DATA_SOURCE_ID ?? import.meta.env.NOTION_LEADS_DATABASE_ID;
@@ -82,6 +91,7 @@ function createProductionDeps(): ContactDeps {
         fuente: vertical ? `formulario/${vertical}` : 'formulario',
         vertical,
         budget,
+        referralCode,
         consentMarketing: false
       });
     },
