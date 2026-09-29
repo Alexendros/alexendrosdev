@@ -1,0 +1,106 @@
+---
+import Section from './Section.astro';
+import Container from './Container.astro';
+import Eyebrow from './Eyebrow.astro';
+
+interface Props {
+  id?: string;
+}
+const { id = 'lead-magnet' } = Astro.props;
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+const status = Astro.url.searchParams.get('estado');
+
+const inputClass =
+  'mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+---
+
+<Section id={id} reveal>
+  <Container>
+    <div
+      class="grid gap-6 rounded-lg border border-border bg-card p-6 md:grid-cols-2 md:items-center md:p-8"
+    >
+      <div>
+        <Eyebrow>RECURSO GRATUITO</Eyebrow>
+        <h2 class="mt-2 text-2xl font-bold">
+          Checklist: 27 errores que matan la conversión de tu web
+        </h2>
+        <p class="mt-2 text-sm text-muted">
+          Revísalo por tu cuenta y detecta lo que frena los contactos: velocidad, mensaje,
+          formularios, móvil. Te lo envío por email en minutos.
+        </p>
+      </div>
+      <div>
+        {
+          status === 'ok' && (
+            <p
+              role="status"
+              class="mb-3 rounded-lg border border-primarySoft bg-primaryGhost p-3 text-sm"
+            >
+              ✓ Listo. Revisa tu correo: te he enviado el checklist.
+            </p>
+          )
+        }
+        {
+          status === 'error' && (
+            <p
+              role="alert"
+              class="mb-3 rounded-lg border border-border bg-bg p-3 text-sm text-danger"
+            >
+              No se pudo enviar. Revisa el email e inténtalo de nuevo.
+            </p>
+          )
+        }
+        <form method="post" action="/api/lead-magnet" class="space-y-3">
+          <div>
+            <label for="lead-email" class="text-sm">Email*</label>
+            <input
+              id="lead-email"
+              name="email"
+              type="email"
+              required
+              autocomplete="email"
+              class={inputClass}
+            />
+          </div>
+          <div class="sr-only" aria-hidden="true">
+            <label for="lead-website">Website</label>
+            <input
+              id="lead-website"
+              name="website"
+              type="text"
+              tabindex="-1"
+              autocomplete="off"
+              class={inputClass}
+            />
+          </div>
+          <div class="flex items-start gap-2 text-xs">
+            <input id="lead-consent" name="consent" type="checkbox" required class="mt-0.5" />
+            <label for="lead-consent">
+              Acepto la <a href="/privacidad" class="underline">política de privacidad</a> y recibir el
+              checklist. Sin spam.
+            </label>
+          </div>
+          {
+            siteKey && (
+              <>
+                <div class="cf-turnstile" data-sitekey={siteKey} />
+                <script
+                  is:inline
+                  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+                  async
+                  defer
+                />
+              </>
+            )
+          }
+          <button
+            type="submit"
+            class="btn inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors select-none hover:bg-primaryHover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            Enviarme el checklist
+          </button>
+        </form>
+      </div>
+    </div>
+  </Container>
+</Section>
