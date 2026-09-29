@@ -200,7 +200,7 @@ export const projects: Project[] = [
     results: ['Carga rápida', 'Lectura clara', 'Privacidad respetada'],
     links: {
       prod: 'https://alexendros.me',
-      github: 'https://github.com/Iniciativas-Alexendros/website-alexendrosme'
+      github: 'https://github.com/Soluciones-Alexendros/website-alexendrosme'
     },
     published: '2024-01-15',
     featured: true,

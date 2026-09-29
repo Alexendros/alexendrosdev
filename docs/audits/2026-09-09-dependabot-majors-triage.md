@@ -2,7 +2,7 @@
 
 **Política:** no fusionar upgrades **major** junto a cambios funcionales del formulario. Un PR major por dependencia (o grupo íntimamente acoplado), con CI verde + Preview.
 
-Issue: [#12](https://github.com/Iniciativas-Alexendros/miwebsite-alexendrosdev/issues/12).  
+Issue: [#12](https://github.com/Soluciones-Alexendros/miwebsite-alexendrosdev/issues/12).  
 Ignora actuales: [`.github/dependabot.yml`](../../.github/dependabot.yml) (`zod`, `nodemailer`, `react`/`react-dom`/`@types/*`, `@astrojs/react`, `@astrojs/tailwind`, `astro`).
 
 ## Estado declarado (package.json)

@@ -6,7 +6,7 @@
 - **Estructura:** Contexto → stack → árbol de runtime → APIs → CI/release → límites.
 - **Contenido a integrar según contexto:** Adapta rutas y adapters de este Astro híbrido. No copies la arquitectura de un SaaS, de Next.js archivado ni de la CLI webconfig. No cambies el alcance de servicios ni el pricing desde aquí.
 
-Sitio profesional de conversión + contratación. Producción: [https://alexendros.dev](https://alexendros.dev). Repo: `Iniciativas-Alexendros/miwebsite-alexendrosdev`. Proyecto Vercel **`alexendros-dev`**.
+Sitio profesional de conversión + contratación. Producción: [https://alexendros.dev](https://alexendros.dev). Repo: `Soluciones-Alexendros/miwebsite-alexendrosdev`. Proyecto Vercel **`alexendros-dev`**.
 
 ## Stack
 

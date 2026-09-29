@@ -8,7 +8,7 @@
 
 ## Contexto
 
-La flota se homogeneiza con `Iniciativas-Alexendros/repo-standard` (main): nombres de jobs, Renovate, docs contractuales y meta-sección «Propósito». Este sitio ya tenía CI monolítico (typecheck+lint+vitest+build+e2e+LHCI) y Dependabot version-updates.
+La flota se homogeneiza con `Soluciones-Alexendros/repo-standard` (main): nombres de jobs, Renovate, docs contractuales y meta-sección «Propósito». Este sitio ya tenía CI monolítico (typecheck+lint+vitest+build+e2e+LHCI) y Dependabot version-updates.
 
 ## Decisión
 
