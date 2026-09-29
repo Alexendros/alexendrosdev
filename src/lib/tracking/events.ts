@@ -15,7 +15,10 @@ export type FunnelEvent =
   | 'form_submit'
   | 'contact_form_success'
   | 'form_abandon_step'
-  | 'lead_magnet_download';
+  | 'lead_magnet_download'
+  | 'exit_intent_impression'
+  | 'exit_intent_cta_click'
+  | 'exit_intent_dismiss';
 
 type Props = Record<string, string | number | boolean | null | undefined>;
 

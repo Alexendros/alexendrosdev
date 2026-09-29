@@ -11,6 +11,7 @@ import Footer from '../components/Footer.astro';
 import SkipLink from '../components/SkipLink.astro';
 import LandingBanner from '../components/LandingBanner.astro';
 import CookieBanner from '../components/consent/CookieBanner.tsx';
+import ExitIntent from '../components/ExitIntent.tsx';
 import { site } from '../content/site';
 import { profile } from '../content/profile';
 
@@ -78,6 +79,7 @@ const ogImageUrl = new URL(ogImage, site.url).href;
     <Footer />
     <LandingBanner pathname={Astro.url.pathname} />
     <CookieBanner client:idle />
+    <ExitIntent client:idle />
     <script>
       import '../scripts/reveal.ts';
       import '../scripts/header.ts';
