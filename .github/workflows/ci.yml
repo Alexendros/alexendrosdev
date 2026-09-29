@@ -47,6 +47,8 @@ jobs:
 
       - run: pnpm format:check
 
+      - run: pnpm run audit:cookies
+
   test:
     name: test
     runs-on: ubuntu-latest

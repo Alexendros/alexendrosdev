@@ -28,6 +28,34 @@ done
 
 echo "archivos estáticos OK (${#required_files[@]} rutas)"
 
+mapfile -t html_files < <(find "$ROOT" -type f -name '*.html')
+if (( ${#html_files[@]} == 0 )); then
+  echo "error: no se encontraron .html en ${ROOT}" >&2
+  exit 1
+fi
+
+tracker_patterns=(
+  'googletagmanager\.com'
+  'google-analytics\.com'
+  'connect\.facebook\.net'
+  'clarity\.ms'
+  'i\.posthog\.com'
+  'posthog\.(com|init)'
+  'snap\.licdn\.com'
+  'gtag\('
+  'fbq\('
+)
+
+for pattern in "${tracker_patterns[@]}"; do
+  if hits=$(grep -rlE "$pattern" "${html_files[@]}"); then
+    echo "error: tracker/píxel estático (/${pattern}/) inyectado en:" >&2
+    echo "$hits" >&2
+    exit 1
+  fi
+done
+
+echo "sin trackers estáticos OK (${#html_files[@]} .html)"
+
 if ! command -v python3 >/dev/null 2>&1; then
   echo "error: python3 es necesario para el smoke HTTP" >&2
   exit 1

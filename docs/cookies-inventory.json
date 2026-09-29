@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "policy": "Toda cookie emitida por el sitio debe figurar aquí. audit:cookies falla si detecta una cookie no listada.",
+  "categories": {
+    "necessary": "Técnicas imprescindibles; no requieren consentimiento",
+    "preferences": "Preferencias y personalización",
+    "analytics": "Medición agregada; requieren consentimiento",
+    "marketing": "Publicidad y remarketing; requieren consentimiento"
+  },
+  "cookies": [
+    {
+      "name": "consent_v1",
+      "owner": "alexendros.dev",
+      "category": "necessary",
+      "purpose": "Guardar las preferencias de consentimiento del usuario",
+      "duration": "12 meses"
+    },
+    {
+      "name": "_ga",
+      "owner": "Google Analytics",
+      "category": "analytics",
+      "purpose": "Distinguir usuarios",
+      "duration": "2 años"
+    },
+    {
+      "name": "_ga_*",
+      "owner": "Google Analytics",
+      "category": "analytics",
+      "purpose": "Mantener el estado de la sesión",
+      "duration": "2 años"
+    },
+    {
+      "name": "_gid",
+      "owner": "Google Analytics",
+      "category": "analytics",
+      "purpose": "Distinguir usuarios",
+      "duration": "1 día"
+    },
+    {
+      "name": "_fbp",
+      "owner": "Meta",
+      "category": "marketing",
+      "purpose": "Medición y remarketing de campañas",
+      "duration": "3 meses"
+    },
+    {
+      "name": "_clck",
+      "owner": "Microsoft Clarity",
+      "category": "analytics",
+      "purpose": "Analítica de comportamiento",
+      "duration": "1 año"
+    },
+    {
+      "name": "_clsk",
+      "owner": "Microsoft Clarity",
+      "category": "analytics",
+      "purpose": "Agrupar visitas de una misma sesión",
+      "duration": "1 día"
+    },
+    {
+      "name": "ph_*_posthog",
+      "owner": "PostHog",
+      "category": "analytics",
+      "purpose": "Analítica de producto",
+      "duration": "1 año"
+    },
+    {
+      "name": "li_sugr",
+      "owner": "LinkedIn",
+      "category": "marketing",
+      "purpose": "Atribución de campañas",
+      "duration": "3 meses"
+    }
+  ]
+}

@@ -6,7 +6,7 @@
 - **Estructura:** Objetivos → arquitectura → pendiente → predecesor → releases → mantenimiento.
 - **Contenido a integrar según contexto:** Actualiza issues y gates. No uses este archivo como CMS ni para cambiar pricing.
 
-MVP en **producción** en [https://alexendros.dev](https://alexendros.dev). Repo canónico: `Iniciativas-Alexendros/miwebsite-alexendrosdev`. Proyecto Vercel: **`alexendros-dev`**.
+MVP en **producción** en [https://alexendros.dev](https://alexendros.dev). Repo canónico: `Soluciones-Alexendros/miwebsite-alexendrosdev`. Proyecto Vercel: **`alexendros-dev`**.
 
 ## Objetivos cumplidos
 
@@ -14,7 +14,7 @@ MVP en **producción** en [https://alexendros.dev](https://alexendros.dev). Repo
 - Lighthouse CI ≥90 móvil en 4 categorías (6 rutas)
 - axe-core 0 violaciones en `/`, `/servicios`, `/servicios/*`, `/proyectos`, `/proyectos/*`, `/contacto`
 - Formulario 3 campos + asunto + honeypot (sin captcha); código listo con Upstash + Proton SMTP
-- Sin cookies no esenciales, sin GA; Analytics/Speed Insights agregados
+- Tracking solo con consentimiento previo y granular (CMP `vanilla-cookieconsent` v3; Consent Mode v2 con todo `denied` por defecto); Vercel Analytics/Speed Insights agregados, solo en builds de Vercel
 
 ## Arquitectura entregada
 
@@ -25,13 +25,17 @@ MVP en **producción** en [https://alexendros.dev](https://alexendros.dev). Repo
 - CI: jobs `quality`, `test`, `build`, `smoke`; e2e/LHCI opt-in
 - Deploy Hobby: preview por PR; producción = merge a `main`
 
+## Fase 1 — consentimiento y legal (en curso)
+
+Fase 1 (consentimiento + legal) **en curso** en la rama `cursor/mercenario-v1`: CMP `vanilla-cookieconsent` v3, Consent Mode v2 default-deny, página `/cookies`, módulos `src/lib/tracking/{consent,loaders}.ts` e isla `src/components/consent/CookieBanner.tsx`. Ver ADR 0012 e inventario `docs/cookies-inventory.json`.
+
 ## Pendiente operativo
 
-| Item                                                  | Issue / nota                                                                                                  |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Env SMTP + Upstash en Vercel                          | [#13](https://github.com/Iniciativas-Alexendros/miwebsite-alexendrosdev/issues/13) + checklist smoke WP-3     |
-| Migrar Node 22.x                                      | [#11](https://github.com/Iniciativas-Alexendros/miwebsite-alexendrosdev/issues/11) — PR WP-6; validar Preview |
-| Majors Dependabot (zod 4, nodemailer 10, React/Astro) | [#12](https://github.com/Iniciativas-Alexendros/miwebsite-alexendrosdev/issues/12) — triage WP-7; un PR/major |
+| Item                                                  | Issue / nota                                                                                                 |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Env SMTP + Upstash en Vercel                          | [#13](https://github.com/Soluciones-Alexendros/miwebsite-alexendrosdev/issues/13) + checklist smoke WP-3     |
+| Migrar Node 22.x                                      | [#11](https://github.com/Soluciones-Alexendros/miwebsite-alexendrosdev/issues/11) — PR WP-6; validar Preview |
+| Majors Dependabot (zod 4, nodemailer 10, React/Astro) | [#12](https://github.com/Soluciones-Alexendros/miwebsite-alexendrosdev/issues/12) — triage WP-7; un PR/major |
 
 ## Predecesor
 

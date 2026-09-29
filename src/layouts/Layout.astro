@@ -10,6 +10,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SkipLink from '../components/SkipLink.astro';
 import LandingBanner from '../components/LandingBanner.astro';
+import CookieBanner from '../components/consent/CookieBanner.tsx';
 import { site } from '../content/site';
 import { profile } from '../content/profile';
 
@@ -73,9 +74,12 @@ const ogImageUrl = new URL(ogImage, site.url).href;
     </main>
     <Footer />
     <LandingBanner pathname={Astro.url.pathname} />
+    <CookieBanner client:idle />
     <script>
       import '../scripts/reveal.ts';
       import '../scripts/header.ts';
+      import { initTracking } from '../lib/tracking/loaders';
+      initTracking();
     </script>
     {
       /* Analytics solo en despliegues Vercel: en builds locales/CI los scripts

@@ -10,7 +10,8 @@
 
 - Responder siempre en español.
 - Commits en español.
-- Sin GA ni cookies de tracking; sí Vercel Analytics y Speed Insights (agregados, sin cookies).
+- Tracking solo con consentimiento previo y granular (CMP `vanilla-cookieconsent` v3; Consent Mode v2 con todo `denied` por defecto). Vercel Analytics/Speed Insights siguen emitiéndose solo en builds de Vercel (`__IS_VERCEL__`).
+- Las cookies deben figurar en `docs/cookies-inventory.json`; `pnpm run audit:cookies` es la verificación canónica.
 - No tocar pricing sin confirmar; no añadir CMS ni Google Fonts; no cambiar el alcance de los servicios.
 - Preferir repo público + Vercel Hobby para preview por PR (decisión 1B); relajar Deployment Protection/SSO de previews para URLs compartibles (decisión 2A).
 - Versionado (semantic-release / release.yml) distinto de promote a producción; content=patch, feat=minor, breaking=major.
@@ -18,7 +19,7 @@
 
 ## Learned Workspace Facts
 
-- Repo canónico público: `Iniciativas-Alexendros/miwebsite-alexendrosdev`; producción apex `https://alexendros.dev` en proyecto Vercel **`alexendros-dev`** (Hobby), Git link a este repo.
+- Repo canónico público: `Soluciones-Alexendros/miwebsite-alexendrosdev`; producción apex `https://alexendros.dev` en proyecto Vercel **`alexendros-dev`** (Hobby), Git link a este repo.
 - Predecesor Next.js `nuevowebsite-alexendrosdev` archivado; no reutilizar como fuente de verdad.
 - Stack MVP: Astro 4.16 + isla React `ContactForm` (`client:load`) + Tailwind + TS estricto + Zod; contacto vía Proton SMTP (`operaciones@alexendros.dev`), honeypot y rate-limit Upstash.
 - Tema visual (ADR 0011, supersedes 0006/0007): claro editorial azul `#0f3778` con tokens en 3 capas (`@layer tokens` de `src/styles/global.css` es la fuente única; Tailwind solo referencia semánticos). Tema oscuro vía `prefers-color-scheme`/`data-theme`, validado por `pnpm check:contrast` (22 pares, ambos temas). Prohibidos colores literales fuera de tokens, `!important` y `transition: all` (stylelint `pnpm lint:css`).
