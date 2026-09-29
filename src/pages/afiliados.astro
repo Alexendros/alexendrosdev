@@ -1,0 +1,164 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Container from '../components/Container.astro';
+import PageHead from '../components/PageHead.astro';
+
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
+const status = Astro.url.searchParams.get('estado');
+---
+
+<Layout
+  title="Programa de afiliados — Alexendros"
+  description="Recomienda Alexendros y gana un 20% de comisión. Cookie de atribución de 90 días y pago a los 30 días de la contratación."
+  jsonLd={{
+    '@type': 'Service',
+    name: 'Programa de afiliados Alexendros',
+    description:
+      'Programa de recomendación con 20% de comisión, cookie de atribución de 90 días y pago a los 30 días.',
+    url: 'https://alexendros.dev/afiliados',
+    serviceType: 'Programa de afiliados',
+    provider: { '@type': 'Organization', name: 'Alexendros', url: 'https://alexendros.dev' }
+  }}
+>
+  <Container size="narrow" class="py-16 md:py-24">
+    <PageHead
+      kicker="COLABORACIÓN · AFILIADOS"
+      title="Programa de afiliados"
+      description="Si conoces a alguien que necesita una web clara y rápida, a menudo puede ser más útil una recomendación que un anuncio. Te compenso por ella."
+    />
+
+    <div class="mt-10 space-y-8">
+      <div>
+        <h2 class="text-2xl font-bold">Cómo funciona</h2>
+        <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
+          <li>Recomiendas Alexendros a un negocio o profesional.</li>
+          <li>
+            Si contrata un servicio, ganas un <strong class="text-fg">20% de comisión</strong> sobre el
+            importe facturado, sin IVA.
+          </li>
+          <li>
+            La atribución dura <strong class="text-fg">90 días</strong> desde el primer clic con tu enlace
+            o código.
+          </li>
+          <li>
+            El pago se realiza a los <strong class="text-fg">30 días</strong> de la contratación, por
+            transferencia.
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="text-2xl font-bold">Para quién es</h2>
+        <p class="mt-2 text-sm text-muted max-w-2xl">
+          Consultores, diseñadores, agencias pequeñas, gestorías o cualquier profesional que hable
+          con negocios que necesitan mejorar su presencia digital. No exige dedicación exclusiva ni
+          un volumen mínimo.
+        </p>
+      </div>
+
+      <div id="solicitud">
+        <h2 class="text-2xl font-bold">Solicitar alta</h2>
+        {
+          status === 'ok' && (
+            <p
+              class="mt-3 rounded-lg border border-primarySoft bg-primaryGhost p-4 text-sm"
+              role="status"
+            >
+              Gracias. He recibido tu solicitud y te escribo en 1–2 días laborables con tu enlace de
+              afiliado.
+            </p>
+          )
+        }
+        {
+          status === 'error' && (
+            <p class="mt-3 rounded-lg border border-border p-4 text-sm text-danger" role="alert">
+              No se pudo enviar la solicitud. Revisa los campos o escríbeme a
+              operaciones@alexendros.dev.
+            </p>
+          )
+        }
+        <form
+          method="post"
+          action="/api/afiliados"
+          class="mt-4 space-y-4 rounded-lg border border-border bg-card p-6"
+        >
+          <input type="hidden" name="origen" value="afiliados" />
+          <div class="grid gap-4 md:grid-cols-2">
+            <div>
+              <label for="af-name" class="text-sm">Nombre*</label>
+              <input
+                id="af-name"
+                name="nombre"
+                required
+                autocomplete="name"
+                class="mt-1 w-full rounded-lg border border-border-strong bg-bg px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              />
+            </div>
+            <div>
+              <label for="af-email" class="text-sm">Email*</label>
+              <input
+                id="af-email"
+                name="email"
+                type="email"
+                required
+                autocomplete="email"
+                class="mt-1 w-full rounded-lg border border-border-strong bg-bg px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              />
+            </div>
+          </div>
+          <div>
+            <label for="af-canal" class="text-sm">Dónde recomendarías (web, redes, clientes…)</label
+            >
+            <input
+              id="af-canal"
+              name="canal"
+              class="mt-1 w-full rounded-lg border border-border-strong bg-bg px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            />
+          </div>
+          <div>
+            <label for="af-mensaje" class="text-sm">Cuéntame brevemente tu caso*</label>
+            <textarea
+              id="af-mensaje"
+              name="mensaje"
+              required
+              rows="4"
+              minlength="20"
+              maxlength="2000"
+              class="mt-1 w-full rounded-lg border border-border-strong bg-bg px-3 py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            ></textarea>
+          </div>
+          <div class="sr-only" aria-hidden="true">
+            <label for="af-website">Website</label>
+            <input id="af-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+          <div class="flex items-start gap-2 text-xs">
+            <input id="af-consent" name="consent" type="checkbox" required class="mt-0.5" />
+            <label for="af-consent">
+              Acepto la <a href="/privacidad" class="underline">política de privacidad</a> — datos para
+              gestionar el alta de afiliado, máx 12 meses.
+            </label>
+          </div>
+          {
+            siteKey && (
+              <>
+                <div class="cf-turnstile" data-sitekey={siteKey} />
+                <script
+                  is:inline
+                  src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+                  async
+                  defer
+                />
+              </>
+            )
+          }
+          <button
+            type="submit"
+            class="w-full rounded-lg bg-primary px-6 py-3 font-medium text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary md:w-auto"
+          >
+            Enviar solicitud →
+          </button>
+        </form>
+      </div>
+    </div>
+  </Container>
+</Layout>

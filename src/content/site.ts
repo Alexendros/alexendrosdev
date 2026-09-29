@@ -15,7 +15,8 @@ export const site = {
   footerNav: [
     { label: 'Aviso legal', href: '/aviso-legal' },
     { label: 'Privacidad', href: '/privacidad' },
-    { label: 'Cookies', href: '/cookies' }
+    { label: 'Cookies', href: '/cookies' },
+    { label: 'Afiliados', href: '/afiliados' }
   ],
   social: {
     github: 'https://github.com/alexendros',
