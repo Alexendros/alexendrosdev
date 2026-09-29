@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Container from '../../components/Container.astro';
 import Button from '../../components/Button.astro';
 import Link from '../../components/Link.astro';
+import PricingTiers from '../../components/PricingTiers.astro';
 import { services } from '../../content/services';
 export async function getStaticPaths() {
   return services.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
@@ -93,10 +94,20 @@ const jsonLd = [
         </ul>
       </div>
 
-      <p class="text-sm text-muted">
-        <strong class="text-fg">{service.pricingFrom}</strong>
-        · {service.timeline}
-      </p>
+      <div>
+        <h2 class="text-2xl font-bold">Planes</h2>
+        <p class="mt-2 text-sm text-muted max-w-2xl">
+          Tres niveles para adaptarse a tu punto de partida. El precio final se confirma tras la
+          reunión inicial, según alcance y materiales disponibles.
+        </p>
+        <div class="mt-4">
+          <PricingTiers tiers={service.tiers} />
+        </div>
+        <p class="mt-4 text-sm text-muted">
+          <strong class="text-fg">{service.pricingFrom}</strong>
+          · {service.timeline}
+        </p>
+      </div>
 
       <Button href={service.cta}>Solicita información sobre este servicio</Button>
 

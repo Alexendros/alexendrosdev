@@ -15,7 +15,17 @@ export const serviceSchema = z.object({
   pricingFrom: z.string().min(1),
   timeline: z.string().min(1),
   cta: z.string().min(1),
-  metrics: z.array(z.object({ label: z.string(), value: z.string() })).min(1)
+  metrics: z.array(z.object({ label: z.string(), value: z.string() })).min(1),
+  tiers: z
+    .array(
+      z.object({
+        name: z.string().min(1),
+        price: z.string().min(1),
+        highlight: z.boolean().optional(),
+        features: z.array(z.string()).min(1)
+      })
+    )
+    .length(3)
 });
 
 export type Service = z.infer<typeof serviceSchema>;
@@ -67,6 +77,38 @@ export const services: Service[] = [
     metrics: [
       { label: 'Enfoque', value: 'Clientes' },
       { label: 'Entrega', value: 'Lista para usar' }
+    ],
+    tiers: [
+      {
+        name: 'Esencial',
+        price: 'Desde 1.500 €',
+        features: [
+          'Web de 3 a 5 páginas con la estructura esencial',
+          'Diseño adaptado a móvil y ordenador',
+          'Formulario de contacto y datos de negocio'
+        ]
+      },
+      {
+        name: 'Conversión',
+        price: 'Desde 2.400 €',
+        highlight: true,
+        features: [
+          'Todo lo del plan Esencial',
+          'Copy orientado a que el visitante contacte',
+          'Páginas de servicio y casos con prueba social',
+          'Medición de contactos y formularios'
+        ]
+      },
+      {
+        name: 'Dominación',
+        price: 'Desde 3.900 €',
+        features: [
+          'Todo lo del plan Conversión',
+          'Contenido y páginas por servicio o sector',
+          'Integraciones (agenda, CRM o email)',
+          'Plan de mejora a 3 meses incluido'
+        ]
+      }
     ]
   },
   {
@@ -116,6 +158,38 @@ export const services: Service[] = [
     metrics: [
       { label: 'Entrega', value: 'Informe claro' },
       { label: 'Reunión', value: '1 hora' }
+    ],
+    tiers: [
+      {
+        name: 'Esencial',
+        price: 'Desde 650 €',
+        features: [
+          'Revisión de velocidad y móvil',
+          'Informe con los problemas principales',
+          'Prioridades ordenadas por impacto'
+        ]
+      },
+      {
+        name: 'Conversión',
+        price: 'Desde 990 €',
+        highlight: true,
+        features: [
+          'Todo lo del plan Esencial',
+          'Revisión de contenidos y camino a contacto',
+          'SEO técnico básico y accesibilidad',
+          'Reunión de 1 hora para revisar el informe'
+        ]
+      },
+      {
+        name: 'Dominación',
+        price: 'Desde 1.500 €',
+        features: [
+          'Todo lo del plan Conversión',
+          'Análisis de la competencia local',
+          'Plan de mejoras por fases con estimación',
+          'Seguimiento de la implementación'
+        ]
+      }
     ]
   },
   {
@@ -164,6 +238,38 @@ export const services: Service[] = [
     metrics: [
       { label: 'Resultado', value: 'Plan claro' },
       { label: 'Enfoque', value: 'Por fases' }
+    ],
+    tiers: [
+      {
+        name: 'Esencial',
+        price: 'Desde 900 €',
+        features: [
+          'Sesión de descubrimiento',
+          'Diagnóstico de la situación actual',
+          'Recomendación del siguiente paso'
+        ]
+      },
+      {
+        name: 'Conversión',
+        price: 'Desde 1.500 €',
+        highlight: true,
+        features: [
+          'Todo lo del plan Esencial',
+          'Comparativa de herramientas y opciones',
+          'Plan por fases con prioridades',
+          'Sesión de transferencia al equipo'
+        ]
+      },
+      {
+        name: 'Dominación',
+        price: 'Desde 2.400 €',
+        features: [
+          'Todo lo del plan Conversión',
+          'Diseño de procesos y automatizaciones',
+          'Arquitectura e integraciones definidas',
+          'Acompañamiento en la primera fase'
+        ]
+      }
     ]
   },
   {
@@ -224,6 +330,38 @@ export const services: Service[] = [
       { label: 'Enfoque', value: 'Conversión' },
       { label: 'Entrega', value: '10 días' },
       { label: 'Base', value: 'Plantilla A/B' }
+    ],
+    tiers: [
+      {
+        name: 'Esencial',
+        price: 'Desde 990 €',
+        features: [
+          'Landing de una página + gracias',
+          'Formulario de captura de leads',
+          'Deploy en Vercel incluido'
+        ]
+      },
+      {
+        name: 'Conversión',
+        price: 'Desde 1.500 €',
+        highlight: true,
+        features: [
+          'Todo lo del plan Esencial',
+          'Test A/B del CTA',
+          'Copy orientado a conversión',
+          'Guía de edición de copy'
+        ]
+      },
+      {
+        name: 'Dominación',
+        price: 'Desde 2.200 €',
+        features: [
+          'Todo lo del plan Conversión',
+          'Variantes de hero y prueba social',
+          'Integración con tu email o CRM',
+          'Revisión de resultados a 30 días'
+        ]
+      }
     ]
   }
 ];

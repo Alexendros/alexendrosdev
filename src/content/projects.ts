@@ -24,7 +24,15 @@ export const projectSchema = z.object({
   }),
   published: z.string().min(1),
   featured: z.boolean(),
-  coverAlt: z.string().min(1)
+  coverAlt: z.string().min(1),
+  testimonial: z
+    .object({
+      quote: z.string().min(1),
+      author: z.string().min(1),
+      role: z.string().optional()
+    })
+    .optional(),
+  metrics: z.array(z.object({ label: z.string().min(1), value: z.string().min(1) })).optional()
 });
 
 export type Project = z.infer<typeof projectSchema> & { cover: ImageMetadata };
