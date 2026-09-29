@@ -19,13 +19,16 @@ interface Props {
   description?: string;
   ogImage?: string;
   robots?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 const {
   title = site.titleDefault,
   description = site.descriptionDefault,
   ogImage = '/og/default.png',
-  robots
+  robots,
+  jsonLd
 } = Astro.props;
+const extraJsonLd = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 const pathname = Astro.url.pathname;
 const canonical = new URL(pathname, site.url).href;
 const ogImageUrl = new URL(ogImage, site.url).href;
@@ -124,7 +127,8 @@ const ogImageUrl = new URL(ogImage, site.url).href;
               addressLocality: 'Valencia',
               addressCountry: 'ES'
             }
-          }
+          },
+          ...extraJsonLd
         ]
       })}
     />

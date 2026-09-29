@@ -1,11 +1,18 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel/serverless';
 
 export default defineConfig({
   site: 'https://alexendros.dev',
-  integrations: [tailwind({ applyBaseStyles: false }), react()],
+  integrations: [
+    tailwind({ applyBaseStyles: false }),
+    react(),
+    sitemap({
+      filter: (page) => !page.includes('/design-system')
+    })
+  ],
   output: 'hybrid',
   // @astrojs/vercel@7.8 no admite runtime nodejs22.x; pnpm build aplica scripts/fix-vercel-runtime.mjs
   adapter: vercel({

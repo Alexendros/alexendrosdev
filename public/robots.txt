@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://alexendros.dev/sitemap.xml
+Sitemap: https://alexendros.dev/sitemap-index.xml
