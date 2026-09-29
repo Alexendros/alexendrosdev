@@ -19,6 +19,7 @@
     "gen:og": "node --import tsx --import 'data:text/javascript,import { register } from \"node:module\"; import { pathToFileURL } from \"node:url\"; register(\"./scripts/asset-stub-loader.mjs\", pathToFileURL(\"./\"));' scripts/gen-og.mts",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:links": "bash scripts/check-links.sh",
+    "audit:cookies": "node scripts/audit-cookies.mjs",
     "lint:a11y": "playwright test tests/e2e/a11y.spec.ts",
     "lint:css": "stylelint \"src/**/*.css\"",
     "smoke": "bash scripts/smoke.sh",
@@ -44,6 +45,7 @@
     "react-dom": "^18.3.1",
     "sharp": "^0.35.4",
     "uqr": "^0.1.3",
+    "vanilla-cookieconsent": "^3.1.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
