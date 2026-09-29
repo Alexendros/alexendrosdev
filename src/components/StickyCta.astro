@@ -1,0 +1,159 @@
+---
+import { site } from '../content/site';
+
+interface Props {
+  pathname: string;
+}
+
+const { pathname } = Astro.props;
+const HIDE_PATHS = ['/contacto', '/contacto/', '/gracias'];
+const currentPath = Astro.url.pathname || pathname;
+const shouldShow = !HIDE_PATHS.some((p) => currentPath === p || currentPath.startsWith(p + '/'));
+const CTA_URL = site.social.cal;
+---
+
+{
+  shouldShow && (
+    <div
+      id="sticky-cta"
+      class="fixed bottom-0 left-0 right-0 z-30 hidden border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 md:hidden pb-safe"
+      role="region"
+      aria-label="Diagnóstico gratuito"
+    >
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2.5">
+        <p class="min-w-0 text-sm">
+          <strong class="font-bold">Diagnóstico gratis 15 min</strong>
+          <span class="text-muted"> · sin compromiso</span>
+        </p>
+        <div class="flex shrink-0 items-center gap-1">
+          <a
+            href={CTA_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-cal
+            id="sticky-cta-link"
+            class="btn inline-flex min-h-9 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-1.5 text-sm font-medium text-ink transition-colors hover:bg-primaryHover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            Reservar
+          </a>
+          <button
+            id="sticky-cta-dismiss"
+            type="button"
+            class="shrink-0 rounded-lg p-1.5 text-muted transition-colors hover:text-fg focus-ring"
+            aria-label="Cerrar"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<script is:inline>
+  (function () {
+    const STORAGE_KEY = 'alexendros.sticky-cta.v1';
+    const THRESHOLD = 400;
+    const banner = document.getElementById('sticky-cta');
+    if (!banner) return;
+    const dismissBtn = document.getElementById('sticky-cta-dismiss');
+    const ctaBtn = document.getElementById('sticky-cta-link');
+    const htmlEl = document.documentElement;
+    let shown = false;
+    let dismissed = false;
+    let ticking = false;
+
+    function getVa() {
+      const va = window.va;
+      return va && typeof va.track === 'function' ? va : null;
+    }
+
+    function isDismissed() {
+      try {
+        return localStorage.getItem(STORAGE_KEY) === '1';
+      } catch {
+        return false;
+      }
+    }
+
+    function setDismissed() {
+      try {
+        localStorage.setItem(STORAGE_KEY, '1');
+      } catch {
+        /* almacenamiento no disponible */
+      }
+    }
+
+    function detachScroll() {
+      window.removeEventListener('scroll', onScroll);
+    }
+
+    function showBanner() {
+      if (shown || dismissed || isDismissed()) return;
+      shown = true;
+      detachScroll();
+      banner.classList.remove('hidden');
+      const va = getVa();
+      if (va) va.track('sticky_cta_impression');
+    }
+
+    function hideBanner() {
+      dismissed = true;
+      detachScroll();
+      banner.classList.add('hidden');
+      setDismissed();
+      const va = getVa();
+      if (va) va.track('sticky_cta_dismiss');
+    }
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(function () {
+        ticking = false;
+        if (window.scrollY < THRESHOLD) return;
+        // Coordinación con LandingBanner: no mostrarse si ya hay uno visible.
+        if (htmlEl.classList.contains('banner-visible')) return;
+        showBanner();
+      });
+    }
+
+    function init() {
+      if (isDismissed()) return;
+      if (ctaBtn) {
+        ctaBtn.addEventListener('click', function () {
+          const va = getVa();
+          if (va) va.track('sticky_cta_cta_click');
+        });
+      }
+      if (dismissBtn) dismissBtn.addEventListener('click', hideBanner);
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        htmlEl.classList.add('reduce-motion');
+      }
+      if (window.scrollY >= THRESHOLD) {
+        showBanner();
+      } else {
+        window.addEventListener('scroll', onScroll, { passive: true });
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>
