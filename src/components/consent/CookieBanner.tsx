@@ -5,17 +5,12 @@ import {
   CONSENT_CATEGORIES,
   CONSENT_COOKIE,
   CONSENT_EXPIRES_DAYS,
+  consentVersion,
   writeConsent,
   type ConsentCategory
 } from '../../lib/tracking/consent';
 
 type CookieValue = { categories?: string[] };
-
-declare global {
-  interface Window {
-    openCookiePreferences?: () => void;
-  }
-}
 
 function toCategories(cookie: CookieValue | undefined): ConsentCategory[] {
   const raw = Array.isArray(cookie?.categories) ? cookie.categories : [];
@@ -27,6 +22,7 @@ function toCategories(cookie: CookieValue | undefined): ConsentCategory[] {
 export default function CookieBanner() {
   useEffect(() => {
     CookieConsent.run({
+      revision: consentVersion(),
       cookie: {
         name: CONSENT_COOKIE,
         expiresAfterDays: CONSENT_EXPIRES_DAYS,
@@ -46,7 +42,7 @@ export default function CookieBanner() {
           flipButtons: false
         }
       },
-      onConsent: ({ cookie }) => {
+      onFirstConsent: ({ cookie }) => {
         writeConsent(toCategories(cookie));
       },
       onChange: ({ cookie }) => {
@@ -104,14 +100,6 @@ export default function CookieBanner() {
         }
       }
     });
-
-    window.openCookiePreferences = () => {
-      CookieConsent.showPreferences();
-    };
-
-    return () => {
-      delete window.openCookiePreferences;
-    };
   }, []);
 
   return null;

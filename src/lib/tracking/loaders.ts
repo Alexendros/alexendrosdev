@@ -2,7 +2,15 @@ import { hasConsent, onConsentUpdate } from './consent';
 
 type Fbq = ((...args: unknown[]) => void) & { queue?: unknown[][] };
 type Gtag = (...args: unknown[]) => void;
-type PostHog = { init: (key: string, options?: unknown) => void; capture: (event: string) => void };
+type Lintrk = ((...args: unknown[]) => void) & { q?: unknown[][] };
+type PostHogFn = {
+  (...args: unknown[]): void;
+  _i?: unknown[];
+  __SV?: number;
+  init?: (key: string, options?: unknown) => void;
+  capture?: (event: string, properties?: unknown) => void;
+  push?: (args: unknown[]) => void;
+};
 
 const loaded = new Set<string>();
 
@@ -22,6 +30,26 @@ function once(name: string, action: () => void): void {
   action();
 }
 
+function syncGtagConsent(): void {
+  if (typeof window === 'undefined') return;
+  const target = window as Window & { gtag?: Gtag };
+  if (typeof target.gtag !== 'function') return;
+  const marketing = hasConsent('marketing');
+  target.gtag('consent', 'update', {
+    analytics_storage: hasConsent('analytics') ? 'granted' : 'denied',
+    ad_storage: marketing ? 'granted' : 'denied',
+    ad_user_data: marketing ? 'granted' : 'denied',
+    ad_personalization: marketing ? 'granted' : 'denied'
+  });
+}
+
+function syncMetaConsent(): void {
+  if (typeof window === 'undefined') return;
+  const target = window as Window & { fbq?: Fbq };
+  if (typeof target.fbq !== 'function') return;
+  target.fbq('consent', hasConsent('marketing') ? 'grant' : 'revoke');
+}
+
 export function loadGA4(): void {
   if (typeof window === 'undefined' || !hasConsent('analytics')) return;
   const id = import.meta.env.PUBLIC_GA4_ID as string | undefined;
@@ -39,9 +67,9 @@ export function loadGA4(): void {
       ad_personalization: 'denied',
       analytics_storage: 'denied'
     });
-    gtag('consent', 'update', { analytics_storage: 'granted' });
+    syncGtagConsent();
     gtag('js', new Date());
-    gtag('config', id, { anonymize_ip: true });
+    gtag('config', id);
     injectScript(`https://www.googletagmanager.com/gtag/js?id=${id}`, 'ga4');
   });
 }
@@ -81,12 +109,26 @@ export function loadPostHog(): void {
     (import.meta.env.PUBLIC_POSTHOG_HOST as string | undefined) ?? 'https://eu.i.posthog.com';
   if (!key) return;
   once('posthog', () => {
-    const target = window as Window & { posthog?: PostHog };
+    const target = window as Window & { posthog?: PostHogFn };
     if (!target.posthog) {
-      const posthog: PostHog = { init: () => {}, capture: () => {} };
+      const queue: unknown[][] = [];
+      const posthog = function (...args: unknown[]) {
+        queue.push(args);
+      } as PostHogFn;
+      posthog._i = queue;
+      posthog.__SV = 1;
+      posthog.init = (initKey, options) => {
+        queue.push([initKey, options]);
+      };
+      posthog.capture = (event, properties) => {
+        queue.push(['capture', event, properties]);
+      };
+      posthog.push = (args) => {
+        queue.push(args);
+      };
       target.posthog = posthog;
     }
-    target.posthog.init(key, { api_host: host, capture_pageview: true });
+    target.posthog.init?.(key, { api_host: host, capture_pageview: true });
     injectScript(`${host}/static/array.js`, 'posthog');
   });
 }
@@ -97,9 +139,18 @@ export function loadLinkedIn(): void {
   if (!id) return;
   once('linkedin', () => {
     const target = window as Window & {
+      lintrk?: Lintrk;
       _linkedin_partner_id?: string;
       _linkedin_data_partner_ids?: string[];
     };
+    if (!target.lintrk) {
+      const queue: unknown[][] = [];
+      const lintrk = ((...args: unknown[]) => {
+        queue.push(args);
+      }) as Lintrk;
+      lintrk.q = queue;
+      target.lintrk = lintrk;
+    }
     target._linkedin_partner_id = id;
     target._linkedin_data_partner_ids = target._linkedin_data_partner_ids ?? [];
     target._linkedin_data_partner_ids.push(id);
@@ -113,6 +164,8 @@ function loadAll(): void {
   loadClarity();
   loadPostHog();
   loadLinkedIn();
+  syncGtagConsent();
+  syncMetaConsent();
 }
 
 export function initTracking(): void {

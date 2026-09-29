@@ -3,7 +3,10 @@ import Layout from '../layouts/Layout.astro';
 import Container from '../components/Container.astro';
 ---
 
-<Layout title="Privacidad">
+<Layout
+  title="Privacidad"
+  description="Información sobre el tratamiento de tus datos personales: responsable, finalidad, base legal, conservación, destinatarios y derechos."
+>
   <Container size="narrow" class="pt-12 legal-prose">
     <p class="font-mono">LEGAL</p>
     <h1>Privacidad</h1>
@@ -28,3 +31,10 @@ import Container from '../components/Container.astro';
     </p>
   </Container>
 </Layout>
+
+<style>
+  .legal-prose a {
+    color: var(--brand);
+    text-decoration: underline;
+  }
+</style>

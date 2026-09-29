@@ -23,6 +23,8 @@ type ConsentListener = (state: ConsentState) => void;
 
 const listeners = new Set<ConsentListener>();
 
+let current: ConsentState | null = null;
+
 export function consentVersion(): number {
   const raw = import.meta.env.PUBLIC_COOKIE_CONSENT_VERSION as string | undefined;
   const parsed = Number.parseInt(String(raw ?? ''), 10);
@@ -39,15 +41,6 @@ function readCookie(name: string): string | null {
   const entry = document.cookie.split('; ').find((item) => item.startsWith(encoded));
   if (!entry) return null;
   return decodeURIComponent(entry.slice(encoded.length));
-}
-
-function readStorage(key: string): string | null {
-  if (!isBrowser()) return null;
-  try {
-    return window.localStorage.getItem(key);
-  } catch {
-    return null;
-  }
 }
 
 function writeStorage(key: string, value: string): void {
@@ -122,12 +115,27 @@ function isExpired(timestamp: string): boolean {
 
 export function readConsent(): ConsentState | null {
   const version = consentVersion();
-  const stored = normalize(parseJson(readStorage(CONSENT_STORAGE_KEY)), version);
-  const state = stored ?? fromCookieValue(readCookie(CONSENT_COOKIE));
-  if (!state) return null;
-  if (state.version !== version) return null;
-  if (isExpired(state.timestamp)) return null;
-  return state;
+  const fromCookie = fromCookieValue(readCookie(CONSENT_COOKIE));
+  if (fromCookie) {
+    if (fromCookie.version !== version || isExpired(fromCookie.timestamp)) {
+      current = null;
+      removeStorage(CONSENT_STORAGE_KEY);
+      return null;
+    }
+    current = fromCookie;
+    writeStorage(CONSENT_STORAGE_KEY, JSON.stringify(fromCookie));
+    return fromCookie;
+  }
+  if (current) {
+    if (current.version !== version || isExpired(current.timestamp)) {
+      current = null;
+      removeStorage(CONSENT_STORAGE_KEY);
+      return null;
+    }
+    return current;
+  }
+  removeStorage(CONSENT_STORAGE_KEY);
+  return null;
 }
 
 export function hasConsent(category: ConsentCategory): boolean {
@@ -149,6 +157,7 @@ export function writeConsent(categories: readonly ConsentCategory[]): ConsentSta
     timestamp: new Date().toISOString(),
     version: consentVersion()
   };
+  current = state;
   writeStorage(CONSENT_STORAGE_KEY, JSON.stringify(state));
   emit(state);
   return state;
@@ -162,5 +171,6 @@ export function onConsentUpdate(listener: ConsentListener): () => void {
 }
 
 export function clearConsent(): void {
+  current = null;
   removeStorage(CONSENT_STORAGE_KEY);
 }

@@ -74,7 +74,7 @@ test('TEST-CMP-02c: configurar abre el modal de preferencias con la categoría t
 }) => {
   await page.goto('/');
 
-  const configure = page.getByRole('button', { name: 'Configurar' }).first();
+  const configure = page.locator('#cc-main .cm__btn--secondary');
   await expect(configure).toBeVisible();
   await configure.click();
 

@@ -54,6 +54,10 @@ function createDomEnv(): DomEnv {
   return { store, scripts, window, document };
 }
 
+function gtagEntries(window: DomEnv['window']): unknown[][] {
+  return (window.dataLayer as unknown[][]) ?? [];
+}
+
 describe('tracking loaders', () => {
   let env: DomEnv;
 
@@ -93,7 +97,7 @@ describe('tracking loaders', () => {
     expect(env.scripts.map((script) => script.dataset.tracker)).toEqual(['ga4']);
     expect(env.scripts[0].src).toContain('G-TEST123');
 
-    const dataLayer = env.window.dataLayer as unknown[][];
+    const dataLayer = gtagEntries(env.window);
     expect(Array.isArray(dataLayer)).toBe(true);
 
     const first = dataLayer[0] as unknown[];
@@ -105,6 +109,11 @@ describe('tracking loaders', () => {
       ad_personalization: 'denied',
       analytics_storage: 'denied'
     });
+
+    const update = dataLayer.find(
+      (entry) => entry[0] === 'consent' && entry[1] === 'update'
+    ) as unknown[];
+    expect(update[2]).toMatchObject({ analytics_storage: 'granted', ad_storage: 'denied' });
 
     const configIndex = dataLayer.findIndex((entry) => entry[0] === 'config');
     expect(configIndex).toBeGreaterThan(0);
@@ -121,5 +130,71 @@ describe('tracking loaders', () => {
     loadGA4();
 
     expect(env.scripts).toHaveLength(0);
+  });
+
+  it('revocar el consentimiento emite gtag update denied y fbq revoke', async () => {
+    vi.stubEnv('PUBLIC_GA4_ID', 'G-TEST123');
+    vi.stubEnv('PUBLIC_META_PIXEL_ID', 'PIXEL1');
+
+    const consent = await import('./consent');
+    const { initTracking } = await import('./loaders');
+
+    initTracking();
+    consent.writeConsent(['necessary', 'analytics', 'marketing']);
+
+    expect(env.scripts.map((script) => script.dataset.tracker)).toEqual(['ga4', 'meta-pixel']);
+
+    consent.writeConsent(['necessary']);
+
+    const lastUpdate = [...gtagEntries(env.window)]
+      .reverse()
+      .find((entry) => entry[0] === 'consent' && entry[1] === 'update') as unknown[];
+    expect(lastUpdate[2]).toMatchObject({
+      analytics_storage: 'denied',
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied'
+    });
+
+    const fbqCalls = ((env.window.fbq as { queue?: unknown[][] }).queue ?? []).map((call) =>
+      (call as unknown[]).slice(0, 2)
+    );
+    expect(fbqCalls).toContainEqual(['consent', 'revoke']);
+  });
+
+  it('con analytics y PUBLIC_POSTHOG_KEY crea el stub en cola e inyecta array.js', async () => {
+    vi.stubEnv('PUBLIC_POSTHOG_KEY', 'phc_test');
+
+    const consent = await import('./consent');
+    const { loadPostHog } = await import('./loaders');
+
+    consent.writeConsent(['necessary', 'analytics']);
+    loadPostHog();
+
+    const posthog = env.window.posthog as { _i?: unknown[]; __SV?: number };
+    expect(Array.isArray(posthog._i)).toBe(true);
+    const firstCall = posthog._i?.[0] as unknown[];
+    expect(firstCall[0]).toBe('phc_test');
+    expect(firstCall[1]).toMatchObject({ api_host: 'https://eu.i.posthog.com' });
+
+    const script = env.scripts.find((item) => item.dataset.tracker === 'posthog');
+    expect(script?.src).toBe('https://eu.i.posthog.com/static/array.js');
+  });
+
+  it('con marketing y PUBLIC_LINKEDIN_PARTNER_ID crea el stub lintrk con cola', async () => {
+    vi.stubEnv('PUBLIC_LINKEDIN_PARTNER_ID', '12345');
+
+    const consent = await import('./consent');
+    const { loadLinkedIn } = await import('./loaders');
+
+    consent.writeConsent(['necessary', 'marketing']);
+    loadLinkedIn();
+
+    const lintrk = env.window.lintrk as { q?: unknown[][] };
+    expect(Array.isArray(lintrk.q)).toBe(true);
+    expect(env.window._linkedin_partner_id).toBe('12345');
+    expect(env.scripts.find((item) => item.dataset.tracker === 'linkedin')?.src).toContain(
+      'snap.licdn.com'
+    );
   });
 });
