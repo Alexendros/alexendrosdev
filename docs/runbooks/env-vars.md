@@ -24,18 +24,61 @@ secretos. Este runbook es la fuente única para cerrar la configuración pendien
 Dashboard: **Project `alexendros-dev` → Settings → Environment Variables → Add New**, con nombre
 exacto, valor, y marcas de entorno.
 
-CLI (no interactiva, sin pegar el secreto en el comando):
+CLI. Forma no interactiva (pasa el valor por stdin, nunca en el propio comando):
 
 ```bash
-# Añade y luego escribe el valor cuando lo pida (no queda en el historial del shell)
-vercel env add SMTP_PASS production
-vercel env add SMTP_PASS preview
-vercel env add SMTP_PASS development
+# No interactiva: el valor viaja por stdin y no queda en el historial del shell.
+printf '%s' "$VALUE" | vercel env add SMTP_PASS production
 
-# Ver nombres ya configurados (no imprime valores en claro en la UI web)
+# Varios entornos de una vez
+printf '%s' "$VALUE" | vercel env add SMTP_PASS production,preview,development
+
+# Ver nombres ya configurados (no imprime valores)
 vercel env ls
+```
 
-# Traer los valores a local para probar
+> **`Preview` necesita el git-branch posicional, aunque sea vacío.** Si se omite, la CLI abre
+> el prompt «Leave empty to apply to all Preview branches / ? Git branch?» y, con stdin por
+> pipe o `--value`, **no crea la variable** (sale con código 0 pero sin efecto). La forma que
+> funciona es:
+>
+> ```bash
+> printf '%s' "$VALUE" | vercel env add SMTP_PASS preview "" --value "$VALUE" -y
+> # o, sin stdin:
+> vercel env add SMTP_PASS preview "" --value "$VALUE" -y
+> ```
+>
+> La lista `production,preview,development` también cubre Preview correctamente.
+
+### Subida en lote con `scripts/env-push.sh`
+
+Para cargar varias variables desde un fichero sin volcar secretos en pantalla:
+
+```bash
+# 1) Escribe los valores en un fichero gitignored (NO en .env.local; ver aviso)
+#    .env.provision, .env.* están en .gitignore.
+
+# 2) Simula (18 operaciones = 6 claves × production,preview,development)
+ENV_FILE=.env.provision bash scripts/env-push.sh --dry-run
+
+# 3) Sube de verdad, opcionalmente acotando claves o entornos
+ENV_FILE=.env.provision bash scripts/env-push.sh
+ENV_FILE=.env.provision bash scripts/env-push.sh --only RESEND_API_KEY --envs production,preview
+```
+
+El script borra antes la clave en cada entorno (`vercel env rm … -y`) y la re-añade por stdin,
+imprimiendo solo `ok CLAVE → entorno` (nunca el valor).
+
+> **Nunca subas el `.env.local` que genera `vercel env pull`.** Para las variables cifradas la
+> CLI escribe el literal `[SENSITIVE]`, no el secreto. Re-subir ese fichero **sobrescribiría
+> los valores reales** en Vercel. Usa siempre un fichero de aprovisionamiento propio
+> (`.env.provision`) con valores reales o generados.
+
+### Traer valores a local (solo para probar)
+
+```bash
+# Las variables cifradas llegan como [SENSITIVE]; úsalo para nombres/estructura,
+# no como fuente de secretos.
 vercel env pull .env.local
 ```
 
