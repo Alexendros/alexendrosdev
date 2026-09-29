@@ -31,6 +31,11 @@ interface ImportMetaEnv {
   readonly PUBLIC_POSTHOG_HOST?: string;
   readonly PUBLIC_LINKEDIN_PARTNER_ID?: string;
   readonly PUBLIC_COOKIE_CONSENT_VERSION?: string;
+  /** Email transaccional y doble opt-in (Resend) */
+  readonly RESEND_API_KEY?: string;
+  readonly EMAIL_FROM?: string;
+  readonly EMAIL_FROM_NAME?: string;
+  readonly UNSUBSCRIBE_SECRET?: string;
 }
 
 interface ImportMeta {

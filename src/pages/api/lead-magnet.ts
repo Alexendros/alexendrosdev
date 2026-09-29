@@ -4,6 +4,10 @@ import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { resolveSmtpConfig } from '../../lib/smtpConfig';
 import { verifyTurnstileToken } from '../../lib/turnstile';
+import { confirmUrl, unsubscribeUrl, listUnsubscribeHeaders } from '../../lib/email/doubleOptIn';
+import { isResendConfigured, sendResendEmail } from '../../lib/email/resend';
+
+const SITE_URL = 'https://alexendros.dev';
 
 export const prerender = false;
 
@@ -124,6 +128,35 @@ export const POST: APIRoute = async ({ request }) => {
     });
   } catch {
     return redirect('error');
+  }
+
+  const secret = import.meta.env.UNSUBSCRIBE_SECRET;
+  const resendCfg = {
+    apiKey: import.meta.env.RESEND_API_KEY,
+    from: import.meta.env.EMAIL_FROM,
+    fromName: import.meta.env.EMAIL_FROM_NAME
+  };
+  if (secret && isResendConfigured(resendCfg)) {
+    const confirm = confirmUrl(SITE_URL, email, secret);
+    const unsubscribe = unsubscribeUrl(SITE_URL, email, secret);
+    await sendResendEmail(resendCfg, {
+      to: email,
+      subject: 'Confirma tu suscripción y recibe la checklist',
+      text: [
+        'Gracias por pedir la checklist de 27 errores que matan la conversión.',
+        'Confirma tu suscripción con un clic:',
+        confirm,
+        '',
+        `Si no fuiste tú, ignora este correo. Baja en un clic: ${unsubscribe}`
+      ].join('\n'),
+      html: [
+        '<h2>Confirma tu suscripción</h2>',
+        '<p>Gracias por pedir la checklist de 27 errores que matan la conversión. Confírmala con un clic.</p>',
+        `<p><a href="${confirm}">Confirmar y recibir la checklist</a></p>`,
+        `<p style="font-size:12px;color:#666">Si no fuiste tú, ignora este correo. <a href="${unsubscribe}">Darse de baja</a>.</p>`
+      ].join(''),
+      headers: listUnsubscribeHeaders(unsubscribe)
+    });
   }
 
   return redirect('ok');
