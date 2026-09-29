@@ -2,7 +2,7 @@ import type { ImageMetadata } from 'astro';
 import { z } from 'zod';
 import coverFront from '../assets/projects/front-valencia.webp';
 import coverNasve from '../assets/projects/graficas-nasve.webp';
-import coverVcf from '../assets/projects/vcf-cribador.webp';
+import coverZedazo from '../assets/projects/zedazo.webp';
 import coverMe from '../assets/projects/alexendros-me.webp';
 
 export const projectSchema = z.object({
@@ -17,7 +17,7 @@ export const projectSchema = z.object({
   responsibilities: z.array(z.string()).min(1),
   technologies: z.array(z.string()).min(1),
   highlights: z.array(z.string()).min(1),
-  results: z.array(z.string()).min(1),
+  results: z.array(z.string()).min(1).optional(),
   links: z.object({
     prod: z.string().url().optional(),
     github: z.string().url().optional()
@@ -42,35 +42,43 @@ export const projects: Project[] = [
     slug: 'front-valencia',
     title: 'Front Valencia — Restaurante',
     short:
-      'Web para un negocio local que necesitaba explicar sus servicios y recibir solicitudes de presupuesto.',
+      'Web para un restaurante en La Marina de Valencia: carta digital bilingüe con alérgenos y reservas directas, editable por el equipo sin tocar código.',
     summary:
-      'Renovamos la web de un restaurante para que los clientes entiendan la oferta, consulten el menú y pidan reserva con menos fricción.',
+      'Diseñamos y publicamos la web del restaurante: carta bilingüe con alérgenos y etiquetas dietéticas, espacios y eventos, y reservas con CoverManager, todo editable desde un panel propio.',
     role: 'Diseño, desarrollo y publicación',
     context:
-      'La web anterior era lenta, difícil de actualizar y no facilitaba las reservas. Editar el menú llevaba demasiado tiempo.',
+      'El restaurante necesitaba una presencia clara en La Marina de Valencia y una carta que pudiera actualizar su propio equipo cuando cambiaran precios o platos.',
     challenge:
-      'Publicar una web clara sin interrumpir el negocio, conservar la visibilidad en buscadores y dejar al equipo un editor sencillo.',
+      'Publicar una web bilingüe (ES/EN) con carta, espacios y reservas, mantenerla rápida y dejar al equipo un editor sencillo para la carta y los eventos.',
     solution:
-      'Nueva web con menú actualizable, textos más claros y un flujo de reservas más directo. Entregamos guía de uso y comprobamos velocidad y usabilidad antes de publicar.',
+      'Web con carta digital bilingüe (alérgenos, etiquetas dietéticas y precios), páginas de espacios y eventos, y reservas integradas con CoverManager. El equipo edita todo desde un panel propio, sin tocar código.',
     responsibilities: [
-      'Definición de estructura y mensajes',
-      'Diseño y desarrollo completo',
-      'Editor para actualizar el menú',
-      'Revisión de usabilidad',
+      'Definición de estructura y contenidos',
+      'Diseño y desarrollo web',
+      'Carta digital bilingüe con alérgenos',
+      'Integración de reservas (CoverManager)',
+      'Panel de edición para el equipo',
       'Publicación y documentación'
     ],
     technologies: [
-      'Detalles técnicos: Astro + Payload CMS, TypeScript, Tailwind. Objetivo Lighthouse ≥90. Publicación en Vercel + VPS.'
+      'Astro + React',
+      'Tailwind CSS',
+      'Payload CMS 3 + PostgreSQL',
+      'pnpm + Turborepo',
+      'TypeScript estricto',
+      'Vercel (web) + Railway (CMS)'
     ],
     highlights: [
-      'Publicación sin cortar el servicio',
-      'Editor visual para el equipo',
-      'Usable con teclado',
-      'Velocidad medida antes de entregar'
+      'Carta bilingüe con alérgenos',
+      'Reservas integradas con CoverManager',
+      'El equipo edita sin tocar código',
+      'Web rápida y accesible'
     ],
-    results: ['Carga mucho más rápida', 'Más reservas desde la web', 'Menú editable en minutos'],
-    links: { prod: 'https://frontvalencia.com/' },
-    published: '2024-03-15',
+    links: {
+      prod: 'https://website-frontvalencia.vercel.app/',
+      github: 'https://github.com/Soluciones-Alexendros/website-frontvalencia'
+    },
+    published: '2025-07-13',
     featured: true,
     cover: coverFront,
     coverAlt:
@@ -99,7 +107,11 @@ export const projects: Project[] = [
       'Pruebas antes de publicar'
     ],
     technologies: [
-      'Detalles técnicos: Next.js, TypeScript, PostgreSQL, Prisma, Stripe (webhooks idempotentes), Zod.'
+      'Next.js',
+      'TypeScript',
+      'PostgreSQL + Prisma',
+      'Stripe (webhooks idempotentes)',
+      'Zod'
     ],
     highlights: [
       'Precios calculados al momento',
@@ -119,11 +131,12 @@ export const projects: Project[] = [
       'Tienda online de Gráficas Nasve: catálogo de productos con precios calculados al momento y pago online.'
   },
   {
-    slug: 'vcf-cribador',
-    title: 'VCF Cribador — Herramienta de contactos',
-    short: 'Herramienta interna para automatizar un proceso manual y reducir errores.',
+    slug: 'zedazo',
+    title: 'Zedazo — Herramienta de contactos',
+    short:
+      'Herramienta de código abierto para limpiar y unificar listados de contactos sin trabajo manual.',
     summary:
-      'Una utilidad para limpiar y unificar listados de contactos exportados desde distintas agendas, evitando trabajo repetitivo y fallos al migrar.',
+      'Una utilidad libre para limpiar y unificar listados de contactos exportados desde distintas agendas, evitando trabajo repetitivo y fallos al migrar.',
     role: 'Diseño y desarrollo de la herramienta',
     context:
       'Migrar contactos entre Google, iCloud y Outlook generaba duplicados, formatos rotos y mucho trabajo manual.',
@@ -138,7 +151,9 @@ export const projects: Project[] = [
       'Pruebas y documentación'
     ],
     technologies: [
-      'Detalles técnicos: CLI en Rust (clap, phonenumber, serde). Binario estático ~3MB. FOSS MIT.'
+      'CLI en Rust (clap, phonenumber, serde)',
+      'Binario estático ~3 MB',
+      'Open source bajo licencia MIT'
     ],
     highlights: [
       'Instalación sencilla',
@@ -147,12 +162,12 @@ export const projects: Project[] = [
       'Código abierto'
     ],
     results: ['Menos errores al migrar', 'Miles de contactos procesados', 'Uso recurrente'],
-    links: { github: 'https://github.com/Iniciativas-Alexendros/zedazo' },
+    links: { github: 'https://github.com/Soluciones-Alexendros/zedazo' },
     published: '2024-01-10',
     featured: false,
-    cover: coverVcf,
+    cover: coverZedazo,
     coverAlt:
-      'Interfaz de VCF Cribador, herramienta de código abierto para limpiar y unificar listados de contactos.'
+      'Interfaz de Zedazo, herramienta de código abierto para limpiar y unificar listados de contactos.'
   },
   {
     slug: 'alexendros-me',
@@ -175,9 +190,7 @@ export const projects: Project[] = [
       'Privacidad',
       'Publicación'
     ],
-    technologies: [
-      'Detalles técnicos: Next.js, TypeScript, Tailwind, MDX, Zod. Objetivo 98/100/100/100 Lighthouse móvil; 0 violaciones axe-core.'
-    ],
+    technologies: ['Next.js', 'TypeScript', 'Tailwind', 'MDX', 'Zod'],
     highlights: [
       'Lectura cómoda',
       'Buen contraste',

@@ -18,10 +18,10 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 
 ## projects.ts — 4 proyectos (profundidad > cantidad, 70% recruiters prefiere)
 
-- front-valencia: Astro+Payload CMS i18n WCAG AA menu dinamico reservas. -65% LCP 0 axe +40% reservas 30min->3min
+- front-valencia: Astro+React+Tailwind, Payload CMS 3+PostgreSQL i18n ES/EN carta con alergenos reservas CoverManager panel propio. Web rapida y accesible
 - graficas-nasve: Next.js motor precios 200+ reglas validacion PDF Stripe Checkout B2B/B2C. 48h->5min +300% pedidos 0 errores -70% gestion PCI SAQ-A
-- vcf-cribador: CLI Rust 3MB limpiar VCF E.164 dedup VCF/CSV. 500+ dl/mes 50k migracion 0 CVEs <2s 10k
-- alexendros-me: Next.js lab 0 JS contenido AAA prosa privacidad real sin GA. 98/100/100/100 movil 0 axe <3min build 15+ ensayos
+- zedazo: CLI Rust 3MB limpiar VCF E.164 dedup VCF/CSV. Open source MIT
+- alexendros-me: Next.js lab contenido MDX privacidad real sin GA. Lectura comoda y accesible
 
 ## Componentes
 

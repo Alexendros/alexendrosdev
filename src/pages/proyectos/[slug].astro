@@ -20,7 +20,7 @@ const { project } = Astro.props;
 >
   <Container size="narrow" class="pt-12 pb-16" data-reveal>
     <div class="text-xs text-muted">
-      <Link href="/proyectos" variant="nav">← Todos los casos</Link>
+      <Link href="/proyectos" variant="nav">← Todos los proyectos</Link>
     </div>
     <h1 class="mt-3 text-4xl font-bold">{project.title}</h1>
     <p class="mt-3 text-muted">{project.summary}</p>
@@ -35,16 +35,20 @@ const { project } = Astro.props;
         loading="eager"
         decoding="async"
       />
-      <figcaption class="mt-2 font-mono text-xs tracking-[0.1em] text-muted">
-        {project.slug}
-      </figcaption>
     </figure>
-    <div class="mt-4">
-      <h2 class="font-bold text-sm">Resultados</h2>
-      <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
-        {project.results.map((r) => <li>{r}</li>)}
-      </ul>
-    </div>
+
+    {
+      project.results && project.results.length > 0 && (
+        <div class="mt-4">
+          <h2 class="font-bold text-sm">Resultados</h2>
+          <ul class="mt-2 list-disc pl-5 text-sm text-muted space-y-1">
+            {project.results.map((r) => (
+              <li>{r}</li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
 
     {
       project.metrics && project.metrics.length > 0 && (

@@ -8,7 +8,7 @@ export const site = {
   ogLocale: 'es_ES',
   nav: [
     { label: 'Cómo puedo ayudarte', href: '/servicios' },
-    { label: 'Casos', href: '/proyectos' },
+    { label: 'Proyectos', href: '/proyectos' },
     { label: 'Cómo trabajo', href: '/como-trabajo' },
     { label: 'Sobre mí', href: '/sobre-mi' }
   ],
