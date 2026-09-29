@@ -2,6 +2,8 @@ import { hasConsent, onConsentUpdate } from './consent';
 
 type Fbq = ((...args: unknown[]) => void) & { queue?: unknown[][] };
 type Gtag = (...args: unknown[]) => void;
+type DataLayerEntry = Record<string, unknown>;
+type DataLayer = DataLayerEntry[] & { push: (...items: DataLayerEntry[]) => number };
 type Lintrk = ((...args: unknown[]) => void) & { q?: unknown[][] };
 type PostHogFn = {
   (...args: unknown[]): void;
@@ -71,6 +73,30 @@ export function loadGA4(): void {
     gtag('js', new Date());
     gtag('config', id);
     injectScript(`https://www.googletagmanager.com/gtag/js?id=${id}`, 'ga4');
+  });
+}
+
+export function loadGTM(): void {
+  if (typeof window === 'undefined' || !hasConsent('analytics')) return;
+  const id = import.meta.env.PUBLIC_GTM_ID as string | undefined;
+  if (!id) return;
+  once('gtm', () => {
+    const target = window as Window & { dataLayer?: DataLayer; gtag?: Gtag };
+    target.dataLayer = target.dataLayer ?? ([] as unknown as DataLayer);
+    target.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
+    // Consent Mode v2 por defecto en denied antes de cargar el contenedor.
+    const gtag: Gtag = (...args) => {
+      target.dataLayer?.push(args as unknown as DataLayerEntry);
+    };
+    target.gtag = target.gtag ?? gtag;
+    target.gtag('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied'
+    });
+    syncGtagConsent();
+    injectScript(`https://www.googletagmanager.com/gtm.js?id=${id}`, 'gtm');
   });
 }
 
@@ -160,6 +186,7 @@ export function loadLinkedIn(): void {
 
 function loadAll(): void {
   loadGA4();
+  loadGTM();
   loadMetaPixel();
   loadClarity();
   loadPostHog();

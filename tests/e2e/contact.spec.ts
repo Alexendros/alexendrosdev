@@ -20,14 +20,24 @@ test('contact form validacion Zod y envio', async ({ page }) => {
   });
 
   await page.goto('/contacto');
+
+  // Paso 1: datos de contacto. Nombre inválido -> error de paso.
   await page.getByLabel('Nombre*').fill('A');
-  await page.getByRole('button', { name: /Enviar/ }).click();
+  await page.getByRole('button', { name: /Siguiente/ }).click();
   await expect(page.getByRole('alert')).toBeVisible();
 
   await page.getByLabel('Nombre*').fill('Test Cliente');
   await page.getByLabel('Email*').fill('test@example.com');
+  await page.getByRole('button', { name: /Siguiente/ }).click();
+
+  // Paso 2: proyecto (asunto y presupuesto opcionales).
+  await expect(page.getByText(/Paso 2 de 3/)).toBeVisible();
+  await page.getByRole('button', { name: /Siguiente/ }).click();
+
+  // Paso 3: mensaje y consentimiento.
+  await expect(page.getByText(/Paso 3 de 3/)).toBeVisible();
   await page
-    .getByLabel(/Mensaje\*/)
+    .getByLabel(/Cuéntame tu caso/)
     .fill('Proyecto ecommerce Stripe presupuesto 5k deadline 1 mes web actual https://example.com');
   await page.getByLabel(/Acepto/).check();
   await page.getByRole('button', { name: /Enviar/ }).click();

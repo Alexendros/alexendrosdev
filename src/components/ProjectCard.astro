@@ -31,6 +31,13 @@ const Heading = headingLevel;
       </a>
     </Heading>
     <p class="mt-2 text-sm text-muted">{project.short}</p>
+    {
+      project.metrics && project.metrics.length > 0 && (
+        <p class="mt-2 text-xs font-medium text-brand">
+          {project.metrics[0].value} · {project.metrics[0].label}
+        </p>
+      )
+    }
     <div class="mt-auto pt-4 text-sm font-medium" aria-hidden="true">Ver caso →</div>
   </div>
 </article>

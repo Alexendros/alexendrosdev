@@ -46,6 +46,31 @@ const { project } = Astro.props;
       </ul>
     </div>
 
+    {
+      project.metrics && project.metrics.length > 0 && (
+        <div class="mt-6 grid gap-4 sm:grid-cols-3">
+          {project.metrics.map((m) => (
+            <div class="border border-border rounded-lg p-4 bg-card">
+              <p class="text-2xl font-bold text-fg">{m.value}</p>
+              <p class="mt-1 text-xs text-muted">{m.label}</p>
+            </div>
+          ))}
+        </div>
+      )
+    }
+
+    {
+      project.testimonial && (
+        <figure class="mt-6 border-l-2 border-primary pl-5">
+          <blockquote class="text-sm italic text-fg">«{project.testimonial.quote}»</blockquote>
+          <figcaption class="mt-2 text-xs text-muted">
+            {project.testimonial.author}
+            {project.testimonial.role && <span> · {project.testimonial.role}</span>}
+          </figcaption>
+        </figure>
+      )
+    }
+
     <div class="mt-8" data-reveal>
       <Dimension label="Contexto — Reto — Solución" />
     </div>

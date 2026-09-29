@@ -10,7 +10,9 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SkipLink from '../components/SkipLink.astro';
 import LandingBanner from '../components/LandingBanner.astro';
+import StickyCta from '../components/StickyCta.astro';
 import CookieBanner from '../components/consent/CookieBanner.tsx';
+import ExitIntent from '../components/ExitIntent.tsx';
 import { site } from '../content/site';
 import { profile } from '../content/profile';
 
@@ -19,13 +21,16 @@ interface Props {
   description?: string;
   ogImage?: string;
   robots?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 const {
   title = site.titleDefault,
   description = site.descriptionDefault,
   ogImage = '/og/default.png',
-  robots
+  robots,
+  jsonLd
 } = Astro.props;
+const extraJsonLd = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 const pathname = Astro.url.pathname;
 const canonical = new URL(pathname, site.url).href;
 const ogImageUrl = new URL(ogImage, site.url).href;
@@ -74,12 +79,18 @@ const ogImageUrl = new URL(ogImage, site.url).href;
     </main>
     <Footer />
     <LandingBanner pathname={Astro.url.pathname} />
+    <StickyCta pathname={Astro.url.pathname} />
     <CookieBanner client:idle />
+    <ExitIntent client:idle />
     <script>
       import '../scripts/reveal.ts';
       import '../scripts/header.ts';
       import { initTracking } from '../lib/tracking/loaders';
+      import { setupFunnelTracking } from '../lib/tracking/events';
+      import { captureReferralFromLocation } from '../lib/referral';
       initTracking();
+      setupFunnelTracking();
+      captureReferralFromLocation();
     </script>
     {
       /* Analytics solo en despliegues Vercel: en builds locales/CI los scripts
@@ -122,7 +133,8 @@ const ogImageUrl = new URL(ogImage, site.url).href;
               addressLocality: 'Valencia',
               addressCountry: 'ES'
             }
-          }
+          },
+          ...extraJsonLd
         ]
       })}
     />

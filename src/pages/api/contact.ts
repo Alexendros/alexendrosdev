@@ -8,6 +8,9 @@ import {
   methodNotAllowed,
   type ContactDeps
 } from '../../lib/contactHandler';
+import { verifyTurnstileToken } from '../../lib/turnstile';
+import { isCapiConfigured, sendCapiEvent } from '../../lib/tracking/capi';
+import { createNotionLeadsStore } from '../../lib/calNotionClient';
 
 export const prerender = false;
 
@@ -37,11 +40,60 @@ function createProductionDeps(): ContactDeps {
       SMTP_USER: import.meta.env.SMTP_USER,
       SMTP_PASS: import.meta.env.SMTP_PASS,
       UPSTASH_REDIS_REST_URL: import.meta.env.UPSTASH_REDIS_REST_URL,
-      UPSTASH_REDIS_REST_TOKEN: import.meta.env.UPSTASH_REDIS_REST_TOKEN
+      UPSTASH_REDIS_REST_TOKEN: import.meta.env.UPSTASH_REDIS_REST_TOKEN,
+      TURNSTILE_SECRET_KEY: import.meta.env.TURNSTILE_SECRET_KEY
     }),
     rateLimit: async (ip) => {
       const result = await getContactRatelimit().limit(ip);
       return { success: result.success, reset: result.reset };
+    },
+    verifyTurnstile: async (token, ip) => {
+      const secret = import.meta.env.TURNSTILE_SECRET_KEY;
+      if (!secret) return false;
+      return verifyTurnstileToken(secret, token, ip);
+    },
+    sendLeadEvent: async ({ email, ip, userAgent, sourceUrl }) => {
+      const cfg = {
+        pixelId: import.meta.env.META_PIXEL_ID ?? import.meta.env.PUBLIC_META_PIXEL_ID,
+        accessToken: import.meta.env.META_CAPI_TOKEN,
+        testEventCode: import.meta.env.META_CAPI_TEST_EVENT_CODE
+      };
+      if (!isCapiConfigured(cfg)) return;
+      await sendCapiEvent(cfg, {
+        eventName: 'Lead',
+        eventSourceUrl: sourceUrl ?? undefined,
+        userData: { email, ip, userAgent: userAgent ?? undefined }
+      });
+    },
+    saveLead: async ({
+      name,
+      email,
+      company,
+      subject,
+      message,
+      budget,
+      vertical,
+      referralCode
+    }) => {
+      const token = import.meta.env.NOTION_TOKEN;
+      const dataSourceId =
+        import.meta.env.NOTION_LEADS_DATA_SOURCE_ID ?? import.meta.env.NOTION_LEADS_DATABASE_ID;
+      if (!token || !dataSourceId) return;
+      const store = createNotionLeadsStore(token, dataSourceId);
+      await store.create({
+        nombre: name,
+        email,
+        canal: 'Formulario',
+        tipo: 'Lead contacto',
+        estado: 'Nuevo',
+        asunto: subject,
+        mensaje: company ? `${message}\n\nEmpresa: ${company}` : message,
+        fuente: vertical ? `formulario/${vertical}` : 'formulario',
+        vertical,
+        budget,
+        referralCode,
+        consentMarketing: false
+      });
     },
     sendMail: async ({ name, email, company, subject, message, smtp }) => {
       const { html, text, mailSubject } = buildContactEmailHtml({

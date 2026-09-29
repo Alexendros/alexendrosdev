@@ -12,7 +12,11 @@ export const NOTION_PROP = {
   stripePaymentIntent: 'stripe_payment_intent',
   fuente: 'Fuente',
   fecha: 'Fecha',
-  notas: 'Notas'
+  notas: 'Notas',
+  vertical: 'Vertical',
+  budget: 'Presupuesto',
+  referralCode: 'referral_code',
+  consentMarketing: 'consent_marketing'
 } as const;
 
 export type Canal = 'Formulario' | 'Cal.com' | 'Stripe' | 'Otro';
@@ -40,6 +44,10 @@ export type LeadWrite = {
   fuente?: string;
   fecha?: string;
   notas?: string;
+  vertical?: string;
+  budget?: string;
+  referralCode?: string;
+  consentMarketing?: boolean;
 };
 
 const ESTADO_RANK: Record<string, number> = {

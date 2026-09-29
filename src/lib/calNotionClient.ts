@@ -57,6 +57,18 @@ export function toNotionProperties(write: LeadWrite): NotionProperties {
   if (write.notas !== undefined) {
     properties[NOTION_PROP.notas] = { rich_text: [textItem(write.notas)] };
   }
+  if (write.vertical !== undefined) {
+    properties[NOTION_PROP.vertical] = { rich_text: [textItem(write.vertical)] };
+  }
+  if (write.budget !== undefined) {
+    properties[NOTION_PROP.budget] = { rich_text: [textItem(write.budget)] };
+  }
+  if (write.referralCode !== undefined) {
+    properties[NOTION_PROP.referralCode] = { rich_text: [textItem(write.referralCode)] };
+  }
+  if (write.consentMarketing !== undefined) {
+    properties[NOTION_PROP.consentMarketing] = { checkbox: write.consentMarketing };
+  }
 
   return properties;
 }

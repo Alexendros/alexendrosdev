@@ -12,6 +12,8 @@ export type ContactEnv = {
   SMTP_PASS?: string;
   UPSTASH_REDIS_REST_URL?: string;
   UPSTASH_REDIS_REST_TOKEN?: string;
+  /** Si está definido, se exige y verifica un token de Cloudflare Turnstile. */
+  TURNSTILE_SECRET_KEY?: string;
 };
 
 export type RateLimitResult = {
@@ -33,8 +35,33 @@ export type ContactDeps = {
   getEnv: () => ContactEnv;
   rateLimit: (ip: string) => Promise<RateLimitResult>;
   sendMail: (payload: ContactMailPayload) => Promise<void>;
+  /** Verificación Turnstile server-side; solo se invoca si hay TURNSTILE_SECRET_KEY. */
+  verifyTurnstile?: (token: string, ip: string) => Promise<boolean>;
+  /** Evento de conversión server-side (Meta CAPI); best-effort, no bloquea la respuesta. */
+  sendLeadEvent?: (input: ContactLeadEvent) => Promise<void>;
+  /** Alta del lead en el CRM (Notion); best-effort, no bloquea la respuesta. */
+  saveLead?: (input: ContactLeadInput) => Promise<void>;
   createRequestId?: () => string;
   nowMs?: () => number;
+};
+
+export type ContactLeadEvent = {
+  email: string;
+  ip: string;
+  userAgent: string | null;
+  sourceUrl: string | null;
+};
+
+export type ContactLeadInput = {
+  name: string;
+  email: string;
+  company?: string;
+  subject: string;
+  message: string;
+  budget?: string;
+  vertical?: string;
+  referralCode?: string;
+  consent: boolean;
 };
 
 function json(status: number, body: unknown, extraHeaders?: HeadersInit): Response {
@@ -122,12 +149,24 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
   }
 
   const env = deps.getEnv();
+  const ip = clientIp(request);
+
+  if (env.TURNSTILE_SECRET_KEY) {
+    const token = parsed.data.turnstileToken;
+    const verified =
+      typeof token === 'string' && token.length > 0 && deps.verifyTurnstile
+        ? await deps.verifyTurnstile(token, ip).catch(() => false)
+        : false;
+    if (!verified) {
+      logEvent('info', 'contact_turnstile_failed', requestId, false);
+      return json(400, { error: 'Captcha verification failed' });
+    }
+  }
+
   if (!env.UPSTASH_REDIS_REST_URL || !env.UPSTASH_REDIS_REST_TOKEN) {
     logEvent('error', 'contact_redis_misconfigured', requestId, false);
     return json(503, { error: 'Service unavailable' });
   }
-
-  const ip = clientIp(request);
   let limited: RateLimitResult;
   try {
     limited = await deps.rateLimit(ip);
@@ -165,6 +204,33 @@ export async function handleContactPost(request: Request, deps: ContactDeps): Pr
     subjectLen: subject.length,
     messageLen: message.length
   });
+
+  if (deps.sendLeadEvent) {
+    void deps
+      .sendLeadEvent({
+        email,
+        ip,
+        userAgent: request.headers.get('user-agent'),
+        sourceUrl: request.headers.get('referer')
+      })
+      .catch(() => {});
+  }
+
+  if (deps.saveLead) {
+    void deps
+      .saveLead({
+        name,
+        email,
+        company,
+        subject,
+        message,
+        budget: parsed.data.budget,
+        vertical: parsed.data.vertical,
+        referralCode: parsed.data.referralCode,
+        consent: parsed.data.consent
+      })
+      .catch(() => {});
+  }
 
   return json(200, { ok: true });
 }

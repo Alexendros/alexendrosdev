@@ -24,7 +24,16 @@ export type CalWebhookDeps = {
   claimIdempotency: (key: string) => Promise<boolean>;
   releaseIdempotency: (key: string) => Promise<void>;
   leads: NotionLeadsStore;
+  /** Evento de conversión server-side (Meta CAPI); best-effort, no bloquea la respuesta. */
+  sendConversionEvent?: (input: CalConversionEvent) => Promise<void>;
   createRequestId?: () => string;
+};
+
+export type CalConversionEvent = {
+  trigger: string;
+  uid: string;
+  email?: string;
+  eventSourceUrl?: string;
 };
 
 function json(status: number, body: unknown, extraHeaders?: HeadersInit): Response {
@@ -193,5 +202,23 @@ export async function handleCalWebhookPost(
   }
 
   logEvent('info', 'cal_webhook_processed', requestId, true, { trigger: triggerEvent });
+
+  if (deps.sendConversionEvent) {
+    void deps
+      .sendConversionEvent({ trigger: triggerEvent, uid, email: attendeeEmail(payload) })
+      .catch(() => {});
+  }
+
   return json(200, { ok: true });
+}
+
+function attendeeEmail(payload: Record<string, unknown>): string | undefined {
+  const attendees = payload.attendees;
+  if (!Array.isArray(attendees)) return undefined;
+  const first = attendees[0];
+  if (first && typeof first === 'object' && 'email' in first) {
+    const email = (first as { email?: unknown }).email;
+    if (typeof email === 'string' && email.includes('@')) return email;
+  }
+  return undefined;
 }

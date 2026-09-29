@@ -1,0 +1,35 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import PageHead from '../../../components/PageHead.astro';
+import Container from '../../../components/Container.astro';
+import Grid from '../../../components/Grid.astro';
+import Link from '../../../components/Link.astro';
+import { verticals } from '../../../content/verticals';
+---
+
+<Layout
+  title="Webs por sector — Alexendros"
+  description="Webs pensadas para despachos de abogados, clínicas, restaurantes, gimnasios e inmobiliarias, con problemas y soluciones concretas de cada sector."
+>
+  <Container class="py-16 md:py-24">
+    <PageHead
+      kicker="ÍNDICE · POR SECTOR"
+      title="Webs por sector"
+      description="Lo que cambia entre sectores no es el diseño, sino qué necesita saber el cliente antes de contactar. Elige el tuyo."
+    />
+    <Grid gap="6" class="mt-8 md:grid-cols-3">
+      {
+        verticals.map((v) => (
+          <article class="card-lift border border-border rounded-lg p-5 bg-card relative">
+            <h2 class="font-bold">
+              <Link href={`/servicios/web-para/${v.slug}`} variant="inline">
+                {v.name}
+              </Link>
+            </h2>
+            <p class="mt-2 text-sm text-muted">{v.short}</p>
+          </article>
+        ))
+      }
+    </Grid>
+  </Container>
+</Layout>

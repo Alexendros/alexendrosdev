@@ -11,6 +11,7 @@ import Dimension from '../components/Dimension.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import AxisCard from '../components/AxisCard.astro';
+import LeadMagnet from '../components/LeadMagnet.astro';
 import { services } from '../content/services';
 import { getFeaturedProjects } from '../content/projects';
 import { ejes } from '../content/ejes';
@@ -89,6 +90,8 @@ const featured = getFeaturedProjects().slice(0, 3);
       </Grid>
     </Container>
   </Section>
+
+  <LeadMagnet />
 
   <Section reveal>
     <Container class="text-center">

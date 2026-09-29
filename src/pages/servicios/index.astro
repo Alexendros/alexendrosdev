@@ -4,7 +4,9 @@ import PageHead from '../../components/PageHead.astro';
 import Container from '../../components/Container.astro';
 import Grid from '../../components/Grid.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
+import Link from '../../components/Link.astro';
 import { services } from '../../content/services';
+import { verticals } from '../../content/verticals';
 ---
 
 <Layout
@@ -19,6 +21,20 @@ import { services } from '../../content/services';
     />
     <Grid gap="6" class="mt-8 md:grid-cols-3">
       {services.map((s) => <ServiceCard service={s} />)}
+    </Grid>
+
+    <h2 class="mt-16 text-2xl font-bold">Webs por sector</h2>
+    <p class="mt-2 text-sm text-muted max-w-2xl">
+      Cada sector tiene sus dudas concretas. Estas páginas las resuelven.
+    </p>
+    <Grid gap="6" class="mt-6 md:grid-cols-3">
+      {
+        verticals.map((v) => (
+          <Link href={`/servicios/web-para/${v.slug}`} variant="inline" class="text-sm">
+            {v.name}
+          </Link>
+        ))
+      }
     </Grid>
   </Container>
 </Layout>
