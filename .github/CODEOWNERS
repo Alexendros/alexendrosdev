@@ -1,1 +1,24 @@
-* @Alexendros
+# CODEOWNERS - Dueños de código por área
+# Requiere protección de rama + revisión obligatoria (SOK-CIC-06)
+
+# Documentación
+/docs/ @Alexendros
+
+# Configuración de seguridad
+/.github/ @Alexendros
+/scripts/seckit/ @Alexendros
+
+# Código fuente
+/src/ @Alexendros
+
+# Configuración de build y despliegue
+/astro.config.mjs @Alexendros
+/tailwind.config.mjs @Alexendros
+/vercel.json @Alexendros
+/package.json @Alexendros
+/pnpm-lock.yaml @Alexendros
+
+# Configuración de calidad
+/.pre-commit-config.yaml @Alexendros
+/.eslintrc.json @Alexendros
+/.stylelintrc.json @Alexendros
