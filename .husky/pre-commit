@@ -1,3 +1,12 @@
 pnpm exec lint-staged
 pnpm run typecheck
 pnpm run test
+
+# gitleaks secret scan (staged changes only via pipe)
+if command -v gitleaks >/dev/null 2>&1; then
+  git diff --cached | gitleaks detect --pipe --verbose --redact --exit-code 0
+elif [ -x "scripts/seckit/bin/gitleaks" ]; then
+  git diff --cached | scripts/seckit/bin/gitleaks detect --pipe --verbose --redact --exit-code 0
+else
+  echo "⚠ gitleaks no encontrado; saltando escaneo de secretos (instala con 'uv tool install gitleaks' o pon el binario en scripts/seckit/bin/)"
+fi
