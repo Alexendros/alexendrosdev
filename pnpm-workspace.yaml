@@ -4,3 +4,8 @@ packages:
 allowBuilds:
   esbuild: true
   sharp: true
+
+# Misma línea. Astro 7.3.5 sigue arrastrando copias por debajo del arreglo.
+overrides:
+  'devalue@>=5.0.0 <5.9.4': '5.9.4'
+  'sharp@>=0.35.0 <0.35.5': '0.35.5'
