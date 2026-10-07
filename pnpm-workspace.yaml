@@ -4,3 +4,18 @@ packages:
 allowBuilds:
   esbuild: true
   sharp: true
+
+# Parches de la misma línea del expediente 20261007-085704. pnpm 11 lee
+# overrides aquí, no en package.json. sharp@0.33 lo arrastra Astro 4; si el
+# build de imágenes falla, quitar solo esa entrada.
+overrides:
+  'proxy-addr@>=2.0.0 <2.0.8': '2.0.8'
+  'devalue@>=5.0.0 <5.9.3': '5.9.3'
+  'compression@>=1.0.0 <1.8.2': '1.8.2'
+  'source-map-js@>=1.0.0 <1.2.2': '1.2.2'
+  'brace-expansion@>=1.0.0 <1.1.21': '1.1.21'
+  'brace-expansion@>=5.0.0 <5.0.12': '5.0.12'
+  'qs@>=6.0.0 <6.16.0': '6.16.0'
+  'ip-address@>=10.0.0 <10.7.1': '10.7.1'
+  'fast-uri@>=3.0.0 <3.1.8': '3.1.8'
+  'sharp@>=0.33.0 <0.35.0': '0.35.5'

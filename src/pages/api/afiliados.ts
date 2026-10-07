@@ -69,7 +69,7 @@ export const POST: APIRoute = async ({ request }) => {
   const mensaje = field(form, 'mensaje');
   const consent = field(form, 'consent');
 
-  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const emailOk = email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   if (nombre.length < 2 || !emailOk || mensaje.length < 20 || !consent) {
     return redirect('error');
   }
