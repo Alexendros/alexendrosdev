@@ -76,14 +76,21 @@
 
 ### Dependencias (npm)
 
-| STRIDE                     | Amenaza               | Mitigación actual                      | Gap |
-| -------------------------- | --------------------- | -------------------------------------- | --- |
-| **S**poofing               | Typosquatting         | Levenshtein check (builtin), lockfile  | ✅  |
-| **T**ampering              | Paquete malicioso     | `pnpm-lock.yaml` commitado, Dependabot | ✅  |
-| **R**epudiation            | —                     | —                                      | —   |
-| **I**nformation Disclosure | CVE en dependencia    | osv-scanner en CI (security.yml)       | ✅  |
-| **D**enial of Service      | —                     | —                                      | —   |
-| **E**levation of Privilege | Postinstall malicioso | Sin `scripts.postinstall` sospechosos  | ✅  |
+| STRIDE                     | Amenaza               | Mitigación actual                                       | Gap       |
+| -------------------------- | --------------------- | ------------------------------------------------------- | --------- |
+| **S**poofing               | Typosquatting         | Lockfile versionado. Sin detector automático de nombres | Pendiente |
+| **T**ampering              | Paquete malicioso     | `pnpm-lock.yaml` commitado, Renovate                    | ✅        |
+| **R**epudiation            | —                     | —                                                       | —         |
+| **I**nformation Disclosure | CVE en dependencia    | osv-scanner en CI (security.yml)                        | ✅        |
+| **D**enial of Service      | —                     | —                                                       | —         |
+| **E**levation of Privilege | Postinstall malicioso | Sin `scripts.postinstall` sospechosos                   | ✅        |
+
+Residuales aceptados del expediente `20261007-085704`, tras los parches de la misma línea:
+
+- Solo build o CI, fuera del runtime de Vercel: `basic-ftp` 5.3.1, `braces` 3.0.3, `extract-zip` 2.0.1, `sprintf-js` 1.0.3, `postcss-selector-parser` 6.1.4, `tmp` 0.0.33 y 0.1.0, `uuid` 8.3.2. No hay versión corregida en la misma línea, o el padre no admite el salto. No se fuerza un major.
+- `http-cache-semantics` 4.2.0 lo arrastra Astro 4. Queda para el PR `cursor/deps-astro-major`.
+- `nodemailer` 6.10.1 se queda por el issue #12. El código no usa `raw` ni OAuth2. El email que va a `replyTo` está limitado a 254 caracteres.
+- F-003 a F-007 están cerrados en `.gitleaks.toml`: `STORAGE_KEY` de `localStorage` del banner, no una credencial.
 
 ---
 
@@ -136,12 +143,12 @@ Usuario → [Navegador] → (HTTPS/TLS 1.3) → [Vercel Edge] → [Astro SSR/SSG
 
 ## 7. Pruebas de validación
 
-| Prueba                     | Frecuencia   | Responsable  |
-| -------------------------- | ------------ | ------------ |
-| `secops.py audit`          | Semanal (CI) | Automatizado |
-| `secops.py verify`         | Post-release | Automatizado |
-| Ejercicio mesa secret-leak | Trimestral   | Alexendros   |
-| Revisión threat model      | Cambio mayor | Alexendros   |
+| Prueba                                                    | Frecuencia                  | Responsable |
+| --------------------------------------------------------- | --------------------------- | ----------- |
+| `security.yml` (gitleaks, osv-scanner, CodeQL, Scorecard) | En cada PR y push a main    | CI          |
+| `secops.py audit`                                         | Bajo demanda, no está en CI | Manual      |
+| Ejercicio mesa secret-leak                                | Trimestral                  | Alexendros  |
+| Revisión threat model                                     | Cambio mayor                | Alexendros  |
 
 ---
 
