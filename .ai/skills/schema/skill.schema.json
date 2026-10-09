@@ -71,7 +71,9 @@
           "id": { "type": "string" },
           "metric": { "type": "string" },
           "operator": { "enum": ["<", "<=", "==", ">=", ">"] },
-          "threshold": { "type": ["number", "string", "boolean"] },
+          "threshold": {
+            "anyOf": [{ "type": "number" }, { "type": "string" }, { "type": "boolean" }]
+          },
           "unit": { "type": "string" },
           "blocking": { "type": "boolean" }
         }
