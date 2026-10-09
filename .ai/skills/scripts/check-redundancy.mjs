@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 // Evaluación de fusiones antirredundancia entre skills del canon trifásico.
 // Falla (exit 1) ante: id duplicado, colisión de (area,fase) o solapamiento de alcance.
-import { readdirSync, readFileSync, statSync } from "node:fs";
-import { join, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
+import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const areas = ["proteccion", "accesibilidad", "orden"];
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const areas = ['proteccion', 'accesibilidad', 'orden'];
 const manifests = [];
 
 function walk(dir) {
   for (const entry of readdirSync(dir)) {
     const p = join(dir, entry);
     if (statSync(p).isDirectory()) walk(p);
-    else if (entry === "skill.json") manifests.push(p);
+    else if (entry === 'skill.json') manifests.push(p);
   }
 }
 for (const a of areas) {
@@ -24,7 +24,7 @@ for (const a of areas) {
   }
 }
 
-const skills = manifests.map((p) => ({ p, m: JSON.parse(readFileSync(p, "utf8")) }));
+const skills = manifests.map((p) => ({ p, m: JSON.parse(readFileSync(p, 'utf8')) }));
 const errors = [];
 
 // 1. ids únicos
@@ -61,15 +61,15 @@ for (let i = 0; i < skills.length; i++) {
     if (sim >= 0.6 && !declared) {
       errors.push(
         `Redundancia (Jaccard ${sim.toFixed(2)}) entre '${a.id}' y '${b.id}'. ` +
-          `Diferencia el alcance o declara 'mergeableWith'.`,
+          `Diferencia el alcance o declara 'mergeableWith'.`
       );
     }
   }
 }
 
 if (errors.length) {
-  console.error("\u2717 Evaluación antirredundancia FALLIDA:");
-  for (const e of errors) console.error("  - " + e);
+  console.error('\u2717 Evaluación antirredundancia FALLIDA:');
+  for (const e of errors) console.error('  - ' + e);
   process.exit(1);
 }
 console.log(`\u2713 ${skills.length} skills · sin colisiones de id, fase ni alcance.`);

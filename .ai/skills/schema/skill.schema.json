@@ -94,7 +94,12 @@
       "required": ["scope", "keywords"],
       "properties": {
         "scope": { "type": "string" },
-        "keywords": { "type": "array", "items": { "type": "string" }, "minItems": 3, "uniqueItems": true },
+        "keywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 3,
+          "uniqueItems": true
+        },
         "mergeableWith": { "type": "array", "items": { "type": "string" } }
       }
     }

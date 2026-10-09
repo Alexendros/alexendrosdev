@@ -6,19 +6,56 @@
   "title": "PROTECCIÓN · Integración contra código previo y cierre en CI",
   "version": "1.0.0",
   "description": "Integra los controles base contra el código previamente existente, verifica ausencia de regresión y cablea los gates de seguridad en el pipeline con validación draconiana. Actívala para cerrar la fase de protección en CI.",
-  "standard": { "name": "OWASP ASVS v4.0.3", "ref": "https://owasp.org/projects/asvs", "scope": "Verificación L1 + gates CI" },
+  "standard": {
+    "name": "OWASP ASVS v4.0.3",
+    "ref": "https://owasp.org/projects/asvs",
+    "scope": "Verificación L1 + gates CI"
+  },
   "consumes": [".ai/skills/.phase/proteccion/02-despliegue-base.json"],
-  "produces": { "cleanFile": ".ai/skills/.phase/proteccion/03-integracion.json", "reportSchema": ".ai/skills/schema/phase-report.schema.json" },
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/proteccion/03-integracion.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
   "gates": [
-    { "id": "asvs-l1-testeado", "metric": "controles_asvs_l1_con_test_pct", "operator": ">=", "threshold": 100, "unit": "%", "blocking": true },
-    { "id": "regresion", "metric": "tests_rotos_por_integracion", "operator": "==", "threshold": 0, "blocking": true },
-    { "id": "pipeline", "metric": "job_quality_verde", "operator": "==", "threshold": true, "blocking": true }
+    {
+      "id": "asvs-l1-testeado",
+      "metric": "controles_asvs_l1_con_test_pct",
+      "operator": ">=",
+      "threshold": 100,
+      "unit": "%",
+      "blocking": true
+    },
+    {
+      "id": "regresion",
+      "metric": "tests_rotos_por_integracion",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "pipeline",
+      "metric": "job_quality_verde",
+      "operator": "==",
+      "threshold": true,
+      "blocking": true
+    }
   ],
   "tools": ["github-actions", "vitest", "playwright"],
-  "cursor": { "invocation": "@proteccion-03-integracion", "mode": "agent", "autoAttach": [".ai/skills/proteccion/**"] },
+  "cursor": {
+    "invocation": "@proteccion-03-integracion",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/proteccion/**"]
+  },
   "antiRedundancy": {
     "scope": "Fusión contra código previo y cierre en CI con gates draconianos. No diagnostica ni crea los controles base.",
-    "keywords": ["integracion-ci", "gates-pipeline", "no-regresion", "cierre-asvs", "github-actions-seguridad", "verificacion-final"],
+    "keywords": [
+      "integracion-ci",
+      "gates-pipeline",
+      "no-regresion",
+      "cierre-asvs",
+      "github-actions-seguridad",
+      "verificacion-final"
+    ],
     "mergeableWith": []
   }
 }

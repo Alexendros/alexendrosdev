@@ -16,17 +16,17 @@ remaches que fijan la calidad al producto antes de entregarlo.
 2. **Orden** — limpieza de código ordenado
 3. **Accesibilidad** — para usuario y visitantes
 
-El **Remache Triple** es *qué* se garantiza en cada entregable; el **Protocolo
-Trifásico** es *cómo* se forja cada remache (3 fases por área). Ningún producto se
+El **Remache Triple** es _qué_ se garantiza en cada entregable; el **Protocolo
+Trifásico** es _cómo_ se forja cada remache (3 fases por área). Ningún producto se
 entrega sin sus tres remaches en verde.
 
 ## 1. Los tres remaches (áreas) y sus estándares
 
-| Remache / Área | Estándar | Umbral mínimo |
-| --- | --- | --- |
-| **PROTECCIÓN** (seguridad) | OWASP ASVS v4.0.3 (L1 completo + L2 selectivo) | 0 secretos, 0 vulns high/critical, CSP sin `unsafe-inline` |
-| **ACCESIBILIDAD** (usuario y visitantes) | WCAG 2.1 AA + EN 301 549 / RD 1112/2018 | 0 violaciones serious/critical axe, LHCI a11y/SEO 100, LCP ≤2.5s |
-| **ORDEN** (código limpio) | Clean Code (R. C. Martin) | complejidad ≤10, 0 ciclos de dependencia, 0 código muerto |
+| Remache / Área                           | Estándar                                       | Umbral mínimo                                                    |
+| ---------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------- |
+| **PROTECCIÓN** (seguridad)               | OWASP ASVS v4.0.3 (L1 completo + L2 selectivo) | 0 secretos, 0 vulns high/critical, CSP sin `unsafe-inline`       |
+| **ACCESIBILIDAD** (usuario y visitantes) | WCAG 2.1 AA + EN 301 549 / RD 1112/2018        | 0 violaciones serious/critical axe, LHCI a11y/SEO 100, LCP ≤2.5s |
+| **ORDEN** (código limpio)                | Clean Code (R. C. Martin)                      | complejidad ≤10, 0 ciclos de dependencia, 0 código muerto        |
 
 ## 2. Tres fases (Trifásico)
 
