@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://alexendros.dev/schemas/skill.schema.json",
-  "title": "Skill canónica trifásica",
+  "title": "Skill canónica del Protocolo Pentagrama",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -24,9 +24,9 @@
     "schemaVersion": { "const": "1.0.0" },
     "id": {
       "type": "string",
-      "pattern": "^(proteccion|accesibilidad|orden)-(01-auditoria|02-despliegue-base|03-integracion)$"
+      "pattern": "^(proteccion|accesibilidad|orden|dependencias|verificacion-e2e)-(01-auditoria|02-despliegue-base|03-integracion)$"
     },
-    "area": { "enum": ["proteccion", "accesibilidad", "orden"] },
+    "area": { "enum": ["proteccion", "accesibilidad", "orden", "dependencias", "verificacion-e2e"] },
     "phase": {
       "type": "object",
       "additionalProperties": false,
@@ -38,7 +38,7 @@
       }
     },
     "title": { "type": "string", "minLength": 5 },
-    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "version": { "type": "string", "pattern": "^[0-9]+[.][0-9]+[.][0-9]+$" },
     "description": { "type": "string", "minLength": 40 },
     "standard": {
       "type": "object",
@@ -56,7 +56,7 @@
       "additionalProperties": false,
       "required": ["cleanFile", "reportSchema"],
       "properties": {
-        "cleanFile": { "type": "string", "pattern": "\\.json$" },
+        "cleanFile": { "type": "string", "pattern": "[.]json$" },
         "reportSchema": { "type": "string" }
       }
     },
@@ -71,9 +71,7 @@
           "id": { "type": "string" },
           "metric": { "type": "string" },
           "operator": { "enum": ["<", "<=", "==", ">=", ">"] },
-          "threshold": {
-            "anyOf": [{ "type": "number" }, { "type": "string" }, { "type": "boolean" }]
-          },
+          "threshold": { "type": ["number", "string", "boolean"] },
           "unit": { "type": "string" },
           "blocking": { "type": "boolean" }
         }
@@ -96,12 +94,7 @@
       "required": ["scope", "keywords"],
       "properties": {
         "scope": { "type": "string" },
-        "keywords": {
-          "type": "array",
-          "items": { "type": "string" },
-          "minItems": 3,
-          "uniqueItems": true
-        },
+        "keywords": { "type": "array", "items": { "type": "string" }, "minItems": 3, "uniqueItems": true },
         "mergeableWith": { "type": "array", "items": { "type": "string" } }
       }
     }

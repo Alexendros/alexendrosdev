@@ -1,36 +1,42 @@
-# Canon de skills · Remache Triple + Protocolo Trifásico
+# Canon de skills · Protocolo Pentagrama (Remache Triple)
 
 > Las skills no viven en reposo: viven cuando se usan (Tizona) o cuando se afilan.
 > Este canon es la **vaina**; el filo se ejerce en Cursor y se templa en CI.
 
-Canon versionado de habilidades para madurar `alexendros.dev` bajo tres estándares
+Canon versionado de habilidades para madurar `alexendros.dev` bajo estándares
 exigidos como umbral mínimo de calidad. Consumidor operativo: **Cursor**.
-Gobernanza, métricas y matasellado: Notion → «Protocolo Trifásico».
+Gobernanza, métricas y matasellado: Notion → «Protocolo Pentagrama».
+
+El **Protocolo Pentagrama** tiene **cinco líneas** (áreas); cada línea se forja con
+el método trifásico (**3 fases**). El **Remache Triple** es el sello de calidad del
+producto entregable (3 garantías). Pentagrama = *cómo* y *cuánto*; Remache Triple = *qué* se entrega.
 
 ## 0. Remache Triple (el sello por entregable)
 
-**Remache Triple** es el sello que se aplica a **cada producto entregable**: tres
-remaches que fijan la calidad al producto antes de entregarlo.
+Sello que se aplica a **cada producto entregable**: tres remaches que fijan la calidad.
 
 1. **Seguridad** — PROTECCIÓN
 2. **Orden** — limpieza de código ordenado
 3. **Accesibilidad** — para usuario y visitantes
 
-El **Remache Triple** es _qué_ se garantiza en cada entregable; el **Protocolo
-Trifásico** es _cómo_ se forja cada remache (3 fases por área). Ningún producto se
-entrega sin sus tres remaches en verde.
+Ningún producto se entrega sin sus tres remaches en verde.
 
-## 1. Los tres remaches (áreas) y sus estándares
+## 1. Las cinco líneas del Pentagrama
 
-| Remache / Área                           | Estándar                                       | Umbral mínimo                                                    |
-| ---------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------- |
-| **PROTECCIÓN** (seguridad)               | OWASP ASVS v4.0.3 (L1 completo + L2 selectivo) | 0 secretos, 0 vulns high/critical, CSP sin `unsafe-inline`       |
-| **ACCESIBILIDAD** (usuario y visitantes) | WCAG 2.1 AA + EN 301 549 / RD 1112/2018        | 0 violaciones serious/critical axe, LHCI a11y/SEO 100, LCP ≤2.5s |
-| **ORDEN** (código limpio)                | Clean Code (R. C. Martin)                      | complejidad ≤10, 0 ciclos de dependencia, 0 código muerto        |
+| Línea / Área | Estándar | Umbral mínimo |
+| --- | --- | --- |
+| **PROTECCIÓN** | OWASP ASVS v4.0.3 (L1 + L2 selectivo) | 0 secretos, 0 vulns high/critical, CSP sin `unsafe-inline` |
+| **ACCESIBILIDAD** | WCAG 2.1 AA + EN 301 549 / RD 1112/2018 | 0 violaciones serious/critical axe, LHCI a11y/SEO 100, LCP ≤2.5s |
+| **ORDEN** | Clean Code (R. C. Martin) + OKLCH/CSS | complejidad ≤10, 0 ciclos, 0 código muerto, 0 literales de color, CSS consolidado |
+| **DEPENDENCIAS** | Renovate (no Dependabot) | 0 configs Dependabot, `renovate.json` válido, managers 100% |
+| **VERIFICACIÓN E2E** | Playwright + Lighthouse + regresión visual | e2e verde, 0 regresiones de contraste, métricas en presupuesto |
 
-## 2. Tres fases (Trifásico)
+> Las dos líneas nuevas (DEPENDENCIAS, VERIFICACIÓN E2E) refuerzan el proceso; el
+> Remache Triple sigue garantizando 3 apartados sobre el producto entregable.
 
-Cada área tiene **3 skills = 3 fases**. Cada fase lee **solo** el fichero limpio
+## 2. Tres fases (método trifásico por línea)
+
+Cada línea tiene **3 skills = 3 fases**. Cada fase lee **solo** el fichero limpio
 de la anterior y produce el suyo, validado contra `schema/phase-report.schema.json`.
 
 ```
@@ -41,6 +47,7 @@ de la anterior y produce el suyo, validado contra `schema/phase-report.schema.js
 
 - **① Auditoría** = contextualización + decisiones. Diagnostica superficie y fija umbrales.
 - **② Despliegue base** = scaffolding limpio (configs, tests, tokens) desde cero.
+  - En ORDEN, aquí se consolidan los estilos en un único CSS (`@import`/`@layer`) y se gobierna el color con tokens **OKLCH**.
 - **③ Integración** = fusión con/contra el código previo y cierre en pipeline.
 
 Ficheros limpios de ejecución: `.ai/skills/.phase/<area>/0N-*.json` (no se commitean).
@@ -49,7 +56,7 @@ Ficheros limpios de ejecución: `.ai/skills/.phase/<area>/0N-*.json` (no se comm
 
 - Cada skill = carpeta con `SKILL.md` (instrucciones) + `skill.json` (manifiesto estricto).
 - `skill.json` conforma `schema/skill.schema.json` (draft-07, `additionalProperties:false`).
-- Cursor invoca cada skill por `cursor.invocation` (p. ej. `@proteccion-01-auditoria`).
+- Cursor invoca cada skill por `cursor.invocation` (p. ej. `@dependencias-02-despliegue-base`).
 
 ## 4. Evaluación de fusiones antirredundancia
 
