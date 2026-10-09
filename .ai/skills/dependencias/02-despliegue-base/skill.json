@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "dependencias-02-despliegue-base",
+  "area": "dependencias",
+  "phase": { "number": 2, "slug": "despliegue-base", "name": "Configuración de Renovate" },
+  "title": "DEPENDENCIAS · Configuración completa de Renovate",
+  "version": "1.0.0",
+  "description": "Implementa un renovate.json completo (presets, agrupaciones, agenda, automerge, lockFileMaintenance, commits semánticos, etiquetas, revisores y diferimiento de mayores) como base reproducible, sin Dependabot. Actívala tras la auditoría de dependencias para desplegar Renovate.",
+  "standard": {
+    "name": "Renovate",
+    "ref": "https://docs.renovatebot.com/configuration-options/",
+    "scope": "renovate.json: presets, grouping, schedule, automerge, lockFileMaintenance"
+  },
+  "consumes": [".ai/skills/.phase/dependencias/01-auditoria.json"],
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/dependencias/02-despliegue-base.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
+  "gates": [
+    {
+      "id": "sin-dependabot",
+      "metric": "configuraciones_dependabot_activas",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "renovate-valido",
+      "metric": "errores_validacion_renovate",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "managers-cubiertos",
+      "metric": "managers_cubiertos_pct",
+      "operator": ">=",
+      "threshold": 100,
+      "unit": "%",
+      "blocking": false
+    }
+  ],
+  "tools": ["renovate", "renovate-config-validator"],
+  "cursor": {
+    "invocation": "@dependencias-02-despliegue-base",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/dependencias/**"]
+  },
+  "antiRedundancy": {
+    "scope": "Autoría de renovate.json completo y validado. No audita el inventario ni cablea el dashboard/CI.",
+    "keywords": [
+      "renovate-json",
+      "presets",
+      "automerge",
+      "lockfilemaintenance",
+      "commits-semanticos",
+      "diferir-mayores"
+    ],
+    "mergeableWith": []
+  }
+}
