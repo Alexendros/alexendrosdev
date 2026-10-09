@@ -71,15 +71,15 @@ Documentados en [`docs/threat-model.md`](../threat-model.md) y allowlist [`osv-s
 | actionlint / pipeline             | OK     | CI verde; security secrets/sca/sast verdes; scorecard N/A en privado                       |
 | Required checks                   | OK     | quality/test/build/smoke (+ e2e-critical)                                                  |
 | CodeQL / secret scanning settings | WARN   | CodeQL en CI con `upload: false`; secret scanning API no habilitada (paso manual settings) |
-| Despliegue Vercel                 | WARN   | Hobby + repo privado: preferencia AGENTS es público; no mutar visibilidad sin sí           |
+| Despliegue Vercel                 | OK/WIP | Hobby + repo público (decisión 1B; transición 2026-10-09)                                  |
 | Mutation testing                  | WARN   | No ejecutado (coste); anotado para Remachar                                                |
 
-## Pasos humanos pendientes
+## Pasos (actualización 2026-10-09 tarde)
 
-1. **Dismiss Dependabot** alineado con `osv-scanner.toml` / threat-model (o triage de los 2 critical restantes si no están en allowlist).
-2. **Visibilidad del repo:** sí explícito para hacerlo público (Hobby) o quitar required status Vercel.
-3. **Settings:** habilitar secret scanning / code scanning upload si el plan GitHub lo permite.
-4. **Issue #12:** majors nodemailer/zod/React en ciclo aparte.
+1. **Dependabot:** 42 alertas allowlist dismissadas (`tolerable_risk`); open = 0.
+2. **Visibilidad:** transición a **público** tras revisión de subsecciones (AGENTS/SECURITY/IDENTITY/PLAN).
+3. **Settings:** habilitar secret scanning / private vulnerability reporting si el plan GitHub lo permite.
+4. **Issue #12:** majors zod/nodemailer/React en curso tras visibilidad pública.
 5. **Labels:** Fase A de `/repo-ending` (deduplicar default vs `type:*`).
 
 ## Handoff Remachar

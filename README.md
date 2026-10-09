@@ -23,11 +23,11 @@ Trabajo desde Valencia (remoto o presencial según el proyecto). Sin tracking in
 
 ## Este repositorio
 
-Código fuente del sitio en producción. Para contribuir o desplegar, empieza por [CONTRIBUTING](CONTRIBUTING.md). Arquitectura, ADRs y runbooks están en [docs/](docs/) y [ARCHITECTURE.md](ARCHITECTURE.md). Contrato para agentes: [AGENTS.md](AGENTS.md).
+Código fuente **público** del sitio en producción ([`Alexendros/alexendrosdev`](https://github.com/Alexendros/alexendrosdev)). Para contribuir o desplegar, empieza por [CONTRIBUTING](CONTRIBUTING.md). Arquitectura, ADRs y runbooks están en [docs/](docs/) y [ARCHITECTURE.md](ARCHITECTURE.md). Contrato para agentes: [AGENTS.md](AGENTS.md). Avisos de seguridad: [SECURITY.md](SECURITY.md).
 
 ```bash
 pnpm i
 pnpm dev    # http://localhost:4321
 ```
 
-Node 22. Producción en Vercel (`alexendros-dev`); el merge a `main` publica el sitio.
+Node 22. Producción en Vercel Hobby (`alexendros-dev`); el merge a `main` publica el sitio.
