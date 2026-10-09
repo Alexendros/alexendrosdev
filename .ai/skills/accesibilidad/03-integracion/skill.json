@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "accesibilidad-03-integracion",
+  "area": "accesibilidad",
+  "phase": { "number": 3, "slug": "integracion", "name": "Integración LHCI y presupuestos" },
+  "title": "ACCESIBILIDAD · Integración LHCI y presupuestos de rendimiento",
+  "version": "1.0.0",
+  "description": "Integra las correcciones contra el código previo y cablea los gates de accesibilidad, SEO y Core Web Vitals en el pipeline (LHCI y axe), con cierre draconiano. Actívala para cerrar la fase de accesibilidad en CI.",
+  "standard": {
+    "name": "WCAG 2.1 AA / EN 301 549",
+    "ref": "https://www.w3.org/TR/WCAG21/#requirements-for-wcag-2-1",
+    "scope": "Gates CI a11y/SEO/CWV"
+  },
+  "consumes": [".ai/skills/.phase/accesibilidad/02-despliegue-base.json"],
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/accesibilidad/03-integracion.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
+  "gates": [
+    {
+      "id": "lhci-a11y",
+      "metric": "lhci_accessibility",
+      "operator": ">=",
+      "threshold": 100,
+      "blocking": true
+    },
+    {
+      "id": "lhci-seo",
+      "metric": "lhci_seo",
+      "operator": ">=",
+      "threshold": 100,
+      "blocking": true
+    },
+    {
+      "id": "lcp",
+      "metric": "lcp_movil_s",
+      "operator": "<=",
+      "threshold": 2.5,
+      "unit": "s",
+      "blocking": true
+    },
+    { "id": "cls", "metric": "cls", "operator": "<=", "threshold": 0.05, "blocking": true }
+  ],
+  "tools": ["lhci", "@axe-core/playwright", "github-actions"],
+  "cursor": {
+    "invocation": "@accesibilidad-03-integracion",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/accesibilidad/**"]
+  },
+  "antiRedundancy": {
+    "scope": "Fusión contra código previo y cierre en CI con gates LHCI/axe/CWV. No diagnostica ni implementa la semántica base.",
+    "keywords": [
+      "lhci",
+      "core-web-vitals",
+      "gates-a11y-ci",
+      "presupuesto-rendimiento",
+      "axe-ci",
+      "cierre-wcag"
+    ],
+    "mergeableWith": []
+  }
+}
