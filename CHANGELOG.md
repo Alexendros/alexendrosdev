@@ -1,3 +1,9 @@
+## [1.18.6](https://github.com/Alexendros/alexendrosdev/compare/v1.18.5...v1.18.6) (2026-10-09)
+
+### Correcciones
+
+* **ci:** remediación repo-ending — skills-canon y versionado ([#89](https://github.com/Alexendros/alexendrosdev/issues/89)) ([88a8bfc](https://github.com/Alexendros/alexendrosdev/commit/88a8bfc6275c7e0ddfd4595d1cb1b0afa0ec8497))
+
 # Changelog
 
 Las notas de `v1.3.3` … `v1.18.5` están en [Releases](https://github.com/Alexendros/alexendrosdev/releases). A partir de la siguiente release, `@semantic-release/git` vuelve a commitir `CHANGELOG.md` y `package.json` en el árbol.
