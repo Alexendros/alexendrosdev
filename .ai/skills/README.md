@@ -1,4 +1,4 @@
-# Canon de skills · Protocolo Trifásico
+# Canon de skills · Remache Triple + Protocolo Trifásico
 
 > Las skills no viven en reposo: viven cuando se usan (Tizona) o cuando se afilan.
 > Este canon es la **vaina**; el filo se ejerce en Cursor y se templa en CI.
@@ -7,13 +7,26 @@ Canon versionado de habilidades para madurar `alexendros.dev` bajo tres estánda
 exigidos como umbral mínimo de calidad. Consumidor operativo: **Cursor**.
 Gobernanza, métricas y matasellado: Notion → «Protocolo Trifásico».
 
-## 1. Tres áreas
+## 0. Remache Triple (el sello por entregable)
 
-| Área | Estándar | Umbral mínimo |
+**Remache Triple** es el sello que se aplica a **cada producto entregable**: tres
+remaches que fijan la calidad al producto antes de entregarlo.
+
+1. **Seguridad** — PROTECCIÓN
+2. **Orden** — limpieza de código ordenado
+3. **Accesibilidad** — para usuario y visitantes
+
+El **Remache Triple** es *qué* se garantiza en cada entregable; el **Protocolo
+Trifásico** es *cómo* se forja cada remache (3 fases por área). Ningún producto se
+entrega sin sus tres remaches en verde.
+
+## 1. Los tres remaches (áreas) y sus estándares
+
+| Remache / Área | Estándar | Umbral mínimo |
 | --- | --- | --- |
-| **PROTECCIÓN** | OWASP ASVS v4.0.3 (L1 completo + L2 selectivo) | 0 secretos, 0 vulns high/critical, CSP sin `unsafe-inline` |
-| **ACCESIBILIDAD** | WCAG 2.1 AA + EN 301 549 / RD 1112/2018 | 0 violaciones serious/critical axe, LHCI a11y/SEO 100, LCP ≤2.5s |
-| **ORDEN** | Clean Code (R. C. Martin) | complejidad ≤10, 0 ciclos de dependencia, 0 código muerto |
+| **PROTECCIÓN** (seguridad) | OWASP ASVS v4.0.3 (L1 completo + L2 selectivo) | 0 secretos, 0 vulns high/critical, CSP sin `unsafe-inline` |
+| **ACCESIBILIDAD** (usuario y visitantes) | WCAG 2.1 AA + EN 301 549 / RD 1112/2018 | 0 violaciones serious/critical axe, LHCI a11y/SEO 100, LCP ≤2.5s |
+| **ORDEN** (código limpio) | Clean Code (R. C. Martin) | complejidad ≤10, 0 ciclos de dependencia, 0 código muerto |
 
 ## 2. Tres fases (Trifásico)
 
