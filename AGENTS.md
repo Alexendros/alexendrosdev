@@ -28,6 +28,6 @@
 - Vercel Analytics/Speed Insights solo se emiten en builds de Vercel (`__IS_VERCEL__` vía define en astro.config): en local/CI no existen los endpoints `/_vercel/*` y romperían Best Practices.
 - `engines.node` fijado a `22.x` (`.nvmrc`); validar Preview tras merge (issue #11).
 - CI canónico: jobs `quality` (typecheck, lint, format, **lint:css**), `test`, `build`, `smoke`, **`e2e-critical`** (always-on). e2e/axe completo + LHCI móvil son **opt-in** (label `e2e`); umbrales LHCI: perf ≥95, a11y/BP/SEO 100, CLS ≤0.05, LCP ≤2.5s. LCP medido ~1.9s.
-- Renovate (`.github/renovate.json`) sustituye Dependabot version-updates. Astro 7 ya en `main`; majors restantes (zod 4, nodemailer 10, React 19) en issue #12.
+- Renovate (`.github/renovate.json`) sustituye Dependabot version-updates. Stack majors al día: Astro 7, Zod 4, nodemailer 10, React 19 (issue #12 cerrado).
 - SMTP/Upstash en Vercel: issue #13 (config operativa); el código es fail-closed sin esas vars.
 - Security: `security.yml` (gitleaks, osv-scanner + `osv-scanner.toml`, CodeQL sin upload); scorecard y dependency-review solo si el repo es público. Residuales documentados en `docs/threat-model.md`.

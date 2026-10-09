@@ -38,19 +38,6 @@
       "automerge": false
     },
     {
-      "description": "Majors diferidos post-MVP — ver issue #12",
-      "matchPackageNames": [
-        "zod",
-        "nodemailer",
-        "react",
-        "react-dom",
-        "@types/react",
-        "@types/react-dom"
-      ],
-      "matchUpdateTypes": ["major"],
-      "enabled": false
-    },
-    {
       "matchUpdateTypes": ["major"],
       "automerge": false,
       "labels": ["dependencies", "breaking-change"]
