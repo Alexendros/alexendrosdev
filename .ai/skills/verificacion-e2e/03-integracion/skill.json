@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "verificacion-e2e-03-integracion",
+  "area": "verificacion-e2e",
+  "phase": { "number": 3, "slug": "integracion", "name": "Integración e2e en CI" },
+  "title": "VERIFICACIÓN E2E · Integración de workflows y gates en CI",
+  "version": "1.0.0",
+  "description": "Cablea los workflows e2e contra el repositorio previo: gates en CI, estabilidad de las suites y ciclo de correcciones a partir de los diffs visuales y las métricas. Actívala para cerrar la fase de verificación e2e en el pipeline.",
+  "standard": {
+    "name": "Playwright CI",
+    "ref": "https://playwright.dev/docs/ci",
+    "scope": "Gates e2e/visual/LHCI + estabilidad + correcciones"
+  },
+  "consumes": [".ai/skills/.phase/verificacion-e2e/02-despliegue-base.json"],
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/verificacion-e2e/03-integracion.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
+  "gates": [
+    {
+      "id": "gates-cableados",
+      "metric": "gates_e2e_cableados_pct",
+      "operator": ">=",
+      "threshold": 100,
+      "unit": "%",
+      "blocking": true
+    },
+    {
+      "id": "estabilidad",
+      "metric": "tests_flaky",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "correcciones-pendientes",
+      "metric": "hallazgos_criticos_sin_corregir",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    }
+  ],
+  "tools": ["playwright", "lighthouse-ci", "github-actions"],
+  "cursor": {
+    "invocation": "@verificacion-e2e-03-integracion",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/verificacion-e2e/**"]
+  },
+  "antiRedundancy": {
+    "scope": "Cableado de gates e2e/visual/LHCI en CI, estabilidad y cierre de correcciones. No implementa las suites ni audita el inventario.",
+    "keywords": [
+      "e2e-ci",
+      "gates-e2e",
+      "correcciones-automatizadas",
+      "estabilidad-tests",
+      "cierre-e2e",
+      "integracion-workflows"
+    ],
+    "mergeableWith": []
+  }
+}

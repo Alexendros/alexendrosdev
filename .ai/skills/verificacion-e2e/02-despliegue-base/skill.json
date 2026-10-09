@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "verificacion-e2e-02-despliegue-base",
+  "area": "verificacion-e2e",
+  "phase": { "number": 2, "slug": "despliegue-base", "name": "Despliegue de workflows e2e" },
+  "title": "VERIFICACIÓN E2E · Workflows automatizados de funcionalidad, salud y contraste",
+  "version": "1.0.0",
+  "description": "Implementa workflows automatizados: pruebas de funcionalidad e interfaz con Playwright, métricas de salud y velocidad con Lighthouse, y regresión de contraste visual de estilo y estructura para habilitar correcciones. Actívala tras la auditoría e2e para desplegar la base de verificación.",
+  "standard": {
+    "name": "Playwright + Lighthouse CI",
+    "ref": "https://playwright.dev/docs/test-snapshots",
+    "scope": "Suites funcionales/UI + LHCI + regresión visual"
+  },
+  "consumes": [".ai/skills/.phase/verificacion-e2e/01-auditoria.json"],
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/verificacion-e2e/02-despliegue-base.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
+  "gates": [
+    {
+      "id": "suites-e2e",
+      "metric": "suites_e2e_rojas",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "regresion-visual",
+      "metric": "regresiones_visuales_contraste",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "presupuesto-salud",
+      "metric": "metricas_fuera_de_presupuesto",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": false
+    }
+  ],
+  "tools": ["playwright", "@axe-core/playwright", "lighthouse", "pixelmatch"],
+  "cursor": {
+    "invocation": "@verificacion-e2e-02-despliegue-base",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/verificacion-e2e/**"]
+  },
+  "antiRedundancy": {
+    "scope": "Implementación de suites e2e, LHCI y regresión visual. No audita el inventario ni cablea los gates en el pipeline final.",
+    "keywords": [
+      "workflows-automatizados",
+      "playwright-funcional",
+      "interfaz-ui",
+      "regresion-visual",
+      "salud-velocidad",
+      "contraste-estructura"
+    ],
+    "mergeableWith": []
+  }
+}

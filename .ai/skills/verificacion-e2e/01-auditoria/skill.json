@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "verificacion-e2e-01-auditoria",
+  "area": "verificacion-e2e",
+  "phase": { "number": 1, "slug": "auditoria", "name": "Auditoría de verificación e2e" },
+  "title": "VERIFICACIÓN E2E · Auditoría de flujos, métricas y contraste",
+  "version": "1.0.0",
+  "description": "Inventaria los flujos críticos de usuario e interfaz, el presupuesto de métricas de salud y velocidad, y las referencias de contraste visual de estilo y estructura para futuras correcciones. Actívala al iniciar la fase de verificación e2e o al pedir auditar pruebas de extremo a extremo.",
+  "standard": {
+    "name": "Playwright + Lighthouse",
+    "ref": "https://playwright.dev/docs/best-practices",
+    "scope": "Flujos críticos + presupuesto de métricas + línea base de contraste visual"
+  },
+  "consumes": [],
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/verificacion-e2e/01-auditoria.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
+  "gates": [
+    {
+      "id": "flujos-catalogados",
+      "metric": "flujos_criticos_catalogados_pct",
+      "operator": ">=",
+      "threshold": 100,
+      "unit": "%",
+      "blocking": false
+    },
+    {
+      "id": "presupuesto-metricas",
+      "metric": "metricas_con_presupuesto_definido_pct",
+      "operator": ">=",
+      "threshold": 100,
+      "unit": "%",
+      "blocking": false
+    },
+    {
+      "id": "baseline-contraste",
+      "metric": "vistas_con_baseline_visual_pct",
+      "operator": ">=",
+      "threshold": 100,
+      "unit": "%",
+      "blocking": false
+    }
+  ],
+  "tools": ["playwright", "lighthouse"],
+  "cursor": {
+    "invocation": "@verificacion-e2e-01-auditoria",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/verificacion-e2e/**"]
+  },
+  "antiRedundancy": {
+    "scope": "Inventario de flujos e2e, presupuesto de métricas y línea base de contraste. No implementa workflows ni los cablea en CI.",
+    "keywords": [
+      "e2e-auditoria",
+      "flujos-criticos",
+      "metricas-salud",
+      "velocidad",
+      "contraste-visual-inventario",
+      "cobertura-interfaz"
+    ],
+    "mergeableWith": []
+  }
+}
