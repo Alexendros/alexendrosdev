@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "dependencias-01-auditoria",
+  "area": "dependencias",
+  "phase": { "number": 1, "slug": "auditoria", "name": "Auditoría de dependencias" },
+  "title": "DEPENDENCIAS · Auditoría de dependencias y retirada de Dependabot",
+  "version": "1.0.0",
+  "description": "Inventaria dependencias, versiones desactualizadas, deuda de mayores y cualquier configuración de Dependabot a retirar, preparando la migración a Renovate. Actívala al iniciar la fase de dependencias o al pedir auditar dependencias, actualizaciones o Renovate.",
+  "standard": {
+    "name": "Renovate",
+    "ref": "https://docs.renovatebot.com/",
+    "scope": "Managers npm/pnpm + lockfile + retirada de Dependabot"
+  },
+  "consumes": [],
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/dependencias/01-auditoria.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
+  "gates": [
+    {
+      "id": "inventario-deps",
+      "metric": "dependencias_catalogadas_pct",
+      "operator": ">=",
+      "threshold": 100,
+      "unit": "%",
+      "blocking": false
+    },
+    {
+      "id": "dependabot-detectado",
+      "metric": "configuraciones_dependabot_pendientes_de_retirar",
+      "operator": ">=",
+      "threshold": 0,
+      "blocking": false
+    },
+    {
+      "id": "deps-vuln-critica",
+      "metric": "dependencias_con_vuln_critica",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": false
+    }
+  ],
+  "tools": ["renovate", "pnpm", "npm-check-updates"],
+  "cursor": {
+    "invocation": "@dependencias-01-auditoria",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/dependencias/**"]
+  },
+  "antiRedundancy": {
+    "scope": "Diagnóstico de dependencias y detección de Dependabot a retirar. No configura Renovate ni lo cablea en CI.",
+    "keywords": [
+      "renovate",
+      "auditoria-dependencias",
+      "dependabot-retirada",
+      "deuda-de-versiones",
+      "lockfile",
+      "actualizaciones"
+    ],
+    "mergeableWith": []
+  }
+}

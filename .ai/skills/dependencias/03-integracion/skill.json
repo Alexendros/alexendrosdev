@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "dependencias-03-integracion",
+  "area": "dependencias",
+  "phase": { "number": 3, "slug": "integracion", "name": "Integración de Renovate en CI" },
+  "title": "DEPENDENCIAS · Integración de Renovate en el flujo y CI",
+  "version": "1.0.0",
+  "description": "Integra Renovate contra el repositorio previo: Dependency Dashboard, validación de los PR de Renovate en CI y cierre draconiano sin Dependabot. Actívala para cerrar la fase de dependencias en CI.",
+  "standard": {
+    "name": "Renovate",
+    "ref": "https://docs.renovatebot.com/dependency-dashboard/",
+    "scope": "Dependency Dashboard + CI contra PRs de Renovate"
+  },
+  "consumes": [".ai/skills/.phase/dependencias/02-despliegue-base.json"],
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/dependencias/03-integracion.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
+  "gates": [
+    {
+      "id": "dashboard",
+      "metric": "dependency_dashboard_activo",
+      "operator": "==",
+      "threshold": 1,
+      "blocking": false
+    },
+    {
+      "id": "ci-verde-renovate",
+      "metric": "prs_renovate_sin_ci",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "dependabot-cero",
+      "metric": "workflows_dependabot",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    }
+  ],
+  "tools": ["renovate", "github-actions"],
+  "cursor": {
+    "invocation": "@dependencias-03-integracion",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/dependencias/**"]
+  },
+  "antiRedundancy": {
+    "scope": "Integración de Renovate con Dashboard y CI contra sus PRs. No audita ni redacta la configuración base.",
+    "keywords": [
+      "dependency-dashboard",
+      "renovate-ci",
+      "validacion-prs",
+      "cierre-dependencias",
+      "sin-dependabot",
+      "integracion-renovate"
+    ],
+    "mergeableWith": []
+  }
+}
