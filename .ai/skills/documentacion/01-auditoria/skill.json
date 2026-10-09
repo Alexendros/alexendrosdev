@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "documentacion-01-auditoria",
+  "area": "documentacion",
+  "phase": { "number": 1, "slug": "auditoria", "name": "Recopilación y auditoría documental" },
+  "title": "DOCUMENTACIÓN · Recopilación de datos y auditoría documental",
+  "version": "1.0.0",
+  "description": "Recopila los datos del código, arquitectura, flujos y estructura, e inventaria la documentación existente y sus carencias, preparando el diseño posterior con Archify. Actívala al iniciar la línea de documentación o al pedir recopilar datos para documentar.",
+  "standard": {
+    "name": "Archify (suite completa)",
+    "ref": "https://github.com/tt-a1i/archify",
+    "scope": "Recopilación de fuentes: código, arquitectura, flujos, datos y ciclo de vida"
+  },
+  "consumes": [],
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/documentacion/01-auditoria.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
+  "gates": [
+    {
+      "id": "fuentes-catalogadas",
+      "metric": "fuentes_documentales_catalogadas_pct",
+      "operator": ">=",
+      "threshold": 100,
+      "unit": "%",
+      "blocking": false
+    },
+    {
+      "id": "zonas-sin-documentar",
+      "metric": "zonas_criticas_sin_documentar",
+      "operator": ">=",
+      "threshold": 0,
+      "blocking": false
+    },
+    {
+      "id": "datos-para-diagramas",
+      "metric": "tipos_diagrama_con_datos_pct",
+      "operator": ">=",
+      "threshold": 100,
+      "unit": "%",
+      "blocking": false
+    }
+  ],
+  "tools": ["archify", "node"],
+  "cursor": {
+    "invocation": "@documentacion-01-auditoria",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/documentacion/**"]
+  },
+  "antiRedundancy": {
+    "scope": "Recopilación de datos e inventario documental para alimentar Archify. No diseña ni publica la documentación.",
+    "keywords": [
+      "recopilacion-datos",
+      "auditoria-documental",
+      "inventario-docs",
+      "fuentes-arquitectura",
+      "cobertura-documental",
+      "carencias-doc"
+    ],
+    "mergeableWith": []
+  }
+}

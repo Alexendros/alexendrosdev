@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "documentacion-02-despliegue-base",
+  "area": "documentacion",
+  "phase": { "number": 2, "slug": "despliegue-base", "name": "Diseño de documentación con Archify" },
+  "title": "DOCUMENTACIÓN · Diseño con Archify (suite completa)",
+  "version": "1.0.0",
+  "description": "Diseña la documentación con la suite completa de Archify: IR JSON tipado compilado a HTML/SVG autocontenido, con los cinco tipos de diagrama, presets y temas claro/oscuro, y movimiento finito que respeta prefers-reduced-motion. Actívala tras la recopilación para desplegar la base documental.",
+  "standard": {
+    "name": "Archify (suite completa)",
+    "ref": "https://github.com/tt-a1i/archify",
+    "scope": "IR tipado → HTML/SVG; 5 tipos de diagrama, presets, temas"
+  },
+  "consumes": [".ai/skills/.phase/documentacion/01-auditoria.json"],
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/documentacion/02-despliegue-base.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
+  "gates": [
+    {
+      "id": "archify-valido",
+      "metric": "errores_validacion_archify",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "diagramas-cubiertos",
+      "metric": "tipos_diagrama_cubiertos_pct",
+      "operator": ">=",
+      "threshold": 100,
+      "unit": "%",
+      "blocking": false
+    },
+    {
+      "id": "movimiento-accesible",
+      "metric": "diagramas_sin_prefers_reduced_motion",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    }
+  ],
+  "tools": ["archify", "node"],
+  "cursor": {
+    "invocation": "@documentacion-02-despliegue-base",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/documentacion/**"]
+  },
+  "antiRedundancy": {
+    "scope": "Diseño y generación de documentación con Archify. No recopila los datos ni cablea la publicación en CI.",
+    "keywords": [
+      "archify-suite",
+      "diseno-documentacion",
+      "diagramas-arquitectura",
+      "ir-json-tipado",
+      "html-svg-autocontenido",
+      "presets-temas"
+    ],
+    "mergeableWith": []
+  }
+}

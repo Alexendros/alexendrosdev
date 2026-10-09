@@ -1,11 +1,14 @@
-# Canon de skills · Remache Triple + Protocolo Trifásico
+# Canon de skills · Remache Triple + Protocolo Hexagrama
 
 > Las skills no viven en reposo: viven cuando se usan (Tizona) o cuando se afilan.
 > Este canon es la **vaina**; el filo se ejerce en Cursor y se templa en CI.
 
-Canon versionado de habilidades para madurar `alexendros.dev` bajo tres estándares
-exigidos como umbral mínimo de calidad. Consumidor operativo: **Cursor**.
-Gobernanza, métricas y matasellado: Notion → «Protocolo Trifásico».
+Canon versionado de habilidades para madurar `alexendros.dev`. Consumidor operativo:
+**Cursor**. Gobernanza, métricas y matasellado: Notion → «Protocolo Hexagrama».
+
+El **Hexagrama** es la estrella de seis puntas: **6 líneas × 3 fases = 18 skills**.
+Tres líneas son los remaches del producto (Remache Triple) y tres son líneas de
+proceso que blindan la entrega.
 
 ## 0. Remache Triple (el sello por entregable)
 
@@ -17,20 +20,26 @@ remaches que fijan la calidad al producto antes de entregarlo.
 3. **Accesibilidad** — para usuario y visitantes
 
 El **Remache Triple** es _qué_ se garantiza en cada entregable; el **Protocolo
-Trifásico** es _cómo_ se forja cada remache (3 fases por área). Ningún producto se
+Hexagrama** es _cómo_ y _cuánto_ se forja (6 líneas × 3 fases). Ningún producto se
 entrega sin sus tres remaches en verde.
 
-## 1. Los tres remaches (áreas) y sus estándares
+## 1. Las seis líneas (áreas) y sus estándares
 
-| Remache / Área                           | Estándar                                       | Umbral mínimo                                                    |
-| ---------------------------------------- | ---------------------------------------------- | ---------------------------------------------------------------- |
-| **PROTECCIÓN** (seguridad)               | OWASP ASVS v4.0.3 (L1 completo + L2 selectivo) | 0 secretos, 0 vulns high/critical, CSP sin `unsafe-inline`       |
-| **ACCESIBILIDAD** (usuario y visitantes) | WCAG 2.1 AA + EN 301 549 / RD 1112/2018        | 0 violaciones serious/critical axe, LHCI a11y/SEO 100, LCP ≤2.5s |
-| **ORDEN** (código limpio)                | Clean Code (R. C. Martin)                      | complejidad ≤10, 0 ciclos de dependencia, 0 código muerto        |
+| Línea / Área | Estándar | Umbral mínimo |
+| --- | --- | --- |
+| **PROTECCIÓN** (seguridad) | OWASP ASVS v4.0.3 (L1 completo + L2 selectivo) | 0 secretos, 0 vulns high/critical, CSP sin `unsafe-inline` |
+| **ACCESIBILIDAD** (usuario y visitantes) | WCAG 2.1 AA + EN 301 549 / RD 1112/2018 | 0 violaciones serious/critical axe, LHCI a11y/SEO 100, LCP ≤2.5s |
+| **ORDEN** (código limpio) | Clean Code (R. C. Martin) + OKLCH/CSS | complejidad ≤10, 0 ciclos, 0 código muerto, 0 literales de color |
+| **DEPENDENCIAS** (versiones) | Renovate (nunca Dependabot) | 0 configs Dependabot, `renovate.json` válido, managers 100% |
+| **VERIFICACIÓN E2E** (pruebas) | Playwright + Lighthouse + regresión visual | e2e verde, 0 regresiones de contraste, métricas en presupuesto |
+| **DOCUMENTACIÓN** (comprensión) | Archify (suite completa) | 0 enlaces rotos, diagramas Archify válidos, doc publicada |
 
-## 2. Tres fases (Trifásico)
+Remaches del producto: PROTECCIÓN, ORDEN, ACCESIBILIDAD. Líneas de proceso:
+DEPENDENCIAS, VERIFICACIÓN E2E, DOCUMENTACIÓN.
 
-Cada área tiene **3 skills = 3 fases**. Cada fase lee **solo** el fichero limpio
+## 2. Tres fases (método trifásico)
+
+Cada línea tiene **3 skills = 3 fases**. Cada fase lee **solo** el fichero limpio
 de la anterior y produce el suyo, validado contra `schema/phase-report.schema.json`.
 
 ```
@@ -49,7 +58,7 @@ Ficheros limpios de ejecución: `.ai/skills/.phase/<area>/0N-*.json` (no se comm
 
 - Cada skill = carpeta con `SKILL.md` (instrucciones) + `skill.json` (manifiesto estricto).
 - `skill.json` conforma `schema/skill.schema.json` (draft-07, `additionalProperties:false`).
-- Cursor invoca cada skill por `cursor.invocation` (p. ej. `@proteccion-01-auditoria`).
+- Cursor invoca cada skill por `cursor.invocation` (p. ej. `@documentacion-02-despliegue-base`).
 
 ## 4. Evaluación de fusiones antirredundancia
 
