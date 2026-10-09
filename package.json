@@ -1,7 +1,7 @@
 {
   "name": "alexendros.dev-astro-mvp",
   "type": "module",
-  "version": "1.3.2",
+  "version": "1.18.5",
   "private": true,
   "engines": {
     "node": "22.x"
