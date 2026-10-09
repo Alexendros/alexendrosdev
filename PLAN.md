@@ -31,11 +31,11 @@ Fase 1 (consentimiento + legal) **en curso** en la rama `cursor/mercenario-v1`: 
 
 ## Pendiente operativo
 
-| Item                         | Issue / nota                                                                                              |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Env SMTP + Upstash en Vercel | [#13](https://github.com/Alexendros/alexendrosdev/issues/13) — config operativa (código fail-closed)      |
-| Node 22.x                    | [#11](https://github.com/Alexendros/alexendrosdev/issues/11) — cerrado; `engines` / `.nvmrc` en 22.x      |
-| Majors Q4                    | [#12](https://github.com/Alexendros/alexendrosdev/issues/12) — Astro 7 hecho; quedan zod/nodemailer/React |
+| Item                         | Issue / nota                                                                                                     |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Env SMTP + Upstash en Vercel | [#13](https://github.com/Alexendros/alexendrosdev/issues/13) — config operativa (código fail-closed)             |
+| Node 22.x                    | [#11](https://github.com/Alexendros/alexendrosdev/issues/11) — cerrado; `engines` / `.nvmrc` en 22.x             |
+| Majors Q4                    | [#12](https://github.com/Alexendros/alexendrosdev/issues/12) — cerrado (Astro 7, Zod 4, nodemailer 10, React 19) |
 
 ## Predecesor
 
