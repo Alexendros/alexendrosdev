@@ -32,4 +32,3 @@ Fichero limpio `03-integracion.json` + captura del Dependency Dashboard + estado
 
 - Renovate satura de PRs: aplicar `prConcurrentLimit`/`prHourlyLimit` y agrupaciones.
 - PR de major con breaking: mantener en el Dashboard para revisión humana explícita.
-}
