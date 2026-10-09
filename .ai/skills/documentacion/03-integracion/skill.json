@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "documentacion-03-integracion",
+  "area": "documentacion",
+  "phase": { "number": 3, "slug": "integracion", "name": "Integración y enriquecimiento documental" },
+  "title": "DOCUMENTACIÓN · Integración y enriquecimiento de la documentación",
+  "version": "1.0.0",
+  "description": "Integra y enriquece la documentación de fácil comprensión y uso contra el repositorio previo: publicación, enlaces, exports canónicos y mantenimiento automatizado en CI. Actívala para cerrar la línea de documentación en el pipeline.",
+  "standard": {
+    "name": "Archify (suite completa)",
+    "ref": "https://github.com/tt-a1i/archify",
+    "scope": "Publicación, exports canónicos y mantenimiento en CI"
+  },
+  "consumes": [".ai/skills/.phase/documentacion/02-despliegue-base.json"],
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/documentacion/03-integracion.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
+  "gates": [
+    {
+      "id": "enlaces-rotos",
+      "metric": "enlaces_rotos",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "doc-publicada",
+      "metric": "documentacion_publicada",
+      "operator": "==",
+      "threshold": 1,
+      "blocking": false
+    },
+    {
+      "id": "exports-canonicos",
+      "metric": "exports_canonicos_invalidos",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    }
+  ],
+  "tools": ["archify", "node", "github-actions"],
+  "cursor": {
+    "invocation": "@documentacion-03-integracion",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/documentacion/**"]
+  },
+  "antiRedundancy": {
+    "scope": "Publicación, enriquecimiento y mantenimiento de la documentación en CI. No recopila datos ni diseña los diagramas.",
+    "keywords": [
+      "enriquecimiento-doc",
+      "integracion-documentacion",
+      "publicacion-docs",
+      "exports-canonicos",
+      "mantenimiento-doc",
+      "documentacion-uso"
+    ],
+    "mergeableWith": []
+  }
+}

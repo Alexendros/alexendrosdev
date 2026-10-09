@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://alexendros.dev/schemas/skill.schema.json",
-  "title": "Skill canónica del Protocolo Pentagrama",
+  "title": "Skill canónica del Protocolo Hexagrama",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -24,9 +24,9 @@
     "schemaVersion": { "const": "1.0.0" },
     "id": {
       "type": "string",
-      "pattern": "^(proteccion|accesibilidad|orden|dependencias|verificacion-e2e)-(01-auditoria|02-despliegue-base|03-integracion)$"
+      "pattern": "^(proteccion|accesibilidad|orden|dependencias|verificacion-e2e|documentacion)-(01-auditoria|02-despliegue-base|03-integracion)$"
     },
-    "area": { "enum": ["proteccion", "accesibilidad", "orden", "dependencias", "verificacion-e2e"] },
+    "area": { "enum": ["proteccion", "accesibilidad", "orden", "dependencias", "verificacion-e2e", "documentacion"] },
     "phase": {
       "type": "object",
       "additionalProperties": false,
