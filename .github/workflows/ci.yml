@@ -119,6 +119,41 @@ jobs:
       - name: Smoke estático + HTTP
         run: bash scripts/smoke.sh
 
+  e2e-critical:
+    name: e2e-critical
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
+        with:
+          version: 9
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Download static artifact
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: site-static
+          path: .vercel/output/static
+
+      - run: npx playwright install --with-deps chromium
+
+      - name: Playwright críticos (home, contacto, consent deny)
+        run: pnpm exec playwright test tests/e2e/critical.spec.ts
+        env:
+          CI: true
+          SKIP_E2E_BUILD: '1'
+
   e2e:
     name: e2e
     if: ${{ (github.event_name == 'workflow_dispatch' && inputs.e2e) || (github.event_name == 'pull_request' && contains(join(github.event.pull_request.labels.*.name, ','), 'e2e')) }}
