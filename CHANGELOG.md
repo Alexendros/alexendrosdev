@@ -1,3 +1,13 @@
+# Changelog
+
+Las notas de `v1.3.3` … `v1.18.5` están en [Releases](https://github.com/Alexendros/alexendrosdev/releases). A partir de la siguiente release, `@semantic-release/git` vuelve a commitir `CHANGELOG.md` y `package.json` en el árbol.
+
+## [1.18.5](https://github.com/Alexendros/alexendrosdev/compare/v1.18.4...v1.18.5) (2026-10-09)
+
+### Mantenimiento
+
+* **deps:** majors Q4 — Zod 4, nodemailer 10 y React 19 ([#88](https://github.com/Alexendros/alexendrosdev/issues/88)) ([fde69eb](https://github.com/Alexendros/alexendrosdev/commit/fde69ebcd67cf5741fc971b1149e9142f513fee2))
+
 ## [1.3.2](https://github.com/Soluciones-Alexendros/miwebsite-alexendrosdev/compare/v1.3.1...v1.3.2) (2026-09-23)
 
 ### Correcciones
