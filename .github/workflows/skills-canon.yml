@@ -1,0 +1,32 @@
+name: skills-canon
+
+on:
+  pull_request:
+    paths:
+      - ".ai/skills/**"
+      - ".github/workflows/skills-canon.yml"
+  push:
+    branches: [main]
+    paths:
+      - ".ai/skills/**"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validación draconiana del canon
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+      - name: Validar manifiestos contra JSON Schema (estricto)
+        run: >
+          npx --yes ajv-cli@5 validate
+          -s .ai/skills/schema/skill.schema.json
+          -d ".ai/skills/**/skill.json"
+          --strict=true --all-errors --errors=text
+      - name: Evaluación de fusiones antirredundancia
+        run: node .ai/skills/scripts/check-redundancy.mjs

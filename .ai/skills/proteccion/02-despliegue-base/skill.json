@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "proteccion-02-despliegue-base",
+  "area": "proteccion",
+  "phase": { "number": 2, "slug": "despliegue-base", "name": "Despliegue base de controles" },
+  "title": "PROTECCIÓN · Despliegue base de controles de seguridad",
+  "version": "1.0.0",
+  "description": "Despliega desde cero los controles base derivados de la auditoría: cabeceras de seguridad y CSP endurecida, reglas Semgrep y tests de validación de seguridad. Actívala tras la auditoría ASVS para implementar la línea base de protección.",
+  "standard": { "name": "OWASP ASVS v4.0.3", "ref": "https://owasp.org/projects/asvs", "scope": "Controles L1 + hardening L2" },
+  "consumes": [".ai/skills/.phase/proteccion/01-auditoria.json"],
+  "produces": { "cleanFile": ".ai/skills/.phase/proteccion/02-despliegue-base.json", "reportSchema": ".ai/skills/schema/phase-report.schema.json" },
+  "gates": [
+    { "id": "csp-estricta", "metric": "csp_sin_unsafe_inline", "operator": "==", "threshold": true, "blocking": true },
+    { "id": "cabeceras", "metric": "cabeceras_seguridad_presentes_pct", "operator": ">=", "threshold": 100, "unit": "%", "blocking": true },
+    { "id": "sast", "metric": "hallazgos_semgrep_blocking", "operator": "==", "threshold": 0, "blocking": true }
+  ],
+  "tools": ["semgrep", "vercel.json", "vitest"],
+  "cursor": { "invocation": "@proteccion-02-despliegue-base", "mode": "agent", "autoAttach": [".ai/skills/proteccion/**"] },
+  "antiRedundancy": {
+    "scope": "Implementación limpia de controles base: CSP/headers, SAST y tests de seguridad. No diagnostica ni cablea el pipeline final.",
+    "keywords": ["csp-hardening", "security-headers", "semgrep", "tests-seguridad", "scaffolding-proteccion", "sast"],
+    "mergeableWith": []
+  }
+}
