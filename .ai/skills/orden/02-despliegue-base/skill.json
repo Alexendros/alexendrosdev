@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "orden-02-despliegue-base",
+  "area": "orden",
+  "phase": { "number": 2, "slug": "despliegue-base", "name": "Despliegue base de refactor y estilos" },
+  "title": "ORDEN · Despliegue base de refactor, OKLCH y CSS consolidado",
+  "version": "1.1.0",
+  "description": "Aplica refactors limpios (SRP, nombres, funciones pequeñas), gobierna el color con tokens OKLCH en @layer tokens y consolida los estilos en un único CSS con los @import/@layer adecuados para mantener código limpio. Actívala tras la auditoría de orden para desplegar la línea base.",
+  "standard": {
+    "name": "Clean Code (R. C. Martin)",
+    "ref": "https://www.oreilly.com/library/view/clean-code/9780136083238/",
+    "scope": "Refactor SRP + nombres + funciones pequeñas + tokens OKLCH y CSS consolidado"
+  },
+  "consumes": [".ai/skills/.phase/orden/01-auditoria.json"],
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/orden/02-despliegue-base.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
+  "gates": [
+    {
+      "id": "complejidad-max",
+      "metric": "complejidad_ciclomatica_max",
+      "operator": "<=",
+      "threshold": 10,
+      "blocking": true
+    },
+    {
+      "id": "tests-verdes",
+      "metric": "tests_rotos_por_refactor",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "colores-oklch",
+      "metric": "literales_color_fuera_de_tokens",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "css-consolidado",
+      "metric": "puntos_de_entrada_css",
+      "operator": "<=",
+      "threshold": 1,
+      "blocking": true
+    }
+  ],
+  "tools": ["eslint", "jscodeshift", "prettier", "vitest", "stylelint", "postcss"],
+  "cursor": {
+    "invocation": "@orden-02-despliegue-base",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/orden/**"]
+  },
+  "antiRedundancy": {
+    "scope": "Refactor limpio, tokens OKLCH y consolidación de CSS. No diagnostica olores ni cablea fronteras/ADR en CI.",
+    "keywords": [
+      "refactor",
+      "srp",
+      "funciones-pequenas",
+      "nomenclatura",
+      "reglas-lint",
+      "codemods",
+      "oklch-tokens",
+      "css-consolidado"
+    ],
+    "mergeableWith": []
+  }
+}

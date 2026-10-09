@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "orden-01-auditoria",
+  "area": "orden",
+  "phase": { "number": 1, "slug": "auditoria", "name": "Auditoría de olores y deuda" },
+  "title": "ORDEN · Auditoría de olores, deuda y estilos",
+  "version": "1.1.0",
+  "description": "Diagnostica olores de código y deuda técnica según Clean Code (complejidad, funciones largas, nombres, código muerto y duplicación) e inventaria literales de color, !important, transition:all y hojas de estilo dispersas de cara a OKLCH. Actívala al iniciar la fase de orden o al pedir auditar calidad de código, complejidad, deuda técnica o estilos.",
+  "standard": {
+    "name": "Clean Code (R. C. Martin)",
+    "ref": "https://www.oreilly.com/library/view/clean-code/9780136083238/",
+    "scope": "Cap. 2-10 + olores (apéndice) + higiene de estilos"
+  },
+  "consumes": [],
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/orden/01-auditoria.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
+  "gates": [
+    {
+      "id": "inventario-olores",
+      "metric": "olores_catalogados_pct",
+      "operator": ">=",
+      "threshold": 100,
+      "unit": "%",
+      "blocking": false
+    },
+    {
+      "id": "complejidad",
+      "metric": "complejidad_ciclomatica_media",
+      "operator": "<=",
+      "threshold": 10,
+      "blocking": false
+    },
+    {
+      "id": "codigo-muerto",
+      "metric": "simbolos_no_usados",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": false
+    },
+    {
+      "id": "inventario-estilos",
+      "metric": "estilos_y_colores_catalogados_pct",
+      "operator": ">=",
+      "threshold": 100,
+      "unit": "%",
+      "blocking": false
+    }
+  ],
+  "tools": ["eslint", "eslint-plugin-sonarjs", "knip", "ts-prune", "stylelint"],
+  "cursor": {
+    "invocation": "@orden-01-auditoria",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/orden/**"]
+  },
+  "antiRedundancy": {
+    "scope": "Diagnóstico de limpieza: complejidad, olores, código muerto, duplicación y censo de estilos/colores. No refactoriza ni cablea gates de fronteras.",
+    "keywords": [
+      "clean-code",
+      "auditoria-calidad",
+      "complejidad",
+      "codigo-muerto",
+      "olores",
+      "duplicacion",
+      "literales-color",
+      "css-disperso"
+    ],
+    "mergeableWith": []
+  }
+}

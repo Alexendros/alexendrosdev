@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "orden-03-integracion",
+  "area": "orden",
+  "phase": { "number": 3, "slug": "integracion", "name": "Integración de fronteras y ADR" },
+  "title": "ORDEN · Integración de fronteras, ADR y cierre en CI",
+  "version": "1.0.0",
+  "description": "Integra el refactor contra el código previo, documenta fronteras y ADR, y cablea los gates de arquitectura (sin ciclos de dependencia) en el pipeline con cierre draconiano. Actívala para cerrar la fase de orden en CI.",
+  "standard": {
+    "name": "Clean Code (R. C. Martin)",
+    "ref": "https://www.oreilly.com/library/view/clean-code/9780136083238/",
+    "scope": "Fronteras (cap. 8) + clases (cap. 10) + gates CI"
+  },
+  "consumes": [".ai/skills/.phase/orden/02-despliegue-base.json"],
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/orden/03-integracion.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
+  "gates": [
+    {
+      "id": "ciclos",
+      "metric": "ciclos_dependencia",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "fronteras",
+      "metric": "violaciones_de_capa",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "adr",
+      "metric": "modulos_publicos_sin_adr_o_docstring",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": false
+    }
+  ],
+  "tools": ["dependency-cruiser", "github-actions", "vitest"],
+  "cursor": {
+    "invocation": "@orden-03-integracion",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/orden/**"]
+  },
+  "antiRedundancy": {
+    "scope": "Fusión contra código previo, fronteras/ADR y cierre en CI. No diagnostica olores ni ejecuta el refactor base.",
+    "keywords": [
+      "fronteras",
+      "adr",
+      "ciclos-dependencia",
+      "integracion-orden-ci",
+      "dependency-cruiser",
+      "cierre-clean-code"
+    ],
+    "mergeableWith": []
+  }
+}
