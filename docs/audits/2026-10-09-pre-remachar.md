@@ -31,8 +31,11 @@
 | #80 | feat(skills): área ORDEN (reemplazo de #77 cerrado)                 | MERGED |
 | #83 | docs: canónico Alexendros/alexendrosdev + Astro 7.3                 | MERGED |
 | #79 | test: property-based, headers, e2e-critical                         | MERGED |
+| #84 | docs(audits): informe pre-Remachar 2026-10-09                       | MERGED |
 
 Superseded / closed: #73 (contenido absorbido en #78), #74 (cerrado sin merge; overrides recuperados en #78), #77 (cerrado al borrar base; recreado como #80).
+
+**Verificación local 2026-10-09 (post-merge):** `pnpm test` 134/134, `pnpm test:contract` 79/79, `pnpm build` + `pnpm smoke` OK. Workflow `security` en `main`: secrets/sca/sast verdes; `scorecard` fallaba en privado (`Resource not accessible by integration`) → job condicionado a `visibility == public` (mismo patrón que dependency-review).
 
 ## Residuales aceptados
 
@@ -49,7 +52,7 @@ Documentados en [`docs/threat-model.md`](../threat-model.md) y allowlist [`osv-s
 3. **Smoke** — `scripts/smoke.sh` siempre-on.
 4. **E2E crítico** — job `e2e-critical` (home, contacto, consent deny-by-default).
 5. **E2E completo + LHCI** — sigue opt-in con label `e2e`.
-6. **Security pipeline** — gitleaks, osv-scanner (con allowlist), CodeQL sin upload, scorecard.
+6. **Security pipeline** — gitleaks, osv-scanner (con allowlist), CodeQL sin upload, scorecard solo si el repo es público.
 
 ## Checklist readiness (repo-ending)
 
@@ -65,7 +68,7 @@ Documentados en [`docs/threat-model.md`](../threat-model.md) y allowlist [`osv-s
 | Lockfile + deps                   | WARN   | 42 alertas Dependabot abiertas; SCA CI verde con allowlist                                 |
 | Runtime EOL                       | OK     | Node 22.x                                                                                  |
 | SECURITY.md / README              | OK     |                                                                                            |
-| actionlint / pipeline             | OK     | Últimas ejecuciones verdes en merges                                                       |
+| actionlint / pipeline             | OK     | CI verde; security secrets/sca/sast verdes; scorecard N/A en privado                       |
 | Required checks                   | OK     | quality/test/build/smoke (+ e2e-critical)                                                  |
 | CodeQL / secret scanning settings | WARN   | CodeQL en CI con `upload: false`; secret scanning API no habilitada (paso manual settings) |
 | Despliegue Vercel                 | WARN   | Hobby + repo privado: preferencia AGENTS es público; no mutar visibilidad sin sí           |

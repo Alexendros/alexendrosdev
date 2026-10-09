@@ -83,8 +83,12 @@ jobs:
         with:
           upload: false
 
+  # Scorecard necesita API GitHub con alcance que el GITHUB_TOKEN no tiene en
+  # repos privados (ListCommits → Resource not accessible by integration).
+  # Misma guarda que dependency-review: solo en público.
   scorecard:
     name: scorecard
+    if: github.event.repository.visibility == 'public'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
