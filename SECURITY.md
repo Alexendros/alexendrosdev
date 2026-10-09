@@ -8,7 +8,10 @@
 
 ## Canal de reporte
 
-Reporta vulnerabilidades de forma **privada** a `operaciones@alexendros.dev`.
+Reporta vulnerabilidades de forma **privada**:
+
+1. [GitHub Security Advisories](https://github.com/Alexendros/alexendrosdev/security/advisories/new) (preferido).
+2. O por correo a `operaciones@alexendros.dev`.
 
 No abras issues públicos con exploits, PoCs ofensivos, tokens, secretos ni PII.
 
