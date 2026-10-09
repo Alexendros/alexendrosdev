@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "accesibilidad-01-auditoria",
+  "area": "accesibilidad",
+  "phase": { "number": 1, "slug": "auditoria", "name": "Auditoría A11y y SEO técnico" },
+  "title": "ACCESIBILIDAD · Auditoría WCAG 2.1 AA y SEO técnico",
+  "version": "1.0.0",
+  "description": "Diagnostica accesibilidad WCAG 2.1 AA (y EN 301 549 / RD 1112/2018) y SEO técnico: violaciones axe/Lighthouse/Pa11y, semántica, contraste, metadatos y datos estructurados. Actívala al iniciar la fase de accesibilidad o al pedir auditar accesibilidad o SEO.",
+  "standard": { "name": "WCAG 2.1 AA / EN 301 549", "ref": "https://www.w3.org/TR/WCAG21/#requirements-for-wcag-2-1", "scope": "AA obligatorio; AAA selectivo en contraste y navegación" },
+  "consumes": [],
+  "produces": { "cleanFile": ".ai/skills/.phase/accesibilidad/01-auditoria.json", "reportSchema": ".ai/skills/schema/phase-report.schema.json" },
+  "gates": [
+    { "id": "inventario-wcag", "metric": "violaciones_wcag_catalogadas_pct", "operator": ">=", "threshold": 100, "unit": "%", "blocking": false },
+    { "id": "axe-serios", "metric": "violaciones_axe_serious_critical", "operator": "==", "threshold": 0, "blocking": false },
+    { "id": "seo-indexable", "metric": "paginas_indexables_con_metadatos_pct", "operator": ">=", "threshold": 100, "unit": "%", "blocking": false }
+  ],
+  "tools": ["axe-core", "lighthouse", "pa11y", "playwright"],
+  "cursor": { "invocation": "@accesibilidad-01-auditoria", "mode": "agent", "autoAttach": [".ai/skills/accesibilidad/**"] },
+  "antiRedundancy": {
+    "scope": "Diagnóstico de accesibilidad y SEO técnico. No corrige semántica ni cablea presupuestos de rendimiento en CI.",
+    "keywords": ["wcag", "auditoria-a11y", "axe", "seo-tecnico", "contraste-diagnostico", "lighthouse-audit"],
+    "mergeableWith": []
+  }
+}
