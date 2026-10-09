@@ -88,7 +88,9 @@ const CTA_URL = '/contacto?subject=Landing%20en%2010%20d%C3%ADas';
     function setDismissed() {
       try {
         localStorage.setItem(STORAGE_KEY, '1');
-      } catch {}
+      } catch (e) {
+        console.warn('localStorage unavailable:', e);
+      }
     }
     function updateBodyPadding() {
       if (!banner) return;

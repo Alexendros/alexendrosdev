@@ -1,0 +1,82 @@
+# Residuales aceptados — ver docs/threat-model.md (expediente 20261007-085704 + Astro 7).
+# Solo toolchain/CI o nodemailer diferido (issue #12). No ignorar vulns nuevas sin triage.
+
+[[IgnoredVulns]]
+id = "GHSA-mm7p-fcc7-pg87"
+reason = "nodemailer 6.x diferido (issue #12); email replyTo max 254"
+
+[[IgnoredVulns]]
+id = "GHSA-p6gq-j5cr-w38f"
+reason = "nodemailer 6.x diferido (issue #12)"
+
+[[IgnoredVulns]]
+id = "GHSA-r7g4-qg5f-qqm2"
+reason = "nodemailer 6.x diferido (issue #12)"
+
+[[IgnoredVulns]]
+id = "GHSA-rcmh-qjqh-p98v"
+reason = "nodemailer 6.x diferido (issue #12)"
+
+[[IgnoredVulns]]
+id = "GHSA-v53p-9fqp-m79j"
+reason = "nodemailer 6.x diferido (issue #12)"
+
+[[IgnoredVulns]]
+id = "GHSA-vvjj-xcjg-gr5g"
+reason = "nodemailer 6.x diferido (issue #12)"
+
+[[IgnoredVulns]]
+id = "GHSA-wmmp-3585-3rmp"
+reason = "nodemailer 6.x diferido (issue #12)"
+
+[[IgnoredVulns]]
+id = "GHSA-wqvq-jvpq-h66f"
+reason = "nodemailer 6.x diferido (issue #12)"
+
+[[IgnoredVulns]]
+id = "GHSA-c7w3-x93f-qmm8"
+reason = "nodemailer 6.x diferido (issue #12)"
+
+[[IgnoredVulns]]
+id = "GHSA-cc9r-2j5m-2m83"
+reason = "nodemailer 6.x diferido (issue #12)"
+
+[[IgnoredVulns]]
+id = "GHSA-9wv6-86v2-598j"
+reason = "path-to-regexp override a 6.3.0; residual si queda copia antigua en toolchain"
+
+[[IgnoredVulns]]
+id = "GHSA-rj75-hqrm-r3gf"
+reason = "postcss-selector-parser solo build; sin parche misma línea"
+
+[[IgnoredVulns]]
+id = "GHSA-hp3w-g68c-fv3c"
+reason = "sprintf-js solo toolchain; sin parche misma línea"
+
+[[IgnoredVulns]]
+id = "GHSA-52f5-9888-hmc6"
+reason = "tmp solo CI/toolchain"
+
+[[IgnoredVulns]]
+id = "GHSA-ph9p-34f9-6g65"
+reason = "tmp solo CI/toolchain"
+
+[[IgnoredVulns]]
+id = "GHSA-w5hq-g745-h8pq"
+reason = "uuid solo CI/toolchain"
+
+[[IgnoredVulns]]
+id = "GHSA-pxg6-pf52-xh8x"
+reason = "basic-ftp solo CI/toolchain"
+
+[[IgnoredVulns]]
+id = "GHSA-grv7-fg5c-xmjg"
+reason = "braces solo CI/toolchain"
+
+[[IgnoredVulns]]
+id = "GHSA-3cqw-pxgr-jhrm"
+reason = "extract-zip solo CI/toolchain (Playwright)"
+
+[[IgnoredVulns]]
+id = "GHSA-r7gp-cmvv-6pwg"
+reason = "extract-zip solo CI/toolchain"

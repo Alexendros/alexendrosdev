@@ -13,6 +13,17 @@ describe('parseContactBody', () => {
     expect(result.success).toBe(true);
   });
 
+  it('rechaza un email de más de 254 caracteres', () => {
+    const result = parseContactBody({
+      name: 'Alex',
+      email: `${'a'.repeat(243)}@example.com`,
+      subject: 'otro',
+      message: 'Mensaje de prueba con más de veinte caracteres',
+      consent: true
+    });
+    expect(result.success).toBe(false);
+  });
+
   it('rechaza consent distinto de true', () => {
     const result = parseContactBody({
       name: 'Alex',
