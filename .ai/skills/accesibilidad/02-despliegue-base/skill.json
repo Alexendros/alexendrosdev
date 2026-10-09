@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "accesibilidad-02-despliegue-base",
+  "area": "accesibilidad",
+  "phase": { "number": 2, "slug": "despliegue-base", "name": "Despliegue base semántico y SEO" },
+  "title": "ACCESIBILIDAD · Despliegue base semántico y de indexación",
+  "version": "1.0.0",
+  "description": "Implementa correcciones semánticas (ARIA, foco, contraste por tokens) y la base SEO (JSON-LD, canonical, sitemap, Open Graph) derivadas de la auditoría. Actívala tras la auditoría de accesibilidad para desplegar la línea base.",
+  "standard": { "name": "WCAG 2.1 AA / EN 301 549", "ref": "https://www.w3.org/TR/WCAG21/#requirements-for-wcag-2-1", "scope": "Corrección AA + SEO técnico" },
+  "consumes": [".ai/skills/.phase/accesibilidad/01-auditoria.json"],
+  "produces": { "cleanFile": ".ai/skills/.phase/accesibilidad/02-despliegue-base.json", "reportSchema": ".ai/skills/schema/phase-report.schema.json" },
+  "gates": [
+    { "id": "axe-cero", "metric": "violaciones_axe_serious_critical", "operator": "==", "threshold": 0, "blocking": true },
+    { "id": "contraste", "metric": "pares_contraste_aa_ok_pct", "operator": ">=", "threshold": 100, "unit": "%", "blocking": true },
+    { "id": "jsonld", "metric": "paginas_con_jsonld_valido_pct", "operator": ">=", "threshold": 100, "unit": "%", "blocking": false }
+  ],
+  "tools": ["astro", "@astrojs/sitemap", "stylelint", "check:contrast"],
+  "cursor": { "invocation": "@accesibilidad-02-despliegue-base", "mode": "agent", "autoAttach": [".ai/skills/accesibilidad/**"] },
+  "antiRedundancy": {
+    "scope": "Implementación limpia de semántica, ARIA, contraste por tokens y SEO estructural. No diagnostica ni cablea LHCI en CI.",
+    "keywords": ["semantica-aria", "foco-teclado", "contraste-tokens", "jsonld", "sitemap-canonical", "scaffolding-a11y"],
+    "mergeableWith": []
+  }
+}
