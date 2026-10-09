@@ -87,7 +87,7 @@
 
 Residuales aceptados del expediente `20261007-085704`, tras los parches de la misma línea:
 
-- Solo build o CI, fuera del runtime de Vercel: `basic-ftp` 5.3.1, `braces` 3.0.3, `extract-zip` 2.0.1, `sprintf-js` 1.0.3, `postcss-selector-parser` 6.1.4, `tmp` 0.0.33 y 0.1.0, `uuid` 8.3.2. No hay versión corregida en la misma línea, o el padre no admite el salto. No se fuerza un major.
+- Solo build o CI, fuera del runtime de Vercel: `basic-ftp`, `braces`, `extract-zip`, `sprintf-js`, `postcss-selector-parser`, `tmp`, `uuid`, `handlebars` (semantic-release/LHCI). No hay versión corregida en la misma línea, o el padre no admite el salto. No se fuerza un major. Allowlist en `osv-scanner.toml`.
 - `http-cache-semantics` residual de toolchain: revisar tras Astro 7; aceptado si no hay parche en la misma línea.
 - `nodemailer` 6.10.1 se queda por el issue #12. El código no usa `raw` ni OAuth2. El email que va a `replyTo` está limitado a 254 caracteres.
 - F-003 a F-007 están cerrados en `.gitleaks.toml`: `STORAGE_KEY` de `localStorage` del banner, no una credencial.

@@ -1,6 +1,7 @@
 # Residuales aceptados — ver docs/threat-model.md (expediente 20261007-085704 + Astro 7).
 # Solo toolchain/CI o nodemailer diferido (issue #12). No ignorar vulns nuevas sin triage.
 
+# --- nodemailer 6.x (issue #12) ---
 [[IgnoredVulns]]
 id = "GHSA-mm7p-fcc7-pg87"
 reason = "nodemailer 6.x diferido (issue #12); email replyTo max 254"
@@ -42,8 +43,41 @@ id = "GHSA-cc9r-2j5m-2m83"
 reason = "nodemailer 6.x diferido (issue #12)"
 
 [[IgnoredVulns]]
-id = "GHSA-9wv6-86v2-598j"
-reason = "path-to-regexp override a 6.3.0; residual si queda copia antigua en toolchain"
+id = "GHSA-268h-hp4c-crq3"
+reason = "nodemailer 6.x diferido (issue #12)"
+
+[[IgnoredVulns]]
+id = "GHSA-2x7j-588g-ccc2"
+reason = "nodemailer 6.x diferido (issue #12)"
+
+[[IgnoredVulns]]
+id = "GHSA-6vj9-mwq6-2f5v"
+reason = "nodemailer 6.x diferido (issue #12)"
+
+[[IgnoredVulns]]
+id = "GHSA-8m3c-c648-2xjj"
+reason = "nodemailer 6.x diferido (issue #12)"
+
+[[IgnoredVulns]]
+id = "GHSA-8vvx-rff5-p5rq"
+reason = "nodemailer 6.x diferido (issue #12)"
+
+# --- toolchain / CI only ---
+[[IgnoredVulns]]
+id = "GHSA-c475-qrg2-pj4r"
+reason = "basic-ftp solo CI/toolchain"
+
+[[IgnoredVulns]]
+id = "GHSA-vfj7-8cjw-p6xm"
+reason = "braces solo CI/toolchain"
+
+[[IgnoredVulns]]
+id = "GHSA-7pqw-9j4j-h8q3"
+reason = "extract-zip solo CI/toolchain (Playwright)"
+
+[[IgnoredVulns]]
+id = "GHSA-jmr9-qjv8-65gv"
+reason = "extract-zip solo CI/toolchain (Playwright)"
 
 [[IgnoredVulns]]
 id = "GHSA-rj75-hqrm-r3gf"
@@ -66,17 +100,21 @@ id = "GHSA-w5hq-g745-h8pq"
 reason = "uuid solo CI/toolchain"
 
 [[IgnoredVulns]]
-id = "GHSA-pxg6-pf52-xh8x"
-reason = "basic-ftp solo CI/toolchain"
+id = "GHSA-8r5x-fm3f-whwj"
+reason = "handlebars solo toolchain (semantic-release/LHCI)"
 
 [[IgnoredVulns]]
-id = "GHSA-grv7-fg5c-xmjg"
-reason = "braces solo CI/toolchain"
+id = "GHSA-p8wg-vrv2-v86f"
+reason = "handlebars solo toolchain (semantic-release/LHCI)"
 
 [[IgnoredVulns]]
-id = "GHSA-3cqw-pxgr-jhrm"
-reason = "extract-zip solo CI/toolchain (Playwright)"
+id = "GHSA-xw65-4hp5-5hc7"
+reason = "handlebars solo toolchain (semantic-release/LHCI)"
 
 [[IgnoredVulns]]
-id = "GHSA-r7gp-cmvv-6pwg"
-reason = "extract-zip solo CI/toolchain"
+id = "GHSA-ch52-4w7c-c8xp"
+reason = "http-cache-semantics residual arrastrado; sin parche misma línea usable"
+
+[[IgnoredVulns]]
+id = "GHSA-9wv6-86v2-598j"
+reason = "path-to-regexp override a 6.3.0; residual si queda copia antigua en toolchain"
