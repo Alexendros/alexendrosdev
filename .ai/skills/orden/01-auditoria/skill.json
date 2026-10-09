@@ -6,19 +6,56 @@
   "title": "ORDEN · Auditoría de olores de código y deuda técnica",
   "version": "1.0.0",
   "description": "Diagnostica olores de código y deuda técnica según Clean Code: complejidad ciclomática, funciones largas, nombres, código muerto y duplicación. Actívala al iniciar la fase de orden o al pedir auditar calidad de código, complejidad o deuda técnica.",
-  "standard": { "name": "Clean Code (R. C. Martin)", "ref": "https://www.oreilly.com/library/view/clean-code/9780136083238/", "scope": "Cap. 2-10 + olores (apéndice)" },
+  "standard": {
+    "name": "Clean Code (R. C. Martin)",
+    "ref": "https://www.oreilly.com/library/view/clean-code/9780136083238/",
+    "scope": "Cap. 2-10 + olores (apéndice)"
+  },
   "consumes": [],
-  "produces": { "cleanFile": ".ai/skills/.phase/orden/01-auditoria.json", "reportSchema": ".ai/skills/schema/phase-report.schema.json" },
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/orden/01-auditoria.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
   "gates": [
-    { "id": "inventario-olores", "metric": "olores_catalogados_pct", "operator": ">=", "threshold": 100, "unit": "%", "blocking": false },
-    { "id": "complejidad", "metric": "complejidad_ciclomatica_media", "operator": "<=", "threshold": 10, "blocking": false },
-    { "id": "codigo-muerto", "metric": "simbolos_no_usados", "operator": "==", "threshold": 0, "blocking": false }
+    {
+      "id": "inventario-olores",
+      "metric": "olores_catalogados_pct",
+      "operator": ">=",
+      "threshold": 100,
+      "unit": "%",
+      "blocking": false
+    },
+    {
+      "id": "complejidad",
+      "metric": "complejidad_ciclomatica_media",
+      "operator": "<=",
+      "threshold": 10,
+      "blocking": false
+    },
+    {
+      "id": "codigo-muerto",
+      "metric": "simbolos_no_usados",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": false
+    }
   ],
   "tools": ["eslint", "eslint-plugin-sonarjs", "knip", "ts-prune"],
-  "cursor": { "invocation": "@orden-01-auditoria", "mode": "agent", "autoAttach": [".ai/skills/orden/**"] },
+  "cursor": {
+    "invocation": "@orden-01-auditoria",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/orden/**"]
+  },
   "antiRedundancy": {
     "scope": "Diagnóstico de limpieza: complejidad, olores, código muerto y duplicación. No refactoriza ni cablea gates de fronteras.",
-    "keywords": ["clean-code", "auditoria-calidad", "complejidad", "codigo-muerto", "olores", "duplicacion"],
+    "keywords": [
+      "clean-code",
+      "auditoria-calidad",
+      "complejidad",
+      "codigo-muerto",
+      "olores",
+      "duplicacion"
+    ],
     "mergeableWith": []
   }
 }
