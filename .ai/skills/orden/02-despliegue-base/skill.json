@@ -6,19 +6,55 @@
   "title": "ORDEN · Despliegue base de refactor y convenciones",
   "version": "1.0.0",
   "description": "Aplica refactors limpios derivados de la auditoría (SRP, nombres, funciones pequeñas) y fija reglas lint y convenciones de nomenclatura. Actívala tras la auditoría de orden para desplegar la línea base de limpieza.",
-  "standard": { "name": "Clean Code (R. C. Martin)", "ref": "https://www.oreilly.com/library/view/clean-code/9780136083238/", "scope": "Refactor SRP + nombres + funciones pequeñas" },
+  "standard": {
+    "name": "Clean Code (R. C. Martin)",
+    "ref": "https://www.oreilly.com/library/view/clean-code/9780136083238/",
+    "scope": "Refactor SRP + nombres + funciones pequeñas"
+  },
   "consumes": [".ai/skills/.phase/orden/01-auditoria.json"],
-  "produces": { "cleanFile": ".ai/skills/.phase/orden/02-despliegue-base.json", "reportSchema": ".ai/skills/schema/phase-report.schema.json" },
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/orden/02-despliegue-base.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
   "gates": [
-    { "id": "complejidad-max", "metric": "complejidad_ciclomatica_max", "operator": "<=", "threshold": 10, "blocking": true },
-    { "id": "funciones-largas", "metric": "funciones_mayores_30_lineas_p95", "operator": "==", "threshold": 0, "blocking": false },
-    { "id": "tests-verdes", "metric": "tests_rotos_por_refactor", "operator": "==", "threshold": 0, "blocking": true }
+    {
+      "id": "complejidad-max",
+      "metric": "complejidad_ciclomatica_max",
+      "operator": "<=",
+      "threshold": 10,
+      "blocking": true
+    },
+    {
+      "id": "funciones-largas",
+      "metric": "funciones_mayores_30_lineas_p95",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": false
+    },
+    {
+      "id": "tests-verdes",
+      "metric": "tests_rotos_por_refactor",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    }
   ],
   "tools": ["eslint", "jscodeshift", "prettier", "vitest"],
-  "cursor": { "invocation": "@orden-02-despliegue-base", "mode": "agent", "autoAttach": [".ai/skills/orden/**"] },
+  "cursor": {
+    "invocation": "@orden-02-despliegue-base",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/orden/**"]
+  },
   "antiRedundancy": {
     "scope": "Refactor limpio y reglas de nomenclatura. No diagnostica olores ni cablea fronteras/ADR en CI.",
-    "keywords": ["refactor", "srp", "funciones-pequenas", "nomenclatura", "reglas-lint", "codemods"],
+    "keywords": [
+      "refactor",
+      "srp",
+      "funciones-pequenas",
+      "nomenclatura",
+      "reglas-lint",
+      "codemods"
+    ],
     "mergeableWith": []
   }
 }
