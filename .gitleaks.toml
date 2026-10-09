@@ -1,0 +1,18 @@
+[extend]
+useDefault = true
+
+# B.8 del expediente 20261007-085704. F-003..F-007: generic-api-key sobre
+# STORAGE_KEY de localStorage en el banner. No es una credencial. No se
+# editan esos ficheros ni se purga el historial.
+[[allowlists]]
+description = "F-003 a F-007: clave de localStorage del banner, falso positivo"
+condition = "AND"
+paths = [
+  '''(?:^|/)src/components/ExitIntent\.tsx$''',
+  '''(?:^|/)src/components/StickyCta\.astro$''',
+  '''(?:^|/)src/components/LandingBanner\.astro$''',
+  '''(?:^|/)public/scripts/landing-banner\.js$''',
+  '''(?:^|/)src/scripts/landing-banner\.js$''',
+]
+regexTarget = "line"
+regexes = ['''STORAGE_KEY\s*=\s*['"][^'"]+['"]''']

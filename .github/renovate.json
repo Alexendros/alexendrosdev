@@ -45,11 +45,7 @@
         "react",
         "react-dom",
         "@types/react",
-        "@types/react-dom",
-        "@astrojs/react",
-        "@astrojs/tailwind",
-        "astro",
-        "@astrojs/vercel"
+        "@types/react-dom"
       ],
       "matchUpdateTypes": ["major"],
       "enabled": false

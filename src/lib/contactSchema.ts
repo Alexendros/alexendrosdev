@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const contactSchema = z.object({
   name: z.string().trim().min(2).max(100),
-  email: z.string().trim().email(),
+  email: z.string().trim().email().max(254),
   company: z.preprocess(
     (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
     z.string().trim().max(100).optional()

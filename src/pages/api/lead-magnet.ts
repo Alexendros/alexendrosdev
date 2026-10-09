@@ -71,7 +71,7 @@ export const POST: APIRoute = async ({ request }) => {
   const vy = field(form, 'vy');
   const consent = field(form, 'consent');
 
-  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const emailOk = email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   if (!emailOk || !consent) return redirect('error');
 
   const ip = clientIp(request);
