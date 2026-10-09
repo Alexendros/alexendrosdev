@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "proteccion-01-auditoria",
+  "area": "proteccion",
+  "phase": { "number": 1, "slug": "auditoria", "name": "Auditoría y contextualización" },
+  "title": "PROTECCIÓN · Auditoría ASVS y contextualización de superficie",
+  "version": "1.0.0",
+  "description": "Mapea la superficie de ataque del repo y verifica cobertura OWASP ASVS (L1 completo + L2 selectivo): secretos, dependencias, cabeceras y CSP. Actívala al iniciar la fase de protección o al pedir auditar seguridad, cobertura ASVS o buscar secretos.",
+  "standard": {
+    "name": "OWASP ASVS v4.0.3",
+    "ref": "https://owasp.org/projects/asvs",
+    "scope": "L1 completo + L2 selectivo"
+  },
+  "consumes": [],
+  "produces": {
+    "cleanFile": ".ai/skills/.phase/proteccion/01-auditoria.json",
+    "reportSchema": ".ai/skills/schema/phase-report.schema.json"
+  },
+  "gates": [
+    {
+      "id": "secretos",
+      "metric": "secretos_filtrados",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "vulns",
+      "metric": "vulnerabilidades_high_critical",
+      "operator": "==",
+      "threshold": 0,
+      "blocking": true
+    },
+    {
+      "id": "cobertura-l1",
+      "metric": "cobertura_asvs_l1_pct",
+      "operator": ">=",
+      "threshold": 100,
+      "unit": "%",
+      "blocking": false
+    }
+  ],
+  "tools": ["gitleaks", "osv-scanner", "npm audit", "securityheaders"],
+  "cursor": {
+    "invocation": "@proteccion-01-auditoria",
+    "mode": "agent",
+    "autoAttach": [".ai/skills/proteccion/**"]
+  },
+  "antiRedundancy": {
+    "scope": "Diagnóstico de seguridad: inventario de superficie, secretos, dependencias y cobertura ASVS. No corrige ni implementa tests.",
+    "keywords": [
+      "asvs",
+      "auditoria-seguridad",
+      "secretos",
+      "dependencias",
+      "cabeceras",
+      "csp-diagnostico"
+    ],
+    "mergeableWith": []
+  }
+}

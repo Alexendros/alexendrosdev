@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://alexendros.dev/schemas/skill.schema.json",
+  "title": "Skill canónica trifásica",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "area",
+    "phase",
+    "title",
+    "version",
+    "description",
+    "standard",
+    "consumes",
+    "produces",
+    "gates",
+    "tools",
+    "cursor",
+    "antiRedundancy"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "id": {
+      "type": "string",
+      "pattern": "^(proteccion|accesibilidad|orden)-(01-auditoria|02-despliegue-base|03-integracion)$"
+    },
+    "area": { "enum": ["proteccion", "accesibilidad", "orden"] },
+    "phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["number", "slug", "name"],
+      "properties": {
+        "number": { "type": "integer", "enum": [1, 2, 3] },
+        "slug": { "enum": ["auditoria", "despliegue-base", "integracion"] },
+        "name": { "type": "string", "minLength": 3 }
+      }
+    },
+    "title": { "type": "string", "minLength": 5 },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "description": { "type": "string", "minLength": 40 },
+    "standard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "ref"],
+      "properties": {
+        "name": { "type": "string" },
+        "ref": { "type": "string", "pattern": "^https?://" },
+        "scope": { "type": "string" }
+      }
+    },
+    "consumes": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+    "produces": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cleanFile", "reportSchema"],
+      "properties": {
+        "cleanFile": { "type": "string", "pattern": "\\.json$" },
+        "reportSchema": { "type": "string" }
+      }
+    },
+    "gates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "metric", "operator", "threshold", "blocking"],
+        "properties": {
+          "id": { "type": "string" },
+          "metric": { "type": "string" },
+          "operator": { "enum": ["<", "<=", "==", ">=", ">"] },
+          "threshold": {
+            "anyOf": [{ "type": "number" }, { "type": "string" }, { "type": "boolean" }]
+          },
+          "unit": { "type": "string" },
+          "blocking": { "type": "boolean" }
+        }
+      }
+    },
+    "tools": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+    "cursor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["invocation", "mode"],
+      "properties": {
+        "invocation": { "type": "string" },
+        "mode": { "enum": ["agent", "edit", "ask"] },
+        "autoAttach": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "antiRedundancy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "keywords"],
+      "properties": {
+        "scope": { "type": "string" },
+        "keywords": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 3,
+          "uniqueItems": true
+        },
+        "mergeableWith": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

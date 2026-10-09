@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://alexendros.dev/schemas/phase-report.schema.json",
+  "title": "Informe limpio de fase",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "skillId",
+    "area",
+    "phase",
+    "generatedAt",
+    "target",
+    "standard",
+    "status",
+    "summary",
+    "findings",
+    "metrics",
+    "gates",
+    "nextPhaseInputs"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "skillId": { "type": "string" },
+    "area": { "enum": ["proteccion", "accesibilidad", "orden"] },
+    "phase": { "enum": ["auditoria", "despliegue-base", "integracion"] },
+    "generatedAt": { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T" },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repo", "ref"],
+      "properties": {
+        "repo": { "type": "string" },
+        "ref": { "type": "string" },
+        "paths": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "standard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "ref"],
+      "properties": {
+        "name": { "type": "string" },
+        "ref": { "type": "string", "pattern": "^https?://" }
+      }
+    },
+    "status": { "enum": ["pass", "warn", "fail"] },
+    "summary": { "type": "string", "minLength": 10 },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "severity", "title", "evidence", "confidence"],
+        "properties": {
+          "id": { "type": "string" },
+          "severity": { "enum": ["info", "low", "medium", "high", "critical"] },
+          "title": { "type": "string" },
+          "evidence": { "type": "string" },
+          "location": { "type": "string" },
+          "confidence": { "enum": ["alta", "media", "baja"] },
+          "remediation": { "type": "string" }
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "decision", "rationale"],
+        "properties": {
+          "id": { "type": "string" },
+          "decision": { "type": "string" },
+          "rationale": { "type": "string" },
+          "adr": { "type": "string" }
+        }
+      }
+    },
+    "metrics": { "type": "object" },
+    "gates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status"],
+        "properties": {
+          "id": { "type": "string" },
+          "status": { "enum": ["pass", "warn", "fail", "na"] },
+          "observed": { "type": ["number", "string", "boolean", "null"] }
+        }
+      }
+    },
+    "nextPhaseInputs": { "type": "array", "items": { "type": "string" } }
+  }
+}
