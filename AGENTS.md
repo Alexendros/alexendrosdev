@@ -20,9 +20,9 @@
 
 ## Learned Workspace Facts
 
-- Repo canónico público: `Soluciones-Alexendros/miwebsite-alexendrosdev`; producción apex `https://alexendros.dev` en proyecto Vercel **`alexendros-dev`** (Hobby), Git link a este repo.
+- Repo canónico: `Alexendros/alexendrosdev` (privado; preferencia AGENTS: público + Hobby cuando se desbloquee); producción apex `https://alexendros.dev` en proyecto Vercel **`alexendros-dev`** (Hobby), Git link a este repo.
 - Predecesor Next.js `nuevowebsite-alexendrosdev` archivado; no reutilizar como fuente de verdad.
-- Stack MVP: Astro 4.16 + isla React `ContactForm` (`client:visible`) + Tailwind + TS estricto + Zod; contacto vía Proton SMTP (`operaciones@alexendros.dev`), honeypot, rate-limit Upstash y Turnstile (si `TURNSTILE_SECRET_KEY`).
+- Stack MVP: Astro 7.3 + isla React `ContactForm` (`client:visible`) + Tailwind + TS estricto + Zod; contacto vía Proton SMTP (`operaciones@alexendros.dev`), honeypot, rate-limit Upstash y Turnstile (si `TURNSTILE_SECRET_KEY`).
 - Tema visual (ADR 0011, supersedes 0006/0007): claro editorial azul `#0f3778` con tokens en 3 capas (`@layer tokens` de `src/styles/global.css` es la fuente única; Tailwind solo referencia semánticos). Tema oscuro vía `prefers-color-scheme`/`data-theme`, validado por `pnpm check:contrast` (22 pares, ambos temas). Prohibidos colores literales fuera de tokens, `!important` y `transition: all` (stylelint `pnpm lint:css`).
 - Design system: componentes en `src/components/` (Button, Link, Badge, Eyebrow, Section/SectionHeader, Container/Stack/Grid, SkipLink), página viva `/design-system` (noindex) y `docs/design-system.md`. Motion: solo `transform`/`opacity`, reveal v2 con stagger, JS ≤ 2 KB gzip, 100% reduced-motion.
 - Vercel Analytics/Speed Insights solo se emiten en builds de Vercel (`__IS_VERCEL__` vía define en astro.config): en local/CI no existen los endpoints `/_vercel/*` y romperían Best Practices.

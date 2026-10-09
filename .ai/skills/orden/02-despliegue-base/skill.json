@@ -2,7 +2,11 @@
   "schemaVersion": "1.0.0",
   "id": "orden-02-despliegue-base",
   "area": "orden",
-  "phase": { "number": 2, "slug": "despliegue-base", "name": "Despliegue base de refactor y estilos" },
+  "phase": {
+    "number": 2,
+    "slug": "despliegue-base",
+    "name": "Despliegue base de refactor y estilos"
+  },
   "title": "ORDEN · Despliegue base de refactor, OKLCH y CSS consolidado",
   "version": "1.1.0",
   "description": "Aplica refactors limpios (SRP, nombres, funciones pequeñas), gobierna el color con tokens OKLCH en @layer tokens y consolida los estilos en un único CSS con los @import/@layer adecuados para mantener código limpio. Actívala tras la auditoría de orden para desplegar la línea base.",
