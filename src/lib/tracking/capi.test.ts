@@ -41,7 +41,7 @@ describe('sendCapiEvent', () => {
       {
         eventName: 'Purchase',
         eventId: 'uid-1',
-        eventSourceUrl: 'https://alexendros.dev/gracias',
+        eventSourceUrl: 'https://alexendros.dev/contacto',
         userData: { email: 'Foo@Bar.com', ip: '1.2.3.4', userAgent: 'vitest' },
         customData: { value: 99, currency: 'EUR' }
       }

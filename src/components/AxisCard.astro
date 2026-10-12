@@ -1,8 +1,6 @@
 ---
-import type { Eje } from '../content/ejes';
-
 interface Props {
-  eje: Eje;
+  eje: { index: string; title: string; description: string };
 }
 const { eje } = Astro.props;
 ---

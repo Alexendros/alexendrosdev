@@ -91,6 +91,17 @@ import Container from '../components/Container.astro';
             <td>No</td>
           </tr>
           <tr>
+            <td><code>alexendros_ref</code></td>
+            <td>alexendros.dev (primera parte)</td>
+            <td>
+              Guarda el código cuando entras por un enlace de referido propio (<code>/r/…</code>),
+              para atribuirte la visita si contactas. No sale de este sitio.
+            </td>
+            <td>90 días</td>
+            <td>Técnica</td>
+            <td>No</td>
+          </tr>
+          <tr>
             <td><code>_ga</code></td>
             <td>Google Analytics (tercero, EE. UU.)</td>
             <td>Asigna un identificador anónimo para no contar la misma persona dos veces.</td>
@@ -154,6 +165,51 @@ import Container from '../components/Container.astro';
             <td>Publicidad</td>
             <td>Sí</td>
           </tr>
+          <tr>
+            <td><code>li_gc</code></td>
+            <td>LinkedIn</td>
+            <td>Recuerda tu consentimiento de cookies no esenciales de LinkedIn.</td>
+            <td>6 meses</td>
+            <td>Publicidad</td>
+            <td>Sí</td>
+          </tr>
+          <tr>
+            <td><code>lidc</code></td>
+            <td>LinkedIn</td>
+            <td>Dirige la petición al centro de datos correcto del Insight Tag.</td>
+            <td>1 día</td>
+            <td>Publicidad</td>
+            <td>Sí</td>
+          </tr>
+          <tr>
+            <td><code>bcookie</code></td>
+            <td>LinkedIn</td>
+            <td
+              >Identifica el navegador de forma segura para medir campañas y análisis de LinkedIn.</td
+            >
+            <td>1 año</td>
+            <td>Publicidad</td>
+            <td>Sí</td>
+          </tr>
+          <tr>
+            <td><code>AnalyticsSyncHistory</code></td>
+            <td>LinkedIn</td>
+            <td>Registra cuándo se sincronizan datos de análisis con plataformas publicitarias.</td>
+            <td>30 días</td>
+            <td>Publicidad</td>
+            <td>Sí</td>
+          </tr>
+          <tr>
+            <td><code>UserMatchHistory</code></td>
+            <td>LinkedIn</td>
+            <td
+              >Sincroniza el identificador de LinkedIn con plataformas de anuncios para medir
+              campañas.</td
+            >
+            <td>30 días</td>
+            <td>Publicidad</td>
+            <td>Sí</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -186,78 +242,3 @@ import Container from '../components/Container.astro';
     <p>Última actualización: 12 de octubre de 2026.</p>
   </Container>
 </Layout>
-
-<style>
-  .legal-prose h2 {
-    font-size: 1.15rem;
-    font-weight: 600;
-    margin-top: var(--space-8);
-    margin-bottom: var(--space-2);
-  }
-
-  .legal-prose ul,
-  .legal-prose ol {
-    margin-top: var(--space-4);
-    padding-left: var(--space-5);
-    color: var(--fg-muted);
-    font-size: 0.95rem;
-    line-height: 1.7;
-  }
-
-  .legal-prose ul {
-    list-style: disc;
-  }
-
-  .legal-prose ol {
-    list-style: decimal;
-  }
-
-  .legal-prose li + li {
-    margin-top: var(--space-2);
-  }
-
-  .legal-prose h2 + p {
-    margin-top: var(--space-2);
-  }
-
-  .legal-prose a {
-    color: var(--brand);
-    text-decoration: underline;
-  }
-
-  .legal-prose code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.85em;
-  }
-
-  .table-wrap {
-    margin-top: var(--space-5);
-    overflow-x: auto;
-  }
-
-  .legal-prose table {
-    width: 100%;
-    min-width: 48rem;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-    line-height: 1.5;
-  }
-
-  .legal-prose th,
-  .legal-prose td {
-    border: 1px solid var(--border);
-    padding: var(--space-2) var(--space-3);
-    text-align: left;
-    vertical-align: top;
-  }
-
-  .legal-prose th {
-    background: var(--bg-subtle);
-    color: var(--fg);
-    font-weight: 600;
-  }
-
-  .legal-prose td {
-    color: var(--fg-muted);
-  }
-</style>

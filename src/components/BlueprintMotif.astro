@@ -17,7 +17,7 @@ const { class: className = '' } = Astro.props;
   aria-hidden="true"
   class={className}
 >
-  <g class="bp-motif-fade">
+  <g class="md:opacity-[0.35]">
     <circle cx="70" cy="70" r="44"></circle>
     <circle cx="70" cy="70" r="30"></circle>
     <circle cx="70" cy="70" r="6"></circle>
@@ -34,10 +34,3 @@ const { class: className = '' } = Astro.props;
     <circle cx="40" cy="190" r="3" stroke-opacity="0.2"></circle>
   </g>
 </svg>
-<style>
-  @media (min-width: 768px) {
-    .bp-motif-fade {
-      opacity: 0.35;
-    }
-  }
-</style>

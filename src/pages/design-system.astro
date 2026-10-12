@@ -16,7 +16,6 @@ import ServiceCard from '../components/ServiceCard.astro';
 import AxisCard from '../components/AxisCard.astro';
 import Dimension from '../components/Dimension.astro';
 import { services } from '../content/services';
-import { ejes } from '../content/ejes';
 import css from '../styles/global.css?raw';
 import {
   extractThemes,
@@ -35,16 +34,12 @@ const PRIMITIVES = [
   'blue-950',
   'blue-900',
   'blue-700',
-  'blue-500',
   'blue-100',
   'ink-900',
-  'ink-700',
   'ink-500',
   'paper-0',
   'paper-50',
   'line',
-  'ok',
-  'warn',
   'err'
 ];
 const SEMANTICS = [
@@ -66,7 +61,7 @@ const ratioVs = (name: string, backdrop: number[]) =>
   ratio(toRgb(resolveValue(raw(name), tokens)), backdrop);
 
 const STEPS = ['step--1', 'step-0', 'step-1', 'step-2', 'step-3', 'step-4'] as const;
-const SPACES = ['1', '2', '3', '4', '5', '6', '8', '10', '12', '16', '20', '24'] as const;
+const SPACES = ['2', '3', '4', '5', '6', '8', '16', '24'] as const;
 const RADIUS = [
   ['radius-sm', '--radius-sm'],
   ['radius-md', '--radius-md'],
@@ -178,7 +173,7 @@ const RADIUS = [
               <div class="flex items-center gap-2 text-xs text-muted">
                 <code>--space-{n}</code>
                 <span
-                  class="block h-3 bg-primary/60 rounded-sm"
+                  class="block h-3 swatch-brand rounded-sm"
                   style={`width: var(--space-${n})`}
                 />
               </div>
@@ -260,7 +255,14 @@ const RADIUS = [
         <h3 class="mt-8 text-base font-bold">Tarjetas</h3>
         <Grid gap="6" class="mt-3 sm:grid-cols-2 lg:grid-cols-3">
           <ServiceCard service={services[0]} headingLevel="h3" />
-          <AxisCard eje={ejes[0]} />
+          <AxisCard
+            eje={{
+              index: '01',
+              title: 'Seguridad',
+              description:
+                'OWASP ASVS L1 y L2 selectivo, RGPD art. 32. 0 secretos, 0 vulnerabilidades high/critical.'
+            }}
+          />
           <div class="border border-border rounded-lg p-6 bg-card">
             <h3 class="font-bold text-lg">Card base</h3>
             <p class="mt-2 text-sm text-muted">
@@ -333,10 +335,7 @@ const RADIUS = [
           >, reposo 2,4&nbsp;s y giro 600&nbsp;ms (ciclo 9&nbsp;s). Giro continuo, también con
           reduced-motion del SO. El toggle de esta página no aplana el rotador.
         </p>
-        <div
-          data-ds-slot-demo
-          class="hero-slot-root mt-3 border border-border rounded-lg p-6 bg-card"
-        >
+        <div data-ds-slot-demo class="mt-3 border border-border rounded-lg p-6 bg-card">
           <p class="text-2xl font-bold leading-tight">
             Aquí se crean productos digitales que son reflejo de
             <span class="hero-slot">

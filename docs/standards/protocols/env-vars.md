@@ -63,7 +63,7 @@ ENV_FILE=.env.provision bash scripts/env-push.sh --dry-run
 
 # 3) Sube de verdad, opcionalmente acotando claves o entornos
 ENV_FILE=.env.provision bash scripts/env-push.sh
-ENV_FILE=.env.provision bash scripts/env-push.sh --only RESEND_API_KEY --envs production,preview
+ENV_FILE=.env.provision bash scripts/env-push.sh --only SMTP_PASS --envs production,preview
 ```
 
 El script borra antes la clave en cada entorno (`vercel env rm … -y`) y la re-añade por stdin,
@@ -105,15 +105,13 @@ vercel --prod      # producción (alexendros.dev)
 | `PUBLIC_CLARITY_ID`                                               | Opcional                    | build           | No                     | [5.3](#53-microsoft-clarity)    |
 | `PUBLIC_POSTHOG_KEY` / `PUBLIC_POSTHOG_HOST`                      | Opcional                    | build           | No                     | [5.4](#54-posthog-eu)           |
 | `PUBLIC_LINKEDIN_PARTNER_ID`                                      | Opcional                    | build           | No                     | [6.2](#62-linkedin-insight-tag) |
-| `RESEND_API_KEY` / `EMAIL_FROM` / `EMAIL_FROM_NAME`               | Opcional                    | runtime         | Sí (API_KEY)           | [7.1](#71-resend)               |
-| `UNSUBSCRIBE_SECRET`                                              | Recomendada con Resend      | runtime         | Sí                     | [7.2](#72-secretos-generados)   |
-| `PUBLIC_SITE_URL`                                                 | Opcional (documentada)      | build           | No                     | [8](#8-variables-de-referencia) |
+| `PUBLIC_SITE_URL`                                                 | Opcional (documentada)      | build           | No                     | [7](#7-variables-de-referencia) |
 
 ## 4. Contacto, anti-spam y CRM
 
 ### 4.1 SMTP — Proton Mail
 
-Endpoint afectado: `POST /api/contact`, `POST /api/afiliados`, `POST /api/lead-magnet`.
+Endpoint afectado: `POST /api/contact`, `POST /api/afiliados`.
 
 1. Necesitas un plan de Proton de pago con **SMTP submission** (Proton Mail Business/paid).
 2. Entra en Proton → **Settings → IMAP/SMTP** (o _Security and login → IMAP/SMTP tokens_).
@@ -133,8 +131,8 @@ Cargar en Vercel en `Production`, `Preview` y `Development`.
 
 ### 4.2 Upstash Redis
 
-Protege `/api/contact` (10/min), `/api/afiliados` (5/min), `/api/lead-magnet` (5/min) y la
-idempotencia del webhook de Cal.com. Sin estas variables los endpoints de contacto responden
+Protege `/api/contact` (10/min), `/api/afiliados` (5/min) y la idempotencia del webhook
+de Cal.com. Sin estas variables los endpoints de contacto responden
 **503 fail-closed**.
 
 1. Entra en <https://console.upstash.com> → **Create Database**.
@@ -254,44 +252,16 @@ en contacto y `Schedule`/`Purchase` en el webhook de Cal.com.
 1. <https://www.linkedin.com/campaignmanager> → cuenta de anuncios → **Measure → Insight Tag**.
 2. Copia el **Partner ID** (numérico) → `PUBLIC_LINKEDIN_PARTNER_ID`.
 
-## 7. Email transaccional (doble opt-in)
-
-### 7.1 Resend
-
-Con `RESEND_API_KEY` + `EMAIL_FROM`, el lead magnet envía un correo de confirmación (doble opt-in
-LSSI art. 21) con baja en un clic (`List-Unsubscribe`).
-
-1. <https://resend.com> → **Domains → Add Domain** → `alexendros.dev`.
-2. Añade en el DNS del dominio los registros **SPF** y **DKIM** que indique Resend y espera a que
-   verifiquen (**Verified**).
-3. **API Keys → Create API Key** con permiso _Sending access_ → copia `re_...`:
-   - `RESEND_API_KEY=re_...`
-   - `EMAIL_FROM=hola@alexendros.dev` (o cualquier buzón del dominio verificado)
-   - `EMAIL_FROM_NAME=Alexendros`
-4. URLs de confirmación/baja: `https://alexendros.dev/api/newsletter/confirm` y
-   `/api/newsletter/unsubscribe` (estas rutas exigen `UNSUBSCRIBE_SECRET`, ver 7.2).
-
-### 7.2 Secretos generados
-
-Genera localmente y pega solo el resultado en Vercel (no lo commitees):
-
-```bash
-openssl rand -hex 32   # -> UNSUBSCRIBE_SECRET (firma HMAC de confirmación/baja)
-```
-
-`UNSUBSCRIBE_SECRET` **no debe rotarse** sin asumir que los enlaces ya enviados dejan de validar;
-si rotas, reenvía confirmaciones. Úsalo en el mismo entorno donde emites el correo.
-
-## 8. Variables de referencia
+## 7. Variables de referencia
 
 - `PUBLIC_SITE_URL=https://alexendros.dev` (informativa; el canonical se deriva de `site.url` en
   `astro.config.mjs`).
 - `__IS_VERCEL__` **no es una variable de entorno**: la inyecta `vite.define` en `astro.config.mjs`
   y controla Analytics/Speed Insights de Vercel.
-- `UPSTASH_*`, `SMTP_*`, `NOTION_*`, `TURNSTILE_SECRET_KEY`, `META_*`, `RESEND_*` son **runtime**;
+- `UPSTASH_*`, `SMTP_*`, `NOTION_*`, `TURNSTILE_SECRET_KEY`, `META_*` son **runtime**;
   `PUBLIC_*` son **build-time**.
 
-## 9. Verificación tras configurar
+## 8. Verificación tras configurar
 
 Sustituye el dominio por una URL de Preview para validar antes de producción.
 
@@ -306,13 +276,11 @@ for i in $(seq 1 11); do
     -H 'Content-Type: application/json' -d '{}'
 done; echo
 
-# 3. Doble opt-in responde 400 con token inválido (confirma UNSUBSCRIBE_SECRET presente)
-curl -sS -o /dev/null -w '%{http_code}\n' 'https://alexendros.dev/api/newsletter/confirm?token=x'
 
-# 4. SEO y sitemap
+# 3. SEO y sitemap
 curl -sS -o /dev/null -w '%{http_code}\n' https://alexendros.dev/sitemap-index.xml
 
-# 5. Con consentimiento de marketing, fuerza un envío y comprueba "CAPI 200" en Events Manager
+# 4. Con consentimiento de marketing, fuerza un envío y comprueba "CAPI 200" en Events Manager
 #    (usa META_CAPI_TEST_EVENT_CODE durante las pruebas).
 ```
 
@@ -324,12 +292,11 @@ Comprobaciones manuales:
   aplica, `Vertical`/`Presupuesto`/`referral_code`.
 - **Turnstile**: sin token en el body, con `TURNSTILE_SECRET_KEY` definido, `POST /api/contact`
   responde 400 `Captcha verification failed`.
-- **Resend**: envía el lead magnet y confirma el correo de confirmación; `GET` del enlace debe
   responder 200 y `unsubscribe` dar de baja.
 - **Edge Function/Serverless**: revisa **Vercel → Deployments → Functions → Logs** para ver
   `contact_sent` y errores `contact_*`.
 
-## 10. Checklist de aceptación
+## 9. Checklist de aceptación
 
 - [ ] `SMTP_HOST/PORT/USER/PASS` en Production, Preview y Development (issue #13).
 - [ ] `UPSTASH_REDIS_REST_URL/TOKEN` (rate limit fail-closed operativo).
@@ -340,22 +307,20 @@ Comprobaciones manuales:
 - [ ] IDs de analítica (`PUBLIC_GA4_ID`, `PUBLIC_GTM_ID`, `PUBLIC_CLARITY_ID`, `PUBLIC_POSTHOG_KEY`,
       `PUBLIC_LINKEDIN_PARTNER_ID`) cargados y redeploy hecho.
 - [ ] `META_PIXEL_ID` + `META_CAPI_TOKEN` verificados en Events Manager (modo test primero).
-- [ ] `RESEND_API_KEY` + `EMAIL_FROM` + `EMAIL_FROM_NAME` + `UNSUBSCRIBE_SECRET` con dominio verificado.
 - [ ] Redeploy de Production y comprobación de Preview.
 
-## 11. Rollback
+## 10. Rollback
 
 El sistema degrada de forma segura: vaciar una variable **desactiva** su función sin romper el sitio.
 
 - Quitar `PUBLIC_*` de tracking → los loaders no cargan scripts.
 - Quitar `TURNSTILE_SECRET_KEY` → el captcha deja de exigirse (recomendado reactivarlo enseguida).
 - Quitar `META_CAPI_TOKEN` → `isCapiConfigured()` es `false` y no hay envío server-side.
-- Quitar `RESEND_API_KEY`/`EMAIL_FROM` → el lead magnet sigue funcionando con la notificación SMTP.
 - Quitar `NOTION_TOKEN`/data source → el lead no se escribe en Notion, pero el email de contacto
   se sigue enviando.
 - Quitar `UPSTASH_*` → los endpoints de contacto pasan a **503 fail-closed** (no fail-open).
 
-## 12. Referencias
+## 11. Referencias
 
 - Inventario de nombres: [`.env.example`](../../.env.example) · tipos: [`src/env.d.ts`](../../src/env.d.ts)
 - GTM Server-Side: [`gtm-server-side.md`](gtm-server-side.md)

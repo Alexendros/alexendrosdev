@@ -1,5 +1,7 @@
 ---
 import BlueprintMotif from './BlueprintMotif.astro';
+import Button from './Button.astro';
+import Link from './Link.astro';
 
 const phrases = [
   'emprendimientos personales novedosos de alto impacto social y reputación profesional',
@@ -8,7 +10,10 @@ const phrases = [
 ] as const;
 ---
 
-<section class="hero-slot-root relative mx-auto max-w-3xl px-6 py-16 md:py-24" data-hero>
+<section
+  class="relative mx-auto max-w-3xl overflow-hidden px-[var(--gutter)] py-16 md:py-24"
+  data-hero
+>
   <div
     class="pointer-events-none absolute -right-16 top-4 h-56 w-auto overflow-hidden md:-right-20 md:top-8 md:h-96"
     aria-hidden="true"
@@ -40,7 +45,14 @@ const phrases = [
   </div>
 
   <p class="mt-6 text-lg text-muted max-w-2xl" data-hero-item style="--i:1">
-    El dominio donde despliegue tu portal será accesible globalmente para que puedas dar a conocer
-    tus productos, conectar con personas y difundir tus proyectos para todo el mundo.
+    Diseño y publico webs y portales para profesionales y negocios, con precio cerrado por escrito,
+    plazos de entrega concretos y garantía sobre lo acordado. Puedes empezar con un informe
+    comercial, resolver una duda en una sesión profesional o encargar un portal de inicio que crece
+    por módulos. Cada propuesta se cierra antes de empezar; no hay sorpresas a mitad de camino.
   </p>
+
+  <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3" data-hero-item style="--i:2">
+    <Button href="/servicios">Ver servicios</Button>
+    <Link href="/contacto" variant="inline" class="text-muted">Contactar</Link>
+  </div>
 </section>

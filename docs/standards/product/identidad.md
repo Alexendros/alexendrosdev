@@ -32,7 +32,6 @@ Quien eres: role Full Stack · Auditor · Consultor, summary conversion-focused,
 - ProjectCard.astro: titulo short results pills primary/10 tech pills role footer
 - ContactForm.tsx: Isla React `client:visible`. Campos nombre* email* empresa opcional asunto* select 6 opciones mensaje* 20-2000 consent RGPD no pre-marcado honeypot hidden. Zod validacion. Nota conversion.
 - CookieBanner.tsx: Isla CMP `vanilla-cookieconsent` v3; Consent Mode v2 default-deny.
-- BookingOptions.astro: CTAs Cal.com (diagnóstico 75€, sesión técnica 150€) con embed.js diferido en modal + QR SVG de build (uqr). Retainer oculto.
 
 ## Paginas
 

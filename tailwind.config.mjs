@@ -13,7 +13,7 @@ export default {
         primary: 'var(--brand)',
         primaryHover: 'var(--brand-hover)',
         primarySoft: 'color-mix(in srgb, var(--brand) 40%, transparent)',
-        primaryGhost: 'color-mix(in srgb, var(--brand) 8%, transparent)',
+        primaryGhost: 'var(--primary-ghost)',
         muted: 'var(--fg-muted)',
         border: 'var(--border)',
         'border-strong': 'var(--border-strong)',

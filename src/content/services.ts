@@ -220,7 +220,7 @@ export const portalModules: PortalModule[] = [
   {
     id: 'contenidos',
     title: 'Panel de contenidos',
-    short: 'Publicaciones de fácil administración (partida de presupuesto; no CMS en este sitio).',
+    short: 'Publicaciones de fácil administración.',
     priceEuros: modulePrices.contenidos,
     payment: 'Incluido en el pago fraccionado del portal',
     timeline: '+5 días laborables',

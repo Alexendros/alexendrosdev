@@ -70,6 +70,48 @@
       "category": "marketing",
       "purpose": "Atribuye visitas a campañas de LinkedIn.",
       "duration": "3 meses"
+    },
+    {
+      "name": "li_gc",
+      "owner": "LinkedIn",
+      "category": "marketing",
+      "purpose": "Recuerda tu consentimiento de cookies no esenciales de LinkedIn.",
+      "duration": "6 meses"
+    },
+    {
+      "name": "lidc",
+      "owner": "LinkedIn",
+      "category": "marketing",
+      "purpose": "Dirige la petición al centro de datos correcto del Insight Tag.",
+      "duration": "1 día"
+    },
+    {
+      "name": "bcookie",
+      "owner": "LinkedIn",
+      "category": "marketing",
+      "purpose": "Identifica el navegador de forma segura para medir campañas y análisis de LinkedIn.",
+      "duration": "1 año"
+    },
+    {
+      "name": "AnalyticsSyncHistory",
+      "owner": "LinkedIn",
+      "category": "marketing",
+      "purpose": "Registra cuándo se sincronizan datos de análisis con plataformas publicitarias.",
+      "duration": "30 días"
+    },
+    {
+      "name": "UserMatchHistory",
+      "owner": "LinkedIn",
+      "category": "marketing",
+      "purpose": "Sincroniza el identificador de LinkedIn con plataformas de anuncios para medir campañas.",
+      "duration": "30 días"
+    },
+    {
+      "name": "alexendros_ref",
+      "owner": "alexendros.dev",
+      "category": "necessary",
+      "purpose": "Guarda el código cuando entras por un enlace de referido propio (/r/…), para atribuirte la visita si contactas. Primera parte; no rastrea fuera de este sitio.",
+      "duration": "90 días"
     }
   ]
 }

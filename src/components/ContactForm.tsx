@@ -1,18 +1,17 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { track } from '../lib/tracking/events';
 import {
-  CONTACT_WIZARD_STEPS,
   contactChannels,
+  contactReasonForService,
   contactReasons,
   entityLabels,
   entityTypes,
   formatContactFieldErrors,
   parseContactBody,
   reasonLabels,
-  stepIndexForField,
-  validateContactStep,
+  validateContactField,
+  validateContactForm,
   type ContactInput,
-  type ContactWizardStep,
   type FieldError
 } from '../lib/contactSchema';
 import TurnstileWidget from './TurnstileWidget';
@@ -23,22 +22,44 @@ type Props = {
   turnstileSiteKey?: string;
 };
 
-const inputClass =
-  'mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary';
+const inputClass = 'mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus-ring';
 
-function reasonFromSearch(value: string | null): ContactInput['reason'] {
-  if (value && (contactReasons as readonly string[]).includes(value)) {
-    return value as ContactInput['reason'];
+const FIELD_IDS: Record<string, string | undefined> = {
+  reason: 'contact-reason',
+  name: 'contact-name',
+  entityType: 'contact-entity',
+  channel: undefined,
+  phone: 'contact-phone',
+  email: 'contact-email',
+  message: 'contact-message',
+  consent: 'contact-consent'
+};
+
+function reasonFromSearch(motivo: string | null, servicio: string | null): ContactInput['reason'] {
+  if (motivo && (contactReasons as readonly string[]).includes(motivo)) {
+    return motivo as ContactInput['reason'];
   }
-  return 'informacionCliente';
+  return contactReasonForService(servicio);
+}
+
+function FieldErrorText({ id, error }: { id: string; error?: FieldError }) {
+  if (!error) return null;
+  return (
+    <p id={id} className="mt-1 text-sm text-danger">
+      {error.label}: {error.cause}
+    </p>
+  );
+}
+
+function describedBy(id: string, error?: FieldError) {
+  return error ? { 'aria-invalid': true as const, 'aria-describedby': `${id}-error` } : {};
 }
 
 export default function ContactForm({ successMessage, errorMessage, turnstileSiteKey }: Props) {
   const [status, setStatus] = useState<
     'idle' | 'ok' | 'error' | 'rate_limited' | 'unavailable' | 'loading'
   >('idle');
-  const [fieldErrors, setFieldErrors] = useState<FieldError[]>([]);
-  const [stepIndex, setStepIndex] = useState(0);
+  const [errors, setErrors] = useState<FieldError[]>([]);
   const [form, setForm] = useState({
     name: '',
     entityType: 'particular' as ContactInput['entityType'],
@@ -56,7 +77,7 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const reason = reasonFromSearch(params.get('motivo'));
+    const reason = reasonFromSearch(params.get('motivo'), params.get('servicio'));
     const modules = params.get('modulos') ?? '';
     setForm((prev) => ({
       ...prev,
@@ -65,40 +86,35 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     }));
   }, []);
 
-  const step: ContactWizardStep = CONTACT_WIZARD_STEPS[stepIndex] ?? 'reason';
-  const isLast = stepIndex === CONTACT_WIZARD_STEPS.length - 1;
-
   const resetTurnstile = () => {
     setTurnstileToken('');
     setTurnstileKey((k) => k + 1);
   };
 
-  const goNext = () => {
-    const errors = validateContactStep(step, form);
-    if (errors.length) {
-      setFieldErrors(errors);
-      return;
-    }
-    setFieldErrors([]);
-    setStepIndex((i) => Math.min(i + 1, CONTACT_WIZARD_STEPS.length - 1));
+  const fieldError = (field: string) => errors.find((e) => e.field === field);
+
+  const setFieldErrors = (field: string, next: FieldError[]) => {
+    setErrors((prev) => [...prev.filter((e) => e.field !== field), ...next]);
   };
 
-  const goBack = () => {
-    setFieldErrors([]);
-    setStepIndex((i) => Math.max(i - 1, 0));
+  const blurField = (field: string) => () => {
+    setFieldErrors(field, validateContactField(field, form));
+  };
+
+  const focusFirstError = (list: FieldError[]) => {
+    const id = list[0] ? FIELD_IDS[list[0].field] : undefined;
+    if (id) document.getElementById(id)?.focus();
   };
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!isLast) {
-      goNext();
+    const allErrors = validateContactForm(form);
+    if (allErrors.length) {
+      setErrors(allErrors);
+      focusFirstError(allErrors);
       return;
     }
-    const consentErrors = validateContactStep('consent', form);
-    if (consentErrors.length) {
-      setFieldErrors(consentErrors);
-      return;
-    }
+    setErrors([]);
     const payload = {
       name: form.name,
       entityType: form.entityType,
@@ -114,12 +130,11 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     };
     const parsed = parseContactBody(payload);
     if (!parsed.success) {
-      const errors = formatContactFieldErrors(parsed.error);
-      setFieldErrors(errors);
-      if (errors[0]) setStepIndex(stepIndexForField(errors[0].field));
+      const errs = formatContactFieldErrors(parsed.error);
+      setErrors(errs);
+      focusFirstError(errs);
       return;
     }
-    setFieldErrors([]);
     setStatus('loading');
     track('form_submit');
     try {
@@ -159,12 +174,15 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
     );
   }
 
+  const reasonError = fieldError('reason');
+  const nameError = fieldError('name');
+  const phoneError = fieldError('phone');
+  const emailError = fieldError('email');
+  const messageError = fieldError('message');
+  const consentError = fieldError('consent');
+
   return (
     <form onSubmit={submit} className="space-y-4" noValidate>
-      <p className="text-xs font-mono text-muted">
-        Paso {stepIndex + 1} de {CONTACT_WIZARD_STEPS.length}
-      </p>
-
       <div className="sr-only" aria-hidden="true">
         <label htmlFor="contact-website">Sitio web</label>
         <input
@@ -183,182 +201,193 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
         </p>
       ) : null}
 
-      {step === 'reason' && (
-        <div>
-          <label htmlFor="contact-reason" className="text-sm">
-            Motivo*
-          </label>
-          <select
-            id="contact-reason"
-            name="reason"
-            className={inputClass}
-            value={form.reason}
-            onChange={(e) =>
-              setForm((f) => ({
-                ...f,
-                reason: e.target.value as ContactInput['reason']
-              }))
-            }
-          >
-            {contactReasons.map((r) => (
-              <option key={r} value={r}>
-                {reasonLabels[r]}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      {step === 'name' && (
-        <div>
-          <label htmlFor="contact-name" className="text-sm">
-            Nombre*
-          </label>
-          <input
-            id="contact-name"
-            name="name"
-            autoComplete="name"
-            className={inputClass}
-            value={form.name}
-            onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-          />
-        </div>
-      )}
-
-      {step === 'entity' && (
-        <div>
-          <label htmlFor="contact-entity" className="text-sm">
-            Categoría*
-          </label>
-          <select
-            id="contact-entity"
-            name="entityType"
-            className={inputClass}
-            value={form.entityType}
-            onChange={(e) =>
-              setForm((f) => ({
-                ...f,
-                entityType: e.target.value as ContactInput['entityType']
-              }))
-            }
-          >
-            {entityTypes.map((t) => (
-              <option key={t} value={t}>
-                {entityLabels[t]}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
-
-      {step === 'channel' && (
-        <>
-          <fieldset>
-            <legend className="text-sm">Canal de preferencia para respuesta*</legend>
-            <div className="mt-2 flex flex-wrap gap-4">
-              {contactChannels.map((ch) => (
-                <label key={ch} className="inline-flex items-center gap-2 text-sm">
-                  <input
-                    type="radio"
-                    name="channel"
-                    value={ch}
-                    checked={form.channel === ch}
-                    onChange={() => setForm((f) => ({ ...f, channel: ch }))}
-                  />
-                  {ch === 'whatsapp' ? 'WhatsApp' : 'Correo electrónico'}
-                </label>
-              ))}
-            </div>
-          </fieldset>
-          {form.channel === 'whatsapp' && (
-            <div>
-              <label htmlFor="contact-phone" className="text-sm">
-                Teléfono WhatsApp*
-              </label>
-              <input
-                id="contact-phone"
-                name="phone"
-                type="tel"
-                autoComplete="tel"
-                className={inputClass}
-                value={form.phone}
-                onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-              />
-            </div>
-          )}
-          {form.channel === 'correo' && (
-            <div>
-              <label htmlFor="contact-email" className="text-sm">
-                Correo electrónico*
-              </label>
-              <input
-                id="contact-email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                className={inputClass}
-                value={form.email}
-                onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-              />
-            </div>
-          )}
-        </>
-      )}
-
-      {step === 'message' && (
-        <div>
-          <label htmlFor="contact-message" className="text-sm">
-            Tu petición*
-          </label>
-          <textarea
-            id="contact-message"
-            name="message"
-            rows={5}
-            className={inputClass}
-            value={form.message}
-            onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-            placeholder="Describe qué necesitas o qué quieres preguntar."
-          />
-        </div>
-      )}
-
-      {step === 'consent' && (
-        <>
-          <label className="flex items-start gap-2 text-sm">
-            <input
-              type="checkbox"
-              name="consent"
-              checked={form.consent}
-              onChange={(e) => setForm((f) => ({ ...f, consent: e.target.checked }))}
-              className="mt-1"
-            />
-            <span>
-              Acepto el tratamiento de mis datos para responder a esta petición según la{' '}
-              <a href="/privacidad" className="underline decoration-dotted underline-offset-2">
-                política de privacidad
-              </a>
-              .
-            </span>
-          </label>
-          {turnstileSiteKey ? (
-            <TurnstileWidget
-              key={turnstileKey}
-              siteKey={turnstileSiteKey}
-              onToken={setTurnstileToken}
-            />
-          ) : null}
-        </>
-      )}
-
-      {fieldErrors.length > 0 && (
+      {errors.length > 0 && (
         <ul role="alert" className="space-y-1 text-sm text-danger">
-          {fieldErrors.map((err) => (
+          {errors.map((err) => (
             <li key={err.field}>
               {err.label}: {err.cause}
             </li>
           ))}
         </ul>
       )}
+
+      <div>
+        <label htmlFor="contact-reason" className="text-sm">
+          Motivo*
+        </label>
+        <select
+          id="contact-reason"
+          name="reason"
+          className={inputClass}
+          value={form.reason}
+          onChange={(e) =>
+            setForm((f) => ({
+              ...f,
+              reason: e.target.value as ContactInput['reason']
+            }))
+          }
+          onBlur={blurField('reason')}
+          {...describedBy('contact-reason', reasonError)}
+        >
+          {contactReasons.map((r) => (
+            <option key={r} value={r}>
+              {reasonLabels[r]}
+            </option>
+          ))}
+        </select>
+        <FieldErrorText id="contact-reason-error" error={reasonError} />
+      </div>
+
+      <div>
+        <label htmlFor="contact-name" className="text-sm">
+          Nombre*
+        </label>
+        <input
+          id="contact-name"
+          name="name"
+          autoComplete="name"
+          className={inputClass}
+          value={form.name}
+          onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+          onBlur={blurField('name')}
+          {...describedBy('contact-name', nameError)}
+        />
+        <FieldErrorText id="contact-name-error" error={nameError} />
+      </div>
+
+      <div>
+        <label htmlFor="contact-entity" className="text-sm">
+          Categoría
+        </label>
+        <select
+          id="contact-entity"
+          name="entityType"
+          className={inputClass}
+          value={form.entityType}
+          onChange={(e) =>
+            setForm((f) => ({
+              ...f,
+              entityType: e.target.value as ContactInput['entityType']
+            }))
+          }
+        >
+          {entityTypes.map((t) => (
+            <option key={t} value={t}>
+              {entityLabels[t]}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <fieldset>
+        <legend className="text-sm">Canal de preferencia para respuesta*</legend>
+        <div className="mt-2 flex flex-wrap gap-4">
+          {contactChannels.map((ch) => (
+            <label key={ch} className="inline-flex items-center gap-2 text-sm">
+              <input
+                type="radio"
+                name="channel"
+                value={ch}
+                checked={form.channel === ch}
+                onChange={() => {
+                  setForm((f) => ({ ...f, channel: ch }));
+                  setFieldErrors('phone', []);
+                  setFieldErrors('email', []);
+                }}
+              />
+              {ch === 'whatsapp' ? 'WhatsApp' : 'Correo electrónico'}
+            </label>
+          ))}
+        </div>
+        {form.channel === 'whatsapp' && (
+          <div className="mt-3">
+            <label htmlFor="contact-phone" className="text-sm">
+              Teléfono WhatsApp*
+            </label>
+            <input
+              id="contact-phone"
+              name="phone"
+              type="tel"
+              autoComplete="tel"
+              className={inputClass}
+              value={form.phone}
+              onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+              onBlur={blurField('phone')}
+              {...describedBy('contact-phone', phoneError)}
+            />
+            <FieldErrorText id="contact-phone-error" error={phoneError} />
+          </div>
+        )}
+        {form.channel === 'correo' && (
+          <div className="mt-3">
+            <label htmlFor="contact-email" className="text-sm">
+              Correo electrónico*
+            </label>
+            <input
+              id="contact-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              className={inputClass}
+              value={form.email}
+              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+              onBlur={blurField('email')}
+              {...describedBy('contact-email', emailError)}
+            />
+            <FieldErrorText id="contact-email-error" error={emailError} />
+          </div>
+        )}
+      </fieldset>
+
+      <div>
+        <label htmlFor="contact-message" className="text-sm">
+          Tu petición*
+        </label>
+        <textarea
+          id="contact-message"
+          name="message"
+          rows={5}
+          className={inputClass}
+          value={form.message}
+          onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
+          onBlur={blurField('message')}
+          placeholder="Describe qué necesitas o qué quieres preguntar."
+          {...describedBy('contact-message', messageError)}
+        />
+        <FieldErrorText id="contact-message-error" error={messageError} />
+      </div>
+
+      <div>
+        <label className="flex items-start gap-2 text-sm">
+          <input
+            id="contact-consent"
+            type="checkbox"
+            name="consent"
+            checked={form.consent}
+            onChange={(e) => setForm((f) => ({ ...f, consent: e.target.checked }))}
+            onBlur={blurField('consent')}
+            className="mt-1"
+            {...describedBy('contact-consent', consentError)}
+          />
+          <span>
+            Acepto el tratamiento de mis datos para responder a esta petición según la{' '}
+            <a href="/privacidad" className="underline decoration-dotted underline-offset-2">
+              política de privacidad
+            </a>
+            .
+          </span>
+        </label>
+        <FieldErrorText id="contact-consent-error" error={consentError} />
+      </div>
+
+      {turnstileSiteKey ? (
+        <TurnstileWidget
+          key={turnstileKey}
+          siteKey={turnstileSiteKey}
+          onToken={setTurnstileToken}
+        />
+      ) : null}
+
       {status === 'error' && (
         <p role="alert" className="text-sm text-danger">
           {errorMessage}
@@ -376,33 +405,13 @@ export default function ContactForm({ successMessage, errorMessage, turnstileSit
       )}
 
       <div className="flex flex-wrap gap-3">
-        {stepIndex > 0 && (
-          <button
-            type="button"
-            onClick={goBack}
-            className="btn inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-border px-6 py-3 font-medium transition-colors hover:border-primary hover:text-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          >
-            Atrás
-          </button>
-        )}
-        {!isLast && (
-          <button
-            type="button"
-            onClick={goNext}
-            className="btn inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          >
-            Continuar
-          </button>
-        )}
-        {isLast && (
-          <button
-            type="submit"
-            disabled={status === 'loading'}
-            className="btn inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60"
-          >
-            {status === 'loading' ? 'Enviando…' : 'Enviar'}
-          </button>
-        )}
+        <button
+          type="submit"
+          disabled={status === 'loading'}
+          className="btn focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover disabled:opacity-60"
+        >
+          {status === 'loading' ? 'Enviando…' : 'Enviar'}
+        </button>
       </div>
     </form>
   );

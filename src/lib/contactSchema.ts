@@ -95,6 +95,22 @@ export const reasonLabels: Record<(typeof contactReasons)[number], string> = {
   informacionCliente: 'Información para clientes'
 };
 
+/* Slugs de services.ts → motivo de contacto. Los servicios de catálogo
+   se preseleccionan desde ?servicio=…; slug desconocido o ausente cae
+   en el motivo por defecto. */
+const SERVICE_REASON: Record<string, (typeof contactReasons)[number]> = {
+  'informe-comercial': 'propuestaComercial',
+  'sesion-profesional': 'proyectoEspecial',
+  'auditoria-normativa-ciberseguridad': 'propuestaComercial'
+};
+
+export function contactReasonForService(
+  slug: string | null | undefined
+): (typeof contactReasons)[number] {
+  if (slug && Object.hasOwn(SERVICE_REASON, slug)) return SERVICE_REASON[slug];
+  return 'informacionCliente';
+}
+
 export const entityLabels: Record<(typeof entityTypes)[number], string> = {
   particular: 'Particular',
   empresa: 'Empresa',
@@ -135,26 +151,6 @@ export function formatContactFieldErrors(error: z.ZodError): FieldError[] {
   return out;
 }
 
-export type ContactWizardStep = 'reason' | 'name' | 'entity' | 'channel' | 'message' | 'consent';
-
-export const CONTACT_WIZARD_STEPS: ContactWizardStep[] = [
-  'reason',
-  'name',
-  'entity',
-  'channel',
-  'message',
-  'consent'
-];
-
-const STEP_FIELDS: Record<ContactWizardStep, string[]> = {
-  reason: ['reason'],
-  name: ['name'],
-  entity: ['entityType'],
-  channel: ['channel', 'phone', 'email'],
-  message: ['message'],
-  consent: ['consent']
-};
-
 export type ContactFormSlice = {
   name: string;
   entityType: ContactInput['entityType'];
@@ -167,38 +163,61 @@ export type ContactFormSlice = {
   consent: boolean;
 };
 
-/** Valida el paso actual con el mismo Zod que el envío (stubs en campos ajenos). */
-export function validateContactStep(step: ContactWizardStep, form: ContactFormSlice): FieldError[] {
+/** Payload real del formulario, con la misma forma que el POST de /api/contact. */
+function contactPayload(form: ContactFormSlice): Record<string, unknown> {
+  return {
+    name: form.name,
+    entityType: form.entityType,
+    channel: form.channel,
+    phone: form.phone || undefined,
+    email: form.email || undefined,
+    reason: form.reason,
+    message: form.message,
+    modules: form.modules || undefined,
+    consent: form.consent
+  };
+}
+
+/** Validación del envío: todos los errores del formulario completo. */
+export function validateContactForm(form: ContactFormSlice): FieldError[] {
+  const parsed = parseContactBody(contactPayload(form));
+  if (parsed.success) return [];
+  return formatContactFieldErrors(parsed.error);
+}
+
+/** Validación inline de un campo al salir de él: stubs válidos en el resto,
+    para no reportar errores de campos que aún no se han tocado ni
+    short-circuitar los efectos del schema (Zod 4 no ejecuta superRefine
+    si la validación base falla). */
+export function validateContactField(field: string, form: ContactFormSlice): FieldError[] {
   const data: Record<string, unknown> = {
-    name: 'Valid Name',
-    entityType: 'particular',
-    channel: 'correo',
-    email: 'valid@example.com',
-    reason: 'informacionCliente',
-    message: 'Mensaje de petición válido para stub.',
+    name: 'Nombre Válido',
+    entityType: form.entityType,
+    channel: form.channel,
+    phone: form.channel === 'whatsapp' ? '+34 600 000 000' : undefined,
+    email: form.channel === 'correo' ? 'correo@valido.com' : undefined,
+    reason: form.reason,
+    message: 'Mensaje de petición suficientemente largo.',
+    modules: form.modules || undefined,
     consent: true
   };
 
-  if (step === 'reason') data.reason = form.reason;
-  if (step === 'name') data.name = form.name;
-  if (step === 'entity') data.entityType = form.entityType;
-  if (step === 'channel') {
+  if (field === 'name') data.name = form.name;
+  if (field === 'entityType') data.entityType = form.entityType;
+  if (field === 'channel') {
     data.channel = form.channel;
     data.phone = form.phone.trim() ? form.phone : undefined;
     data.email = form.email.trim() ? form.email : undefined;
   }
-  if (step === 'message') data.message = form.message;
-  if (step === 'consent') data.consent = form.consent;
+  if (field === 'phone') data.phone = form.phone;
+  if (field === 'email') data.email = form.email;
+  if (field === 'message') data.message = form.message;
+  if (field === 'modules') data.modules = form.modules;
+  if (field === 'consent') data.consent = form.consent;
 
   const parsed = parseContactBody(data);
   if (parsed.success) return [];
-  const allowed = new Set(STEP_FIELDS[step]);
-  return formatContactFieldErrors(parsed.error).filter((e) => allowed.has(e.field));
-}
-
-export function stepIndexForField(field: string): number {
-  const idx = CONTACT_WIZARD_STEPS.findIndex((s) => STEP_FIELDS[s].includes(field));
-  return idx >= 0 ? idx : 0;
+  return formatContactFieldErrors(parsed.error).filter((e) => e.field === field);
 }
 
 export function buildContactMessage(input: ContactInput): string {

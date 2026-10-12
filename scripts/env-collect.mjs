@@ -99,21 +99,9 @@ const TARGETS = [
     manual: true
   },
   {
-    keys: ['RESEND_API_KEY'],
-    label: 'Resend → API Keys → Sending access',
-    url: 'https://resend.com/api-keys',
-    patterns: [/\bre_[A-Za-z0-9]{8,}/]
-  },
-  {
     keys: ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS'],
     label: 'Proton → Settings → IMAP/SMTP → token SMTP',
     url: 'https://account.proton.me/mail/imap-smtp',
-    manual: true
-  },
-  {
-    keys: [],
-    label: 'Resend → Domains → verificar alexendros.dev (SPF/DKIM)',
-    url: 'https://resend.com/domains',
     manual: true
   },
   {

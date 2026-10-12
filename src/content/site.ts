@@ -3,7 +3,7 @@ export const site = {
   url: 'https://alexendros.dev',
   titleDefault: 'Alexendros — Servicios digitales medibles para negocios',
   descriptionDefault:
-    'Catálogo de servicios, portal configurable por módulos, metodología y cláusulas de valor. Valencia — remoto.',
+    'Diseño y publicación de webs y portales para profesionales y negocios, con precio cerrado, plazos concretos y garantía. Informe, sesión o portal de inicio.',
   locale: 'es',
   ogLocale: 'es_ES',
   nav: [

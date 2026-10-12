@@ -177,6 +177,17 @@
       "recordType": "event",
       "kind": "alerta",
       "source": "https://github.com/Alexendros/alexendrosdev/actions/runs/38160559451"
+    },
+    {
+      "id": "evt-2026-10-12-correccion-integral",
+      "sequence": 17,
+      "timestamp": "2026-10-12T18:30:00Z",
+      "active": false,
+      "title": "Corrección integral del sitio (fases A–G)",
+      "summary": "Rama cursor/correccion-integral-sitio: superficies translúcidas compilables (.glass-*), sin overflow-x móvil, CTAs de verticales reales + prefill por URL, retirada del embudo huérfano (lead magnet, doble opt-in Resend, reserva QR, uqr sin uso), inventario de cookies completo (alexendros_ref + LinkedIn Insight), hero con propuesta de valor y CTA (decisión 0016), formulario de contacto de una pantalla con validación inline, saneamiento visual (foco único, legal-prose en tokens, CMP tematizado, contraste ampliado, poda de tokens, gutters unificados, theme-color guardado) y actualización de estándares vivos (AGENTS.md, env-vars, diseno.md).",
+      "recordType": "event",
+      "kind": "aviso",
+      "source": "rama cursor/correccion-integral-sitio"
     }
   ]
 }

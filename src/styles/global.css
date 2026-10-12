@@ -60,16 +60,12 @@
     --blue-950: #081f47;
     --blue-900: #0f3778;
     --blue-700: #1b56b8;
-    --blue-500: #3f7de0;
     --blue-100: #e6eefb;
     --ink-900: #0b1220;
-    --ink-700: #33415c;
     --ink-500: #5b6885;
     --paper-0: #fff;
     --paper-50: #f6f8fc;
     --line: #d9e0ee;
-    --ok: #157347;
-    --warn: #b45309;
     --err: #b42318;
 
     /* Semánticos: tema claro (por defecto). */
@@ -93,10 +89,14 @@
 
     /* Indicador de foco (componentes lo componen con box-shadow). La
        clase .focus-ring usa outline sólido --brand (≥3:1 en ambos temas,
-       WCAG 1.4.11). El anillo se define sobre --brand (no --blue-500):
-       con blue-500 haría falta ~85% de opacidad para 3:1 y perdería
+       WCAG 1.4.11). El anillo se define sobre --brand: con un azul más
+       claro haría falta ~85% de opacidad para 3:1 y perdería
        suavidad. */
     --focus-ring: 0 0 0 3px color-mix(in srgb, var(--brand) 55%, transparent);
+
+    /* Superficies derivadas de marca (clases bg-primarySoft/bg-primaryGhost
+       de Tailwind las referencian; fuente única aquí). */
+    --primary-ghost: color-mix(in srgb, var(--brand) 8%, transparent);
 
     /* Tipografía fluida. */
     /* stylelint-disable-next-line custom-property-pattern --
@@ -112,17 +112,13 @@
     --tracking-eyebrow: 0.14em;
 
     /* Espaciado (escala 4px). */
-    --space-1: 0.25rem;
     --space-2: 0.5rem;
     --space-3: 0.75rem;
     --space-4: 1rem;
     --space-5: 1.25rem;
     --space-6: 1.5rem;
     --space-8: 2rem;
-    --space-10: 2.5rem;
-    --space-12: 3rem;
     --space-16: 4rem;
-    --space-20: 5rem;
     --space-24: 6rem;
 
     /* Radios y sombras suaves. */
@@ -140,7 +136,6 @@
     --container: 72rem;
     --container-narrow: 56rem;
     --gutter: clamp(1rem, 4vw, 2rem);
-    --header-h: 4.5rem;
 
     /* Motion. */
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -155,11 +150,9 @@
     --dur-hero: 460ms;
     --stagger: 60ms;
 
-    /* Ventana del H1: reposo 2,4 s + giro 600 ms; 3 frases → 9 s.
-       perspective() va en el propio transform (no en el padre con
-       overflow:hidden) para que el rotateX se vea de verdad. */
-    --dur-slot: 2.4s;
-    --dur-slot-spin: 600ms;
+    /* Ventana del H1: las frases aguantan por porcentajes del ciclo
+       (--dur-slot-cycle); perspective() va en el propio transform (no en
+       el padre con overflow:hidden) para que el rotateX se vea de verdad. */
     --dur-slot-step: 3s;
     --dur-slot-cycle: 9s;
   }
@@ -252,6 +245,7 @@
 
   ::selection {
     background: color-mix(in srgb, var(--brand) 25%, transparent);
+    color: var(--fg);
   }
 
   /* Micro-motion sobria: solo transiciones de color, sin desplazamientos;
@@ -639,6 +633,31 @@
     opacity: 1;
   }
 
+  /* Superficies translúcidas (header, barra CTA, muestras del design
+     system): fallback sólido con el token primero; color-mix después lo
+     mejora donde hay soporte. Tailwind v3 no compila /<alpha> sobre
+     var(), así que viven aquí (tailwind.config.mjs). */
+  .glass-bg {
+    background: var(--bg);
+    background: color-mix(in oklab, var(--bg) 80%, transparent);
+  }
+
+  .glass-card {
+    background: var(--card);
+    background: color-mix(in oklab, var(--card) 95%, transparent);
+  }
+
+  @supports (backdrop-filter: blur(4px)) {
+    .glass-card {
+      background: color-mix(in oklab, var(--card) 80%, transparent);
+    }
+  }
+
+  .swatch-brand {
+    background: var(--brand);
+    background: color-mix(in oklab, var(--brand) 60%, transparent);
+  }
+
   /* Indicador de página activa en la nav de escritorio: subrayado que
      crece con scaleX. */
   .site-nav a {
@@ -726,17 +745,158 @@
     contain-intrinsic-size: auto 480px;
   }
 
+  /* Prosa legal (cookies, privacidad, identidad): un único bloque bajo
+     lint, con tokens tipográficos fluidos y de espaciado. */
+  /* stylelint-disable custom-property-pattern --
+     el step negativo --step--1 ya existe en :root (convención de escala) */
   .legal-prose h1 {
-    font-size: 1.875rem;
+    font-size: var(--step-2);
     font-weight: 700;
-    margin-bottom: 1rem;
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-4);
+  }
+
+  .legal-prose h2 {
+    font-size: var(--step-1);
+    font-weight: 600;
+    line-height: var(--leading-tight);
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-2);
   }
 
   .legal-prose p {
     color: var(--fg-muted);
+    font-size: var(--step--1);
     line-height: 1.7;
-    font-size: 0.95rem;
   }
+
+  .legal-prose ul,
+  .legal-prose ol {
+    margin-top: var(--space-4);
+    padding-left: var(--space-5);
+    color: var(--fg-muted);
+    font-size: var(--step--1);
+    line-height: 1.7;
+  }
+
+  .legal-prose ul {
+    list-style: disc;
+  }
+
+  .legal-prose ol {
+    list-style: decimal;
+  }
+
+  .legal-prose li + li {
+    margin-top: var(--space-2);
+  }
+
+  .legal-prose h2 + p {
+    margin-top: var(--space-2);
+  }
+
+  .legal-prose a {
+    color: var(--brand);
+    text-decoration: underline;
+  }
+
+  .legal-prose code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.85em;
+  }
+
+  .legal-prose .table-wrap {
+    margin-top: var(--space-5);
+    overflow-x: auto;
+  }
+
+  .legal-prose table {
+    width: 100%;
+    min-width: 48rem;
+    border-collapse: collapse;
+    font-size: var(--step--1);
+    line-height: 1.5;
+  }
+
+  .legal-prose th,
+  .legal-prose td {
+    border: 1px solid var(--border);
+    padding: var(--space-2) var(--space-3);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .legal-prose th {
+    background: var(--bg-subtle);
+    color: var(--fg);
+    font-weight: 600;
+  }
+
+  .legal-prose td {
+    color: var(--fg-muted);
+  }
+  /* stylelint-enable custom-property-pattern */
+
+  /* CMP (vanilla-cookieconsent v3): sus custom properties se mapean a los
+     tokens del sitio. Un solo set sirve para claro y oscuro porque
+     --card/--fg/… ya reaccionan a prefers-color-scheme y data-theme. */
+  #cc-main {
+    --cc-font-family: 'Inter Variable', system-ui, sans-serif;
+    --cc-bg: var(--card);
+    --cc-primary-color: var(--fg);
+    --cc-secondary-color: var(--fg-muted);
+    --cc-link-color: var(--brand);
+    --cc-btn-primary-bg: var(--brand);
+    --cc-btn-primary-color: var(--brand-fg);
+    --cc-btn-primary-border-color: var(--brand);
+    --cc-btn-primary-hover-bg: var(--brand-hover);
+    --cc-btn-primary-hover-color: var(--brand-fg);
+    --cc-btn-primary-hover-border-color: var(--brand-hover);
+    --cc-btn-secondary-bg: transparent;
+    --cc-btn-secondary-color: var(--fg);
+    --cc-btn-secondary-border-color: var(--border-strong);
+    --cc-btn-secondary-hover-bg: var(--primary-ghost);
+    --cc-btn-secondary-hover-color: var(--brand);
+    --cc-btn-secondary-hover-border-color: var(--brand);
+    --cc-separator-border-color: var(--border);
+    --cc-footer-bg: var(--bg);
+    --cc-footer-color: var(--fg-muted);
+    --cc-footer-border-color: var(--border);
+    --cc-cookie-category-block-bg: var(--bg-subtle);
+    --cc-cookie-category-block-border: var(--border);
+    --cc-cookie-category-block-hover-bg: var(--bg-subtle);
+    --cc-cookie-category-block-hover-border: var(--border-strong);
+    --cc-cookie-category-expanded-block-bg: transparent;
+    --cc-cookie-category-expanded-block-hover-bg: var(--border);
+    --cc-section-category-border: var(--border);
+    --cc-toggle-on-bg: var(--brand);
+    --cc-toggle-on-knob-bg: var(--brand-fg);
+    --cc-toggle-enabled-icon-color: var(--brand);
+    --cc-toggle-off-bg: var(--border-strong);
+    --cc-toggle-off-knob-bg: var(--card);
+    --cc-toggle-disabled-icon-color: var(--border-strong);
+    --cc-toggle-readonly-bg: var(--border);
+    --cc-toggle-readonly-knob-bg: var(--fg-muted);
+    --cc-toggle-readonly-knob-icon-color: var(--card);
+    --cc-overlay-bg: color-mix(in oklab, var(--blue-950) 55%, transparent);
+    --cc-webkit-scrollbar-bg: var(--border);
+    --cc-webkit-scrollbar-hover-bg: var(--border-strong);
+    --cc-btn-border-radius: var(--radius-md);
+    --cc-modal-border-radius: var(--radius-lg);
+  }
+
+  #cc-main a:focus-visible,
+  #cc-main button:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
+
+  /* stylelint-disable selector-class-pattern --
+     clases BEM del vendor (vanilla-cookieconsent) */
+  #cc-main .section__toggle:focus-visible ~ .toggle__icon {
+    box-shadow: 0 0 0 2px var(--brand);
+  }
+  /* stylelint-enable selector-class-pattern */
 
   .pb-safe {
     padding-bottom: max(0px, env(safe-area-inset-bottom));

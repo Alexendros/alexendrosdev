@@ -6,7 +6,7 @@ interface Props {
 }
 
 const { pathname } = Astro.props;
-const HIDE_PATHS = ['/contacto', '/contacto/', '/gracias'];
+const HIDE_PATHS = ['/contacto', '/contacto/'];
 const currentPath = Astro.url.pathname || pathname;
 const shouldShow = !HIDE_PATHS.some((p) => currentPath === p || currentPath.startsWith(p + '/'));
 const priceLabel = formatEuro(provisionalPrices.informeComercial);
@@ -16,11 +16,11 @@ const priceLabel = formatEuro(provisionalPrices.informeComercial);
   shouldShow && (
     <div
       id="sticky-cta"
-      class="fixed bottom-0 left-0 right-0 z-30 hidden border-t border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 md:hidden pb-safe"
+      class="fixed bottom-0 left-0 right-0 z-30 hidden border-t border-border glass-card backdrop-blur md:hidden pb-safe"
       role="region"
       aria-label="Informe comercial"
     >
-      <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2.5">
+      <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-[var(--gutter)] py-2.5">
         <p class="min-w-0 text-sm">
           <strong class="font-bold">Informe comercial {priceLabel}</strong>
           <span class="text-muted"> · provisional</span>
@@ -29,7 +29,7 @@ const priceLabel = formatEuro(provisionalPrices.informeComercial);
           <a
             href="/contacto?motivo=propuestaComercial"
             id="sticky-cta-link"
-            class="btn inline-flex min-h-9 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-1.5 text-sm font-medium text-ink transition-colors hover:bg-primaryHover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="btn focus-ring inline-flex min-h-9 items-center justify-center gap-2 rounded-lg bg-primary px-4 py-1.5 text-sm font-medium text-ink transition-colors hover:bg-primaryHover"
           >
             Contactar
           </a>
@@ -68,7 +68,6 @@ const priceLabel = formatEuro(provisionalPrices.informeComercial);
     if (!banner) return;
     const dismissBtn = document.getElementById('sticky-cta-dismiss');
     const ctaBtn = document.getElementById('sticky-cta-link');
-    const htmlEl = document.documentElement;
     let shown = false;
     let dismissed = false;
     let ticking = false;
@@ -135,9 +134,6 @@ const priceLabel = formatEuro(provisionalPrices.informeComercial);
         });
       }
       if (dismissBtn) dismissBtn.addEventListener('click', hideBanner);
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        htmlEl.classList.add('reduce-motion');
-      }
       if (window.scrollY >= THRESHOLD) {
         showBanner();
       } else {

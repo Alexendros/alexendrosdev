@@ -226,6 +226,21 @@
       "context": "El design system ya tenía entrada de hero, reveal y card-lift; faltaba el complemento rotatorio del titular y aplicar el mismo vocabulario en páginas planas sin nuevas secciones en home.",
       "decision": "Ventana CSS de tres frases en el H1 de home (arranque fijo, --brand, pausa «¡Pare las rotativas!», reduced-motion en columna); stagger y card-rail en valores/metodología/servicios/publicaciones; pagehead-rule con scaleX; apertura del menú móvil con transform/opacity; BlueprintMotif quieto en 404; demo en /design-system; párrafo en diseno.md. Sin librerías de animación ni motion en el configurador de precio.",
       "consequences": "F01 exige las tres frases en el nombre accesible del H1. Tokens --dur-slot*. Home sigue sin FIG ni portadas (0014)."
+    },
+    {
+      "id": "0016",
+      "sequence": 16,
+      "timestamp": "2026-10-12T12:00:00Z",
+      "active": true,
+      "title": "CTA y propuesta de valor en el hero de la home",
+      "summary": "El párrafo del hero declara la oferta (webs y portales con precio cerrado, plazos y garantía) y el hero gana dos CTA: Ver servicios y Contactar.",
+      "recordType": "decision",
+      "status": "aceptada",
+      "supersedes": [],
+      "supersededBy": null,
+      "context": "La home seguía siendo cabecera + hero + pie (0014) y el párrafo del hero hablaba de dominios y despliegue, con sonido a hosting y sin camino hacia la oferta.",
+      "decision": "Reescribir el párrafo del hero para declarar la oferta real: diseño y publicación de webs y portales para profesionales y negocios, con precio cerrado por escrito, plazos de entrega concretos y garantía; entrada por informe comercial, sesión profesional o portal de inicio que crece por módulos. Añadir bajo el párrafo dos CTA dentro del stagger existente (data-hero-item, --i:2): Button «Ver servicios» → /servicios y Link «Contactar» → /contacto, sin motion nuevo. El H1 y su rotador no cambian (0015). descriptionDefault de site.ts se alinea con la oferta.",
+      "consequences": "Matiza sin superseder a 0014: la home sigue sin FIG ni portadas de sección; solo el hero gana párrafo comercial y CTA. F01 pierde la aserción de hero sin Contactar (0014) y gana la del párrafo; F03 nuevo cubre los dos CTA. El nombre accesible del H1 y F02 no se tocan."
     }
   ]
 }

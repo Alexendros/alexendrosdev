@@ -5,8 +5,8 @@ import Button from './Button.astro';
 const path = Astro.url.pathname;
 ---
 
-<header id="site-header" class="sticky top-0 z-50 backdrop-blur border-b border-border bg-bg/80">
-  <div class="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-4">
+<header id="site-header" class="sticky top-0 z-50 backdrop-blur border-b border-border glass-bg">
+  <div class="mx-auto max-w-6xl px-[var(--gutter)] h-16 flex items-center justify-between gap-4">
     <a href="/" class="font-mono font-bold tracking-tight shrink-0 focus-ring rounded"
       >Alexendros<span class="text-primary">.dev</span></a
     >
@@ -26,7 +26,7 @@ const path = Astro.url.pathname;
       }
     </nav>
     <div class="flex items-center gap-2 shrink-0">
-      <Button href="/contacto" size="sm">Contactar</Button>
+      <Button href="/contacto" size="sm" class="hidden min-[360px]:inline-flex">Contactar</Button>
       <button
         type="button"
         data-menu-button

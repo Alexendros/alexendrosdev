@@ -41,17 +41,6 @@
 | **D**enial of Service      | Flood API               | Upstash Ratelimit (10/min/IP)     | ✅         |
 | **E**levation of Privilege | N/A (sin auth)          | —                                 | —          |
 
-### Lead Magnet (`/api/lead-magnet`)
-
-| STRIDE                     | Amenaza                 | Mitigación actual                 | Gap        |
-| -------------------------- | ----------------------- | --------------------------------- | ---------- |
-| **S**poofing               | Falsificación remitente | Turnstile (configurado), honeypot | ✅         |
-| **T**ampering              | Inyección en payload    | Zod schema validation             | ✅         |
-| **R**epudiation            | Negación envío          | Log estructurado ausente          | ❌ Logging |
-| **I**nformation Disclosure | Fuga emails en error    | Respuesta genérica                | ✅         |
-| **D**enial of Service      | Flood API               | Upstash Ratelimit (5/min/IP)      | ✅         |
-| **E**levation of Privilege | N/A (sin auth)          | —                                 | —          |
-
 ### Frontend estático (Astro + islas React)
 
 | STRIDE                     | Amenaza                     | Mitigación actual                                     | Gap |

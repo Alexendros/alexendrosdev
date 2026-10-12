@@ -26,7 +26,8 @@ const SEMANTIC = [
   'border',
   'border-strong',
   'card',
-  'danger'
+  'danger',
+  'primary-ghost'
 ];
 
 // [nombre, texto, fondo, mínimo]. --brand se usa como color de texto
@@ -43,6 +44,9 @@ const PAIRS = [
   ['danger/card (errores en tarjetas)', 'danger', 'card', 4.5],
   ['danger/bg (errores sobre fondo)', 'danger', 'bg', 4.5],
   ['brand-fg/brand-hover (CTAs en hover)', 'brand-fg', 'brand-hover', 4.5],
+  ['brand/card (acento como texto en tarjetas)', 'brand', 'card', 4.5],
+  ['fg/bg-subtle (texto sobre fondo sutil)', 'fg', 'bg-subtle', 4.5],
+  ['fg/primary-ghost (texto sobre superficie ghost)', 'fg', 'primary-ghost', 4.5],
   ['border-strong/card (frontera de inputs)', 'border-strong', 'card', 3.0],
   ['border-strong/bg (frontera de inputs)', 'border-strong', 'bg', 3.0]
 ];
