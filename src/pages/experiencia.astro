@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { profile } from '../content/profile';
+---
+
+<Layout title="Experiencia — Alexendros" description={profile.pageDescription}>
+  <div class="mx-auto max-w-3xl px-4 py-16 md:py-24">
+    <p class="eyebrow text-sm opacity-70">{profile.metaLine}</p>
+    <h1 class="mt-3 text-3xl font-extrabold tracking-tight text-balance">{profile.headline}</h1>
+    <p class="mt-3 text-lg opacity-80">{profile.role}</p>
+    <p class="mt-6 opacity-90">{profile.summary}</p>
+    <p class="mt-4 opacity-70">{profile.title}</p>
+
+    <section class="mt-16" aria-labelledby="why-heading">
+      <h2 id="why-heading" class="text-2xl font-bold">Ventajas del encargo</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-3">
+        {
+          profile.workWithMe.map((item) => (
+            <article class="card card-border bg-base-100">
+              <div class="card-body">
+                <h3 class="card-title text-lg">{item.title}</h3>
+                <p class="text-sm opacity-70">{item.body}</p>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="mt-16" aria-labelledby="trajectory-heading">
+      <h2 id="trajectory-heading" class="text-2xl font-bold">Trayectoria</h2>
+      <p class="mt-3 opacity-70">{profile.trajectory}</p>
+      <p class="mt-4">
+        <a class="link" href="/#referencias">Ver referencias</a>
+      </p>
+    </section>
+
+    <section class="mt-16" aria-labelledby="trust-heading">
+      <h2 id="trust-heading" class="text-2xl font-bold">Modalidad de colaboración</h2>
+      <ul class="mt-6 list-disc space-y-2 pl-5 text-sm opacity-80">
+        {profile.trustBar.map((item) => <li>{item}</li>)}
+      </ul>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a class="btn btn-primary" href="/#contacto">Solicitar propuesta</a>
+        <a class="btn btn-outline" href="/cv.pdf">Descargar CV (PDF)</a>
+      </div>
+    </section>
+
+    <aside class="alert mt-16 text-sm" role="note">
+      <span>
+        Pendiente de Alejandro: texto en primera persona y bloque del libro. El PDF se genera con
+        <code>scripts/build-cv-pdf.mjs</code> a partir de <code>profile</code>.
+      </span>
+    </aside>
+  </div>
+</Layout>

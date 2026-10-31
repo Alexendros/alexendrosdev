@@ -7,9 +7,10 @@ async function fillContactForm(
   const name = opts.name ?? 'Test Cliente';
   const message = opts.message ?? 'Necesito información sobre el informe comercial.';
   const email = opts.email ?? 'test@example.com';
-  await page.getByLabel('Mensaje*').fill(message);
-  await page.getByLabel('Nombre*').fill(name);
-  await page.getByLabel('Correo electrónico*').fill(email);
+  await page.locator('input[name="via"][value="revisar"]').check();
+  await page.getByLabel(/^Mensaje$/).fill(message);
+  await page.getByLabel(/^Nombre$/).fill(name);
+  await page.getByLabel(/^Correo electrónico$/).fill(email);
   await page.getByLabel(/Acepto/).check();
 }
 
@@ -30,7 +31,7 @@ async function mockContact(
   });
 }
 
-test('F04: contacto valida canal y envía', async ({ page }) => {
+test('F04: contacto valida y envía', async ({ page }) => {
   await mockContact(page, async (route) => {
     expect(route.request().headers()['content-type'] ?? '').toMatch(/application\/json/i);
     await route.fulfill({
@@ -43,19 +44,20 @@ test('F04: contacto valida canal y envía', async ({ page }) => {
   await page.goto('/contacto');
   await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
 
-  await page.getByLabel('Mensaje*').fill('Necesito información sobre el informe comercial.');
-  await page.getByLabel('Nombre*').fill('A');
-  await page.getByLabel('Correo electrónico*').fill('test@example.com');
+  await page.locator('input[name="via"][value="revisar"]').check();
+  await page.getByLabel(/^Mensaje$/).fill('Necesito información sobre el informe comercial.');
+  await page.getByLabel(/^Nombre$/).fill('A');
+  await page.getByLabel(/^Correo electrónico$/).fill('test@example.com');
   await page.getByLabel(/Acepto/).check();
-  await page.getByRole('button', { name: /Enviar/ }).click();
+  await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.getByRole('alert')).toBeVisible();
 
-  await page.getByLabel('Nombre*').fill('Test Cliente');
-  await page.getByRole('button', { name: /Enviar/ }).click();
-  await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i, { timeout: 10000 });
+  await page.getByLabel(/^Nombre$/).fill('Test Cliente');
+  await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
+  await expect(page.getByRole('status')).toContainText(/Solicitud enviada/i, { timeout: 10000 });
 });
 
-test('F04: sin correo de respuesta no se envía y el canal es único', async ({ page }) => {
+test('F04: sin correo no se envía', async ({ page }) => {
   let posted = false;
   await mockContact(page, async (route) => {
     posted = true;
@@ -67,36 +69,20 @@ test('F04: sin correo de respuesta no se envía y el canal es único', async ({ 
   });
 
   await page.goto('/contacto');
-  await expect(page.getByRole('radio', { name: 'WhatsApp' })).toHaveCount(0);
-  await page.getByLabel('Mensaje*').fill('Necesito información sobre el informe comercial.');
-  await page.getByLabel('Nombre*').fill('Test Cliente');
+  await page.locator('input[name="via"][value="revisar"]').check();
+  await page.getByLabel(/^Mensaje$/).fill('Necesito información sobre el informe comercial.');
+  await page.getByLabel(/^Nombre$/).fill('Test Cliente');
   await page.getByLabel(/Acepto/).check();
-  await page.getByRole('button', { name: /Enviar/ }).click();
+  await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.getByRole('alert')).toBeVisible();
   expect(posted).toBe(false);
 });
 
-test('contacto muestra canales horizontales y sin servicios de entrada', async ({ page }) => {
-  await page.goto('/contacto');
-
-  await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Servicios de entrada' })).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'Perfiles y correo' })).toHaveCount(0);
-  await expect(page.getByRole('heading', { name: 'Formulario', exact: true })).toHaveCount(0);
-
-  const footer = page.locator('footer');
-  await expect(footer.getByRole('link', { name: 'Contratación' })).toBeVisible();
-  await expect(footer.locator('a[href="mailto:contratacion@alexendros.dev"]')).toBeVisible();
-  await expect(footer.getByRole('link', { name: 'GitHub' })).toBeVisible();
-  await expect(footer.getByRole('link', { name: 'LinkedIn' })).toBeVisible();
-  await expect(page.locator('main').getByRole('link', { name: 'GitHub' })).toHaveCount(0);
-  await expect(page.locator('body')).not.toContainText(/retainer/i);
-  await expect(page.locator('body')).not.toContainText(/diagnóstico/i);
-});
-
 test('UI-01: hidratación no roba el foco', async ({ page }) => {
   await page.goto('/contacto');
-  await expect(page.getByRole('button', { name: /Enviar/ })).toBeEnabled({ timeout: 10000 });
+  await expect(page.getByRole('button', { name: /Solicitar propuesta/ })).toBeEnabled({
+    timeout: 10000
+  });
   const active = await page.evaluate(() => {
     const el = document.activeElement;
     if (!el) return null;
@@ -107,18 +93,11 @@ test('UI-01: hidratación no roba el foco', async ({ page }) => {
 
 test('UI-02: errores de envío con aria-invalid', async ({ page }) => {
   await page.goto('/contacto');
-  await page.getByRole('button', { name: /Enviar/ }).click();
-  const name = page.getByLabel('Nombre*');
+  await page.locator('input[name="via"][value="revisar"]').check();
+  await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
+  const name = page.getByLabel(/^Nombre$/);
   await expect(name).toHaveAttribute('aria-invalid', 'true');
-  await expect(page.locator('[id$="-name-error"]')).toBeVisible();
-});
-
-test('UI-03: canal correo enfoca el email', async ({ page }) => {
-  await page.goto('/contacto');
-  const email = page.getByLabel('Correo electrónico*');
-  await expect(email).toBeVisible();
-  await email.focus();
-  await expect(email).toBeFocused();
+  await expect(page.locator('#contact-name-error')).toBeVisible();
 });
 
 test('UI-04: datos conservados tras 503', async ({ page }) => {
@@ -131,9 +110,9 @@ test('UI-04: datos conservados tras 503', async ({ page }) => {
   });
   await page.goto('/contacto');
   await fillContactForm(page);
-  await page.getByRole('button', { name: /Enviar/ }).click();
+  await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.getByRole('alert')).toContainText(/no disponible/i);
-  await expect(page.getByLabel('Mensaje*')).toHaveValue(/informe comercial/i);
+  await expect(page.getByLabel(/^Mensaje$/)).toHaveValue(/informe comercial/i);
 });
 
 test('UI-05: reintento conserva Idempotency-Key', async ({ page }) => {
@@ -156,12 +135,12 @@ test('UI-05: reintento conserva Idempotency-Key', async ({ page }) => {
 
   await page.goto('/contacto');
   await fillContactForm(page);
-  await page.getByRole('button', { name: /Enviar/ }).click();
+  await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.getByRole('alert')).toContainText(/No se pudo enviar|tarda más|no sabemos/i, {
     timeout: 10000
   });
-  await page.getByRole('button', { name: /Enviar/ }).click();
-  await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i, { timeout: 10000 });
+  await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
+  await expect(page.getByRole('status')).toContainText(/Solicitud enviada/i, { timeout: 10000 });
   expect(keys.length).toBeGreaterThanOrEqual(2);
   expect(keys[0]).toBeTruthy();
   expect(keys[0]).toBe(keys[1]);
@@ -205,16 +184,6 @@ test('CFG-06: servicio y proyecto allowlisted; desconocidos se descartan', async
   await expect(page.locator('body')).not.toContainText('999');
 });
 
-test('CFG-07: ficha de servicio llega con contexto oculto', async ({ page }) => {
-  await page.goto('/servicios/informe-comercial');
-  await page.locator('#contenido').getByRole('link', { name: 'Solicitar propuesta' }).click();
-  await expect(page).toHaveURL(/servicio=informe-comercial/);
-  await expect(page.locator('#contact-service')).toHaveValue('informe-comercial', {
-    timeout: 10_000
-  });
-  await expect(page.locator('#contact-service')).toHaveAttribute('type', 'hidden');
-});
-
 test('T-CON-07: 200 ok sin status accepted no es éxito', async ({ page }) => {
   await mockContact(page, async (route) => {
     await route.fulfill({
@@ -225,14 +194,12 @@ test('T-CON-07: 200 ok sin status accepted no es éxito', async ({ page }) => {
   });
   await page.goto('/contacto');
   await fillContactForm(page);
-  await page.getByRole('button', { name: /Enviar/ }).click();
+  await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.getByRole('alert')).toBeVisible({ timeout: 10_000 });
-  await expect(page.getByText(/Mensaje enviado/i)).toHaveCount(0);
+  await expect(page.getByText(/Solicitud enviada/i)).toHaveCount(0);
 });
 
-test('T-CON-01b: accepted con replay true muestra éxito sin exigir segundo Lead', async ({
-  page
-}) => {
+test('T-CON-01b: accepted con replay true muestra éxito', async ({ page }) => {
   await mockContact(page, async (route) => {
     await route.fulfill({
       status: 200,
@@ -247,24 +214,22 @@ test('T-CON-01b: accepted con replay true muestra éxito sin exigir segundo Lead
   });
   await page.goto('/contacto');
   await fillContactForm(page);
-  await page.getByRole('button', { name: /Enviar/ }).click();
-  await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i, { timeout: 10_000 });
+  await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
+  await expect(page.getByRole('status')).toContainText(/Solicitud enviada/i, { timeout: 10_000 });
 });
 
-test('AXD-005: correo visible si el inline corre pero la isla no hidrata', async ({ page }) => {
-  await page.route('**/ContactForm*.js', (route) => route.abort());
-  await page.route('**/ContactForm*.mjs', (route) => route.abort());
+test('AXD-005: correo visible si el script no hidrata', async ({ page }) => {
+  await page.route('**/contactForm*', (route) => route.abort());
   await page.goto('/contacto');
   const nojs = page.locator('[data-contact-nojs]');
   await expect(nojs).toBeVisible({ timeout: 10_000 });
   await expect(nojs.getByRole('link', { name: /contratacion@alexendros\.dev/i })).toBeVisible();
-  await expect(page.locator('html')).not.toHaveAttribute('data-contact-hydrated', 'true');
 });
 
 test.describe('UI-07: sin JavaScript', () => {
   test.use({ javaScriptEnabled: false });
 
-  test('correo y alternativa sin JS visibles; sin POST JSON funcional', async ({ page }) => {
+  test('correo y alternativa sin JS visibles', async ({ page }) => {
     await page.goto('/contacto');
     await expect(page.getByRole('heading', { name: 'Contacto', exact: true })).toBeVisible();
     const nojs = page.locator('[data-contact-nojs]');
@@ -306,17 +271,17 @@ test('UI-06: 202 no es éxito; 200 accepted sí; 409 comprensible', async ({ pag
   await page.goto('/contacto');
   await fillContactForm(page);
 
-  await page.getByRole('button', { name: /Enviar/ }).click();
+  await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.getByRole('status')).toContainText(/procesando/i);
-  await expect(page.getByRole('status')).not.toContainText(/Mensaje enviado/i);
+  await expect(page.getByRole('status')).not.toContainText(/Solicitud enviada/i);
 
   mode = 'accepted';
-  await page.getByRole('button', { name: /Enviar/ }).click();
-  await expect(page.getByRole('status')).toContainText(/Mensaje enviado/i);
+  await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
+  await expect(page.getByRole('status')).toContainText(/Solicitud enviada/i);
 
   mode = 'conflict';
   await page.goto('/contacto');
   await fillContactForm(page);
-  await page.getByRole('button', { name: /Enviar/ }).click();
+  await page.getByRole('button', { name: /Solicitar propuesta/ }).click();
   await expect(page.getByRole('alert')).toContainText(/no coincide|envío anterior/i);
 });

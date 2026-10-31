@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 
@@ -24,6 +25,7 @@ export default defineConfig({
   },
   image: { service: { entrypoint: 'astro/assets/services/sharp' } },
   vite: {
+    plugins: [tailwindcss()],
     build: { cssMinify: true },
     // Expone VERCEL al prerender estático: en builds locales/CI queda vacío y
     // Layout.astro omite los scripts /_vercel/* (que allí darían 404).

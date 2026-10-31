@@ -6,12 +6,10 @@
       "startServerReadyPattern": "Accepting connections|Local:",
       "url": [
         "http://127.0.0.1:4321/",
-        "http://127.0.0.1:4321/servicios/",
         "http://127.0.0.1:4321/servicios/informe-comercial/",
-        "http://127.0.0.1:4321/referencias/",
         "http://127.0.0.1:4321/referencias/front-valencia/",
-        "http://127.0.0.1:4321/metodo/",
-        "http://127.0.0.1:4321/contacto/"
+        "http://127.0.0.1:4321/experiencia/",
+        "http://127.0.0.1:4321/privacidad/"
       ],
       "settings": {
         "formFactor": "mobile",

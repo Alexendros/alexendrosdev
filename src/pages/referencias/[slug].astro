@@ -1,9 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Container from '../../components/Container.astro';
 import Button from '../../components/Button.astro';
 import Link from '../../components/Link.astro';
-import Dimension from '../../components/Dimension.astro';
 import { Image } from 'astro:assets';
 import {
   availabilityCtaLabels,
@@ -30,7 +28,7 @@ const changedItems =
   ogImage={`/og/proyectos/${project.slug}.png`}
   ogImageAlt={`Ficha de ${project.title}`}
 >
-  <Container size="narrow" class="pt-12 pb-16">
+  <div class="mx-auto max-w-3xl px-4 pt-12 pb-16">
     <div class="text-xs text-muted">
       <Link href="/referencias" variant="nav">← Todas las referencias</Link>
     </div>
@@ -75,9 +73,7 @@ const changedItems =
       )
     }
 
-    <div class="mt-8" data-reveal>
-      <Dimension label="Contexto — Reto — Solución" />
-    </div>
+    <div class="mt-8" data-reveal></div>
 
     <div class="mt-10 grid md:grid-cols-[1.2fr_0.8fr] gap-10" data-reveal>
       <div class="min-w-0 space-y-8 text-sm">
@@ -150,5 +146,5 @@ const changedItems =
         </Button>
       </div>
     </div>
-  </Container>
+  </div>
 </Layout>

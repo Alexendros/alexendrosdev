@@ -1,167 +1,62 @@
 ---
 import { site } from '../content/site';
-import Link from './Link.astro';
-import Button from './Button.astro';
-import Container from './Container.astro';
 
-const path = Astro.url.pathname;
-const contactHref = '/contacto?motivo=propuestaComercial';
+const contactHref = '/#contacto';
 ---
 
-<header id="site-header" class="sticky top-0 z-50 backdrop-blur border-b border-border glass-bg">
-  <Container class="h-header flex items-center justify-between gap-4">
-    <a href="/" class="font-mono font-bold tracking-tight shrink-0 focus-ring rounded"
-      >Alexendros<span class="text-primary">.dev</span></a
-    >
-    <nav
-      class="site-nav hidden lg:flex flex-nowrap items-center justify-end gap-x-5 text-sm font-medium"
-      aria-label="Principal"
-    >
-      {
-        site.nav.map((i) => {
-          const current = path.startsWith(i.href);
-          return (
-            <Link href={i.href} variant="nav" current={current} class="inline-flex items-center">
-              {i.label}
-            </Link>
-          );
-        })
-      }
-    </nav>
-    <div class="flex items-center gap-2 shrink-0">
-      <Button href={contactHref} size="sm" class="hidden min-[360px]:inline-flex">
-        Contacto
-      </Button>
-      <button
-        type="button"
-        data-menu-button
-        class="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-lg border border-border hover:border-primary hover:text-primary focus-ring"
-        aria-expanded="false"
-        aria-controls="mobile-nav"
-        aria-label="Abrir menú"
+<header
+  id="site-header"
+  class="navbar sticky top-0 z-50 border-b border-base-300 bg-base-100 px-3 lg:px-8"
+>
+  <div class="navbar-start">
+    <details class="dropdown lg:hidden" id="mm">
+      <summary class="btn btn-ghost btn-square" aria-label="Abrir menú">☰</summary>
+      <ul
+        class="menu dropdown-content z-10 mt-3 w-64 rounded-box border border-base-300 bg-base-100 p-2 shadow"
       >
-        <svg
-          id="menu-icon-open"
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          aria-hidden="true"
-        >
-          <line x1="4" y1="7" x2="20" y2="7"></line>
-          <line x1="4" y1="12" x2="20" y2="12"></line>
-          <line x1="4" y1="17" x2="20" y2="17"></line>
-        </svg>
-        <svg
-          id="menu-icon-close"
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          class="hidden"
-        >
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </button>
-    </div>
-  </Container>
-  <nav
-    data-mobile-nav
-    id="mobile-nav"
-    class="lg:hidden border-t border-border"
-    aria-label="Principal, móvil"
-    hidden
-  >
-    <ul class="px-6 py-3 flex flex-col gap-1 text-base font-medium">
+        {
+          site.nav.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+        <li class="mt-2">
+          <a class="btn btn-primary" href={contactHref}>Solicitar propuesta</a>
+        </li>
+      </ul>
+    </details>
+    <a class="btn btn-ghost text-lg font-extrabold tracking-tight" href="/#top">
+      Alexendros<span class="text-sm font-normal opacity-60">.dev</span>
+    </a>
+  </div>
+  <nav class="navbar-center hidden lg:flex" aria-label="Principal">
+    <ul class="menu menu-horizontal gap-1">
       {
-        site.nav.map((i) => (
+        site.nav.map((item) => (
           <li>
-            <Link href={i.href} variant="nav" current={path.startsWith(i.href)} class="block py-3">
-              {i.label}
-            </Link>
+            <a href={item.href}>{item.label}</a>
           </li>
         ))
       }
     </ul>
   </nav>
-  <span class="reading-progress" aria-hidden="true"></span>
+  <div class="navbar-end gap-1">
+    {/* theme-controller oculto: el botón cicla y sincroniza el input. */}
+    <input type="checkbox" class="theme-controller hidden" value="alexdark" data-theme-input />
+    <button
+      type="button"
+      class="btn btn-ghost btn-circle js-only"
+      data-theme-toggle
+      aria-label="Tema: sistema. Pulsar para cambiar"
+    >
+      <span aria-hidden="true">◐</span>
+    </button>
+    <a class="btn btn-primary hidden sm:inline-flex" href={contactHref}>Solicitar propuesta</a>
+  </div>
 </header>
 
 <script>
-  function initMobileNav(): void {
-    const menuButton = document.querySelector('[data-menu-button]');
-    const mobileNav = document.querySelector('[data-mobile-nav]');
-    if (!(menuButton instanceof HTMLButtonElement) || !(mobileNav instanceof HTMLElement)) return;
-    const iconOpen = document.getElementById('menu-icon-open');
-    const iconClose = document.getElementById('menu-icon-close');
-    const menuLinks = Array.from(mobileNav.querySelectorAll('a'));
-    const isMenuOpen = (): boolean => menuButton.getAttribute('aria-expanded') === 'true';
-    const focusWithRetry = (el: HTMLElement): void => {
-      const tryFocus = (): void => {
-        if (document.activeElement !== el) el.focus({ preventScroll: true });
-      };
-      tryFocus();
-      // rAF + timeouts: Enter/Escape y el CMP pueden mover el foco tras el
-      // primer paint o al ocultar el nav (el enlace enfocado deja de ser focusable).
-      requestAnimationFrame(() => {
-        tryFocus();
-        requestAnimationFrame(tryFocus);
-      });
-      for (const ms of [0, 32, 80]) {
-        window.setTimeout(tryFocus, ms);
-      }
-    };
-    const setMenuOpen = (open: boolean): void => {
-      menuButton.setAttribute('aria-expanded', String(open));
-      menuButton.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
-      if (open) {
-        mobileNav.removeAttribute('hidden');
-        iconOpen?.classList.add('hidden');
-        iconClose?.classList.remove('hidden');
-        const first = menuLinks[0];
-        if (first) focusWithRetry(first);
-      } else {
-        mobileNav.setAttribute('hidden', '');
-        iconOpen?.classList.remove('hidden');
-        iconClose?.classList.add('hidden');
-      }
-    };
-    const restoreMenuButtonFocus = (): void => {
-      focusWithRetry(menuButton);
-    };
-    menuButton.addEventListener('click', () => setMenuOpen(!isMenuOpen()));
-    // Escape cierra aunque el foco esté en el botón o fuera del <nav>
-    // (p. ej. tras Tab al chrome); el listener en solo mobileNav no bastaba.
-    // capture + stopImmediatePropagation evita que el CMP robe Escape/foco.
-    document.addEventListener(
-      'keydown',
-      (event: KeyboardEvent) => {
-        if (event.key !== 'Escape' || !isMenuOpen()) return;
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        setMenuOpen(false);
-        restoreMenuButtonFocus();
-      },
-      true
-    );
-    menuLinks.forEach((link) => link.addEventListener('click', () => setMenuOpen(false)));
-    document.documentElement.dataset.headerReady = 'true';
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMobileNav, { once: true });
-  } else {
-    initMobileNav();
-  }
+  import { initThemeToggle } from '../scripts/themeToggle';
+  initThemeToggle();
 </script>

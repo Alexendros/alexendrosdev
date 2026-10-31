@@ -1,78 +1,59 @@
-/* Tema claro editorial azul #0f3778 (ADR 0011, supersedes 0006 y 0007).
-   Fuente única de verdad de color: esta hoja. tailwind.config.mjs solo
-   referencia var(); la validación de contraste vive en
-   scripts/check-contrast.mjs (job quality / pnpm check:contrast). */
-
-/* Capas propias en orden; las directivas @tailwind se integran en las
-   capas base/components/utilities ya ordenadas aquí. */
-@layer reset, tokens, base, components, utilities;
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* ------------------------------------------------------------------ */
-
-/* reset: normalización mínima propia. Preflight de Tailwind (capa      */
-
-/* base, applyBaseStyles: false) ya cubre lo esencial; esta capa es el  */
-
-/* punto de extensión para resets de componentes.                       */
-
-/* ------------------------------------------------------------------ */
+/* Tokens de producto + marco daisyUI. Temas: theme.css. */
+@import 'tailwindcss';
+@plugin "daisyui" {
+  themes: false;
+}
+@import './theme.css';
+@layer reset, design-references, theme, base, components, utilities;
+/* stylelint-disable custom-property-pattern -- compat TW3 */
+@theme {
+  --color-bg: var(--bg);
+  --color-subtle: var(--bg-subtle);
+  --color-scrim: var(--scrim);
+  --color-fg: var(--fg);
+  --color-primary: var(--brand);
+  --color-primaryHover: var(--brand-hover);
+  --color-primarySoft: color-mix(in srgb, var(--brand) 40%, transparent);
+  --color-primaryGhost: var(--primary-ghost);
+  --color-muted: var(--fg-muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-card: var(--card);
+  --color-ink: var(--brand-fg);
+  --color-danger: var(--danger);
+  --font-sans: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --text-step--1: var(--step--1);
+  --text-step-0: var(--step-0);
+  --text-step-1: var(--step-1);
+  --text-step-2: var(--step-2);
+  --text-step-3: var(--step-3);
+  --text-step-4: var(--step-4);
+  --height-header: var(--header-h);
+}
+/* stylelint-enable custom-property-pattern */
+@layer design-references {
+  /* reservado */
+}
 @layer reset {
   body {
     margin: 0;
   }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  p,
-  ul,
-  ol,
-  li,
-  figure,
-  figcaption,
-  blockquote {
-    margin: 0;
-    padding: 0;
-  }
 }
-
-/* ------------------------------------------------------------------ */
-
-/* tokens: primitivos (nunca se consumen directamente desde             */
-
-/* componentes), semánticos (los únicos que usan componentes),          */
-
-/* tipografía fluida, espaciado, radios, sombras, layout y motion.      */
-
-/* ------------------------------------------------------------------ */
-@layer tokens {
-  /* stylelint-disable declaration-property-value-disallowed-list --
-     Única zona con literales: primitivos hex y overrides del tema
-     oscuro. Los semánticos referencian estos valores vía var(); el
-     resto de la hoja queda prohibido por Stylelint y check:contrast. */
+@layer theme {
+  /* stylelint-disable declaration-property-value-disallowed-list -- únicos hex */
+  /* stylelint-disable custom-property-pattern -- step negativo */
   :root {
-    /* Primitivos: paleta editorial azul. */
     --blue-950: #081f47;
     --blue-900: #0f3778;
     --blue-700: #1b56b8;
-    --blue-500: #3f7de0;
     --blue-100: #e6eefb;
     --ink-900: #0b1220;
-    --ink-700: #33415c;
     --ink-500: #5b6885;
     --paper-0: #fff;
     --paper-50: #f6f8fc;
     --line: #d9e0ee;
-    --ok: #157347;
-    --warn: #b45309;
     --err: #b42318;
-
-    /* Semánticos: tema claro (por defecto). */
     --bg: var(--paper-50);
     --bg-subtle: var(--blue-100);
     --fg: var(--ink-900);
@@ -81,33 +62,12 @@
     --brand-hover: var(--blue-700);
     --brand-fg: var(--paper-0);
     --border: var(--line);
-
-    /* Frontera de componentes interactivos (inputs): ≥3:1 sobre card y
-       bg (WCAG 1.4.11), validada en scripts/check-contrast.mjs. */
     --border-strong: #7d90b8;
     --card: var(--paper-0);
-
-    /* Errores de formulario: validado en scripts/check-contrast.mjs
-       (danger/bg y danger/card, mínimo 4.5:1). */
     --danger: var(--err);
-
-    /* Indicador de foco (componentes lo componen con box-shadow). La
-       clase .focus-ring usa outline sólido --brand (≥3:1 en ambos temas,
-       WCAG 1.4.11). El anillo se define sobre --brand (no --blue-500):
-       con blue-500 haría falta ~85% de opacidad para 3:1 y perdería
-       suavidad. */
     --focus-ring: 0 0 0 3px color-mix(in srgb, var(--brand) 55%, transparent);
-
-    /* Superficies derivadas de marca (clases bg-primarySoft/bg-primaryGhost
-       de Tailwind las referencian; fuente única aquí). */
     --primary-ghost: color-mix(in srgb, var(--brand) 8%, transparent);
-
-    /* Scrim de dialog/overlay (mismo valor que --cc-overlay-bg del CMP). */
     --scrim: color-mix(in oklab, var(--blue-950) 55%, transparent);
-
-    /* Tipografía fluida. */
-    /* stylelint-disable-next-line custom-property-pattern --
-       la escala incluye el step negativo --step--1 por convención */
     --step--1: clamp(0.875rem, 0.84rem + 0.18vw, 1rem);
     --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
     --step-1: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
@@ -117,60 +77,12 @@
     --leading-tight: 1.08;
     --leading-body: 1.6;
     --tracking-eyebrow: 0.14em;
-
-    /* Espaciado (escala 4px). */
-    --space-1: 0.25rem;
-    --space-2: 0.5rem;
-    --space-3: 0.75rem;
-    --space-4: 1rem;
-    --space-5: 1.25rem;
-    --space-6: 1.5rem;
-    --space-8: 2rem;
-    --space-10: 2.5rem;
-    --space-12: 3rem;
-    --space-16: 4rem;
-    --space-20: 5rem;
-    --space-24: 6rem;
-
-    /* Radios y sombras suaves. */
-    --radius-sm: 6px;
-    --radius-md: 12px;
-    --radius-lg: 20px;
-    --shadow-1:
-      0 1px 2px 0 color-mix(in srgb, var(--blue-950) 5%, transparent),
-      0 1px 3px 0 color-mix(in srgb, var(--blue-950) 8%, transparent);
-    --shadow-2:
-      0 2px 6px -2px color-mix(in srgb, var(--blue-950) 8%, transparent),
-      0 8px 24px -6px color-mix(in srgb, var(--blue-950) 12%, transparent);
-
-    /* Layout. */
-    --container: 72rem;
-    --container-narrow: 56rem;
-    --gutter: clamp(1rem, 4vw, 2rem);
     --header-h: 4.5rem;
-
-    /* Motion. */
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-    --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-    --dur-fast: 120ms;
-    --dur-base: 240ms;
-    --dur-slow: 480ms;
-    --dur-reveal: 700ms;
-
-    /* Entrada del hero: 4 pasos de --stagger (240ms) + 460ms = 700ms
-       total, dentro del presupuesto de entrada. */
-    --dur-hero: 460ms;
-    --stagger: 60ms;
   }
-
-  /* @tema-oscuro:inicio — publicado condicionado: scripts/check-contrast.mjs
-     valida TODOS los pares semánticos en claro y oscuro; si alguno falla,
-     este bloque se retira (ADR 0011). Sin toggle de UI: media query por
-     defecto + data-theme="dark"/"light" para forzar. */
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme='light']) {
       color-scheme: dark;
-
       --bg: #0a1224;
       --bg-subtle: #0e1830;
       --fg: #eef2fb;
@@ -184,7 +96,6 @@
       --danger: #f97066;
     }
   }
-
   :root[data-theme='dark'] {
     color-scheme: dark;
 
@@ -200,803 +111,69 @@
     --card: #101c38;
     --danger: #f97066;
   }
+  /* stylelint-enable custom-property-pattern */
   /* stylelint-enable declaration-property-value-disallowed-list */
-
-  /* @tema-oscuro:fin */
 }
 
-/* ------------------------------------------------------------------ */
-
-/* base: elementos raíz y texto.                                        */
-
-/* ------------------------------------------------------------------ */
 @layer base {
   html {
-    color-scheme: light;
-    background: var(--bg);
-    color: var(--fg);
-    font-family: 'Inter Variable', system-ui, sans-serif;
-    font-size: var(--step-0);
-    line-height: var(--leading-body);
-    scrollbar-gutter: stable;
-    scroll-padding-top: calc(var(--header-h) + var(--space-4));
-  }
-
-  /* Scroll lock mientras hay un dialog modal abierto (DetailIsland). */
-  html:has(dialog[open]) {
-    overflow: hidden;
+    scroll-behavior: smooth;
   }
 
   body {
-    /* Blueprint en claro: glow tenue de --bg-subtle arriba, retícula
-       hairline con --border a baja opacidad y base --bg.
-       Sin background-attachment: fixed (jank en móvil). */
-    background:
-      radial-gradient(
-        ellipse 120% 90% at 50% 0%,
-        color-mix(in srgb, var(--bg-subtle) 70%, transparent) 0%,
-        transparent 60%
-      ),
-      repeating-linear-gradient(
-        0deg,
-        color-mix(in srgb, var(--border) 45%, transparent) 0 1px,
-        transparent 1px 120px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        color-mix(in srgb, var(--border) 45%, transparent) 0 1px,
-        transparent 1px 120px
-      ),
-      var(--bg);
+    font-family: var(--font-mono);
+    line-height: var(--leading-body);
   }
 
-  code,
-  pre,
-  .font-mono {
-    font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
-  }
-
-  ::selection {
-    background: color-mix(in srgb, var(--brand) 25%, transparent);
-    color: var(--fg);
-  }
-
-  /* Micro-motion sobria: solo transiciones de color, sin desplazamientos;
-     el scroll suave solo sin reduced-motion. */
-  a,
-  button {
-    transition:
-      color var(--dur-fast) var(--ease-out),
-      background-color var(--dur-fast) var(--ease-out),
-      border-color var(--dur-fast) var(--ease-out);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    html {
-      scroll-behavior: smooth;
-    }
+  :focus:not(:focus-visible) {
+    outline: none;
   }
 }
 
-/* ------------------------------------------------------------------ */
-
-/* components: foco, piezas blueprint, banner, reveal, prosa legal.     */
-
-/* ------------------------------------------------------------------ */
 @layer components {
-  /* Foco visible: outline sólido --brand (≥3:1 en ambos temas, WCAG
-     1.4.11) + anillo suave --focus-ring (color-mix al 55%). */
-  .focus-ring:focus-visible {
-    outline: 2px solid var(--brand);
-    outline-offset: 2px;
-    box-shadow: var(--focus-ring);
+  .navbar {
+    padding-top: env(safe-area-inset-top, 0);
   }
 
-  /* Piezas de componentes (Button, Link, Badge). El color hereda del
-     contexto (currentColor): sin literales, válido en ambos temas. */
-
-  /* Flecha de Link (variant arrow): desplazamiento sutil al hover/foco
-     del enlace padre (transform, no layout). */
-  .link-arrow {
-    display: inline-block;
-    transition: transform var(--dur-fast) var(--ease-out);
-  }
-
-  :hover > .link-arrow,
-  :focus-visible > .link-arrow {
-    transform: translateX(4px);
-  }
-
-  /* Botón: elevación de 1px con sombra en pseudo-elemento (solo su
-     opacity se anima; nunca box-shadow). Active con compresión sutil. */
-  .btn {
-    position: relative;
-    transition:
-      transform var(--dur-fast) var(--ease-out),
-      color var(--dur-fast) var(--ease-out),
-      background-color var(--dur-fast) var(--ease-out),
-      border-color var(--dur-fast) var(--ease-out);
-  }
-
-  .btn::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    box-shadow: var(--shadow-2);
-    opacity: 0;
-    transition: opacity var(--dur-fast) var(--ease-out);
-    pointer-events: none;
-  }
-
-  .btn:hover {
-    transform: translateY(-1px);
-  }
-
-  .btn:hover::after {
-    opacity: 1;
-  }
-
-  .btn:active {
-    transform: scale(0.98);
-  }
-
-  /* Tarjeta elevable (ServiceCard/ProjectCard/AxisCard): translateY en
-     el hover con sombra en ::before (la ::after del card-link sigue
-     estirada encima). */
-  .card-lift {
-    position: relative;
-    isolation: isolate;
-    transition:
-      transform var(--dur-base) var(--ease-out),
-      border-color var(--dur-fast) var(--ease-out);
-  }
-
-  .card-lift::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    box-shadow: var(--shadow-2);
-    opacity: 0;
-    transition: opacity var(--dur-base) var(--ease-out);
-    pointer-events: none;
-  }
-
-  @media (hover: hover) {
-    .card-lift:hover {
-      transform: translateY(-4px);
-    }
-
-    .card-lift:hover::before {
-      opacity: 1;
-    }
-  }
-
-  /* Filete izquierdo de marca en tarjetas planas (valores, ejes, precios). */
-  .card-rail {
-    border-left-color: var(--brand);
-    border-left-width: 3px;
-  }
-
-  /* Zoom de portada en las cards de proyecto (overflow ya recorta). */
-  .card-cover {
-    transition: transform var(--dur-slow) var(--ease-out);
-  }
-
-  .group:hover .card-cover {
-    transform: scale(1.03);
-  }
-
-  /* Fundido de entrada de imágenes lazy (con JS: opacity 0 hasta
-     onload; sin JS la clase .js no existe y la imagen se ve). */
-  .card-img {
-    background: var(--bg-subtle);
-  }
-
-  .js .card-img {
-    opacity: 0;
-    transition: opacity var(--dur-base) var(--ease-out);
-  }
-
-  .js .card-img.is-loaded {
-    opacity: 1;
-  }
-
-  .btn-spinner {
-    width: 1em;
-    height: 1em;
-    flex-shrink: 0;
-    border-radius: 9999px;
-    border: 2px solid color-mix(in srgb, currentColor 35%, transparent);
-    border-top-color: currentColor;
-    animation: btn-rotate 700ms linear infinite;
-  }
-
-  .badge-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    flex-shrink: 0;
-    border-radius: 9999px;
-    background: var(--brand);
-    animation: badge-pulse 2s var(--ease-in-out) infinite;
-  }
-
-  @keyframes btn-rotate {
-    to {
-      transform: rotate(1turn);
-    }
-  }
-
-  @keyframes badge-pulse {
-    0%,
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    50% {
-      opacity: 0.45;
-      transform: scale(0.82);
-    }
-  }
-
-  /* Entrada del hero (js-gated: sin JS no hay clase .js y todo se ve).
-     Elementos que no son LCP funden; el H1 (LCP) solo se desplaza:
-     está pintado desde el primer frame y no afecta a LCP ni CLS. */
-  .js [data-hero] [data-hero-item] {
-    animation: hero-in var(--dur-hero) var(--ease-out) both;
-    animation-delay: calc(var(--i, 0) * var(--stagger));
-  }
-
-  /* LCP: solo translateY (sin opacity). Ya no va en el h1 para no aplanar
-     el rotateX 3D de la ventana. */
-  .js [data-hero] [data-hero-lcp] {
-    animation-name: hero-in-lcp;
-  }
-
-  @keyframes hero-in {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
-
-  @keyframes hero-in-lcp {
-    from {
-      transform: translateY(10px);
-    }
-
-    to {
-      transform: none;
-    }
-  }
-
-  /* Tira Dimension (decorativa): las hairlines crecen con scaleX al
-     cargar, sin JS (animación CSS pura con fill). */
-  @media (prefers-reduced-motion: no-preference) {
-    .dimension-line {
-      transform: scaleX(0);
-      transform-origin: left;
-      animation: line-in var(--dur-slow) var(--ease-out) forwards;
-      animation-delay: calc(var(--i, 0) * var(--stagger));
-    }
-
-    .pagehead-rule {
-      transform: scaleX(0);
-      transform-origin: left;
-      animation: line-in var(--dur-slow) var(--ease-out) forwards;
-    }
-
-    [data-mobile-nav]:not([hidden]) {
-      animation: mobile-nav-in var(--dur-base) var(--ease-out) both;
-    }
-  }
-
-  @keyframes line-in {
-    to {
-      transform: scaleX(1);
-    }
-  }
-
-  @keyframes mobile-nav-in {
-    from {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
-
-  /* Header: sombra de "en scroll" en pseudo-elemento (toggle de clase
-     vía IntersectionObserver sobre un sentinel, sin scroll listener). */
-  #site-header {
-    position: sticky;
-    transition: background-color var(--dur-fast) var(--ease-out);
-  }
-
-  #site-header::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    box-shadow: var(--shadow-1);
-    opacity: 0;
-    transition: opacity var(--dur-base) var(--ease-out);
-    pointer-events: none;
-  }
-
-  #site-header.is-scrolled::after {
-    opacity: 1;
-  }
-
-  /* Superficies translúcidas (header, barra CTA, muestras del design
-     system): fallback sólido con el token primero; color-mix después lo
-     mejora donde hay soporte. Tailwind v3 no compila /<alpha> sobre
-     var(), así que viven aquí (tailwind.config.mjs). */
-  .glass-bg {
-    background: var(--bg);
-    background: color-mix(in oklab, var(--bg) 80%, transparent);
-  }
-
-  .glass-card {
-    background: var(--card);
-    background: color-mix(in oklab, var(--card) 95%, transparent);
-  }
-
-  @supports (backdrop-filter: blur(4px)) {
-    .glass-card {
-      background: color-mix(in oklab, var(--card) 80%, transparent);
-    }
-  }
-
-  /* DetailIsland: scrim, sombra y entrada/salida (opacity + translateY).
-     @starting-style + allow-discrete: degradación a instantáneo sin soporte. */
-  dialog.detail-island {
-    box-shadow: var(--shadow-2);
-    overscroll-behavior: contain;
-    opacity: 0;
-    transform: translateY(8px);
-    transition:
-      opacity var(--dur-base) var(--ease-out),
-      transform var(--dur-base) var(--ease-out),
-      overlay var(--dur-base) var(--ease-out) allow-discrete,
-      display var(--dur-base) var(--ease-out) allow-discrete;
-  }
-
-  dialog.detail-island[open] {
-    opacity: 1;
-    transform: none;
-  }
-
-  @starting-style {
-    dialog.detail-island[open] {
-      opacity: 0;
-      transform: translateY(8px);
-    }
-  }
-
-  dialog.detail-island::backdrop {
-    background: var(--scrim);
-    opacity: 0;
-    transition:
-      opacity var(--dur-base) var(--ease-out),
-      overlay var(--dur-base) var(--ease-out) allow-discrete,
-      display var(--dur-base) var(--ease-out) allow-discrete;
-  }
-
-  dialog.detail-island[open]::backdrop {
-    opacity: 1;
-  }
-
-  @starting-style {
-    dialog.detail-island[open]::backdrop {
-      opacity: 0;
-    }
-  }
-
-  .swatch-brand {
-    background: var(--brand);
-    background: color-mix(in oklab, var(--brand) 60%, transparent);
-  }
-
-  /* Indicador de página activa en la nav de escritorio: subrayado que
-     crece con scaleX. */
-  .site-nav a {
-    position: relative;
-  }
-
-  .site-nav a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -2px;
-    height: 2px;
-    border-radius: 9999px;
-    background: var(--brand);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform var(--dur-base) var(--ease-out);
-  }
-
-  .site-nav a[aria-current='page']::after {
-    transform: scaleX(1);
-  }
-
-  /* Barra de progreso de lectura: solo soporte nativo
-     (animation-timeline: scroll(root)); sin soporte no se muestra.
-     Global: todas las páginas tienen scroll significativo. */
-  @supports (animation-timeline: scroll(root)) {
-    .reading-progress {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: -1px;
-      height: 2px;
-      background: var(--brand);
-      transform-origin: left;
-      animation: reading-progress linear both;
-      animation-timeline: scroll(root);
-    }
-
-    @keyframes reading-progress {
-      from {
-        transform: scaleX(0);
-      }
-
-      to {
-        transform: scaleX(1);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .reading-progress {
-        display: none;
-      }
-    }
-
-    .force-reduced-motion .reading-progress {
-      display: none;
-    }
-  }
-
-  /* Sombreado diagonal de plano: decorativo (aria-hidden en su uso),
-     exento de contraste WCAG. */
-  .bp-hatch {
-    background-image: repeating-linear-gradient(
-      45deg,
-      color-mix(in srgb, var(--brand) 8%, transparent) 0 1px,
-      transparent 1px 6px
-    );
-  }
-
-  /* Titular hero: en claro sin sombra de profundidad; la segunda línea
-     (draft) marca en azul de marca. Contraste heredado de los pares
-     validados en scripts/check-contrast.mjs. */
-  .bp-h1 {
-    text-shadow: none;
-  }
-
-  .bp-h1-draft {
-    color: var(--brand);
-  }
-
-  .cv-auto {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 480px;
-  }
-
-  /* Prosa legal (cookies, privacidad, identidad): un único bloque bajo
-     lint, con tokens tipográficos fluidos y de espaciado. */
-  /* stylelint-disable custom-property-pattern --
-     el step negativo --step--1 ya existe en :root (convención de escala) */
-  .legal-prose h1 {
-    font-size: var(--step-2);
-    font-weight: 700;
-    line-height: var(--leading-tight);
-    margin-bottom: var(--space-4);
-  }
-
-  .legal-prose h2 {
-    font-size: var(--step-1);
-    font-weight: 600;
-    line-height: var(--leading-tight);
-    margin-top: var(--space-8);
-    margin-bottom: var(--space-2);
-  }
-
-  .legal-prose p {
-    color: var(--fg-muted);
-    font-size: var(--step--1);
-    line-height: 1.7;
-  }
-
-  .legal-prose ul,
-  .legal-prose ol {
-    margin-top: var(--space-4);
-    padding-left: var(--space-5);
-    color: var(--fg-muted);
-    font-size: var(--step--1);
-    line-height: 1.7;
-  }
-
-  .legal-prose ul {
-    list-style: disc;
-  }
-
-  .legal-prose ol {
-    list-style: decimal;
-  }
-
-  .legal-prose li + li {
-    margin-top: var(--space-2);
-  }
-
-  .legal-prose h2 + p {
-    margin-top: var(--space-2);
-  }
-
-  .legal-prose a {
-    color: var(--brand);
-    text-decoration: underline;
-  }
-
-  .legal-prose code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.85em;
-  }
-
-  .legal-prose .table-wrap {
-    margin-top: var(--space-5);
-    overflow-x: auto;
-  }
-
-  .legal-prose table {
-    width: 100%;
-    min-width: 48rem;
-    border-collapse: collapse;
-    font-size: var(--step--1);
-    line-height: 1.5;
-  }
-
-  .legal-prose th,
-  .legal-prose td {
-    border: 1px solid var(--border);
-    padding: var(--space-2) var(--space-3);
-    text-align: left;
-    vertical-align: top;
+  .scroll-mt-nav {
+    scroll-margin-top: calc(var(--header-h) + env(safe-area-inset-top, 0));
   }
 
-  .legal-prose th {
-    background: var(--bg-subtle);
-    color: var(--fg);
-    font-weight: 600;
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: var(--tracking-eyebrow);
+    opacity: 0.7;
   }
 
-  .legal-prose td {
-    color: var(--fg-muted);
+  .js-only {
+    display: none;
   }
-  /* stylelint-enable custom-property-pattern */
 
-  /* CMP (vanilla-cookieconsent v3): sus custom properties se mapean a los
-     tokens del sitio. Un solo set sirve para claro y oscuro porque
-     --card/--fg/… ya reaccionan a prefers-color-scheme y data-theme. */
-  #cc-main {
-    --cc-font-family: 'Inter Variable', system-ui, sans-serif;
-    --cc-bg: var(--card);
-    --cc-primary-color: var(--fg);
-    --cc-secondary-color: var(--fg-muted);
-    --cc-link-color: var(--brand);
-    --cc-btn-primary-bg: var(--brand);
-    --cc-btn-primary-color: var(--brand-fg);
-    --cc-btn-primary-border-color: var(--brand);
-    --cc-btn-primary-hover-bg: var(--brand-hover);
-    --cc-btn-primary-hover-color: var(--brand-fg);
-    --cc-btn-primary-hover-border-color: var(--brand-hover);
-    --cc-btn-secondary-bg: transparent;
-    --cc-btn-secondary-color: var(--fg);
-    --cc-btn-secondary-border-color: var(--border-strong);
-    --cc-btn-secondary-hover-bg: var(--primary-ghost);
-    --cc-btn-secondary-hover-color: var(--brand);
-    --cc-btn-secondary-hover-border-color: var(--brand);
-    --cc-separator-border-color: var(--border);
-    --cc-footer-bg: var(--bg);
-    --cc-footer-color: var(--fg-muted);
-    --cc-footer-border-color: var(--border);
-    --cc-cookie-category-block-bg: var(--bg-subtle);
-    --cc-cookie-category-block-border: var(--border);
-    --cc-cookie-category-block-hover-bg: var(--bg-subtle);
-    --cc-cookie-category-block-hover-border: var(--border-strong);
-    --cc-cookie-category-expanded-block-bg: transparent;
-    --cc-cookie-category-expanded-block-hover-bg: var(--border);
-    --cc-section-category-border: var(--border);
-    --cc-toggle-on-bg: var(--brand);
-    --cc-toggle-on-knob-bg: var(--brand-fg);
-    --cc-toggle-enabled-icon-color: var(--brand);
-    --cc-toggle-off-bg: var(--border-strong);
-    --cc-toggle-off-knob-bg: var(--card);
-    --cc-toggle-disabled-icon-color: var(--border-strong);
-    --cc-toggle-readonly-bg: var(--border);
-    --cc-toggle-readonly-knob-bg: var(--fg-muted);
-    --cc-toggle-readonly-knob-icon-color: var(--card);
-    --cc-overlay-bg: var(--scrim);
-    --cc-webkit-scrollbar-bg: var(--border);
-    --cc-webkit-scrollbar-hover-bg: var(--border-strong);
-    --cc-btn-border-radius: var(--radius-md);
-    --cc-modal-border-radius: var(--radius-lg);
+  .js .js-only {
+    display: inline-flex;
   }
 
-  #cc-main a:focus-visible,
-  #cc-main button:focus-visible {
-    outline: 2px solid var(--brand);
+  .btn:focus-visible,
+  .link:focus-visible,
+  .checkbox:focus-visible,
+  [data-theme-toggle]:focus-visible,
+  .collapse-title:focus-visible,
+  a[data-open-dialog]:focus-visible,
+  .card:has(:focus-visible) {
+    outline: 2px solid var(--color-primary, var(--brand));
     outline-offset: 2px;
   }
 
-  /* stylelint-disable selector-class-pattern --
-     clases BEM del vendor (vanilla-cookieconsent) */
-  #cc-main .section__toggle:focus-visible ~ .toggle__icon {
-    box-shadow: 0 0 0 2px var(--brand);
-  }
-  /* stylelint-enable selector-class-pattern */
-
-  /* Reveal v2 (scroll): stagger por índice (--i en línea) con tokens.
-     Solo se oculta cuando el JS confirma observer activo (clase
-     `reveal-enabled`): sin JS o sin IntersectionObserver el contenido
-     queda visible desde el primer paint. */
-  .reveal-enabled [data-reveal] {
-    opacity: 0;
-    transform: translateY(16px);
-    transition:
-      opacity var(--dur-reveal) var(--ease-out),
-      transform var(--dur-reveal) var(--ease-out);
-    transition-delay: calc(var(--i, 0) * var(--stagger));
+  .honeypot {
+    position: absolute;
+    left: -10000px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
   }
 
-  .reveal-enabled [data-reveal].is-visible {
-    opacity: 1;
-    transform: none;
-  }
-
-  /* Reduced-motion: misma cobertura para la media query del sistema y
-     para .force-reduced-motion (demos de /design-system). Regla
-     general: los desplazamientos desaparecen y lo que funde lo hace
-     ≤150ms y sin delay; lo decorativo se elimina. */
-  @media (prefers-reduced-motion: reduce) {
-    .reveal-enabled [data-reveal] {
-      transform: none;
-      transition-duration: 150ms;
-      transition-delay: 0ms;
-    }
-
-    dialog.detail-island,
-    dialog.detail-island::backdrop {
-      transform: none;
-      transition-duration: 150ms;
-    }
-
-    /* Sin translateY(8px) en el fotograma inicial (@starting-style). */
-    @starting-style {
-      dialog.detail-island[open] {
-        opacity: 1;
-        transform: none;
-      }
-
-      dialog.detail-island[open]::backdrop {
-        opacity: 1;
-      }
-    }
-
-    .js [data-hero] [data-hero-item],
-    .js [data-hero] [data-hero-lcp] {
-      animation: none;
-    }
-
-    .btn-spinner,
-    .badge-dot,
-    .dimension-line,
-    .pagehead-rule,
-    [data-mobile-nav] {
-      animation: none;
-    }
-
-    .dimension-line,
-    .pagehead-rule {
-      transform: none;
-    }
-
-    .btn,
-    .card-lift,
-    .link-arrow,
-    .site-nav a::after,
-    .js .card-img {
-      transition-duration: 150ms;
-    }
-
-    .btn:hover,
-    .btn:active,
-    .card-lift:hover,
-    .group:hover .card-cover,
-    :hover > .link-arrow,
-    :focus-visible > .link-arrow {
-      transform: none;
-    }
-  }
-
-  .force-reduced-motion .reveal-enabled [data-reveal] {
-    transform: none;
-    transition-duration: 150ms;
-    transition-delay: 0ms;
-  }
-
-  .force-reduced-motion dialog.detail-island,
-  .force-reduced-motion dialog.detail-island::backdrop {
-    transform: none;
-    transition-duration: 150ms;
-  }
-
-  @starting-style {
-    .force-reduced-motion dialog.detail-island[open] {
-      opacity: 1;
-      transform: none;
-    }
-
-    .force-reduced-motion dialog.detail-island[open]::backdrop {
-      opacity: 1;
-    }
-  }
-
-  .force-reduced-motion .js [data-hero] [data-hero-item],
-  .force-reduced-motion .js [data-hero] [data-hero-lcp],
-  .force-reduced-motion .btn-spinner,
-  .force-reduced-motion .badge-dot,
-  .force-reduced-motion .dimension-line {
-    animation: none;
-  }
-
-  .force-reduced-motion .pagehead-rule,
-  .force-reduced-motion [data-mobile-nav] {
-    animation: none;
-  }
-
-  .force-reduced-motion .dimension-line,
-  .force-reduced-motion .pagehead-rule {
-    transform: none;
-  }
-
-  .force-reduced-motion .btn,
-  .force-reduced-motion .card-lift,
-  .force-reduced-motion .link-arrow,
-  .force-reduced-motion .site-nav a::after,
-  .force-reduced-motion .js .card-img {
-    transition-duration: 150ms;
-  }
-
-  .force-reduced-motion .btn:hover,
-  .force-reduced-motion .btn:active,
-  .force-reduced-motion .card-lift:hover,
-  .force-reduced-motion .group:hover .card-cover,
-  .force-reduced-motion :hover > .link-arrow,
-  .force-reduced-motion :focus-visible > .link-arrow {
-    transform: none;
-  }
-}
-
-/* ------------------------------------------------------------------ */
-
-/* utilities: ayudas de accesibilidad y línea de marca.                 */
-
-/* ------------------------------------------------------------------ */
-@layer utilities {
   .sr-only {
     position: absolute;
     width: 1px;
@@ -1009,36 +186,64 @@
     border: 0;
   }
 
-  /* Numeración visual de pasos: el contador vive en un span aria-hidden
-     para no duplicar la lectura del <ol> (Safari con list-style: none). */
-  .steps {
-    counter-reset: step;
-    list-style: none;
-    padding: 0;
-  }
+  @media (prefers-reduced-motion: no-preference) {
+    @keyframes rise-in {
+      from {
+        opacity: 0;
+        transform: translateY(0.5rem);
+      }
 
-  .steps > li {
-    counter-increment: step;
-  }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
 
-  .steps > li > .steps-num::before {
-    content: counter(step, decimal-leading-zero);
-  }
+    .js .rise-1,
+    .js .rise-2,
+    .js .rise-3,
+    .js .rise-4,
+    .js .rise-5,
+    .js .rise-6 {
+      animation: rise-in 0.6s var(--ease-out) both;
+    }
 
-  /* Honeypot: fuera de pantalla (no display:none; algunos bots lo ignoran). */
-  .honeypot {
-    position: absolute;
-    left: -10000px;
-    top: auto;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-  }
+    .js .rise-2 {
+      animation-delay: 60ms;
+    }
 
-  /* Linework azul tenue para el motivo esquemático (aria-hidden). El SVG
-     aplica stroke-opacity 0.14 (y fade 0.35 en desktop): el color se da
-     sólido para que el trazo se perciba como azul pálido sobre papel. */
-  .text-brand-line {
-    color: var(--brand);
+    .js .rise-3 {
+      animation-delay: 120ms;
+    }
+
+    .js .rise-4 {
+      animation-delay: 180ms;
+    }
+
+    .js .rise-5 {
+      animation-delay: 240ms;
+    }
+
+    .js .rise-6 {
+      animation-delay: 300ms;
+    }
   }
+}
+
+@layer utilities {
+  /* stylelint-disable declaration-no-important, declaration-property-value-disallowed-list -- impresión */
+  @media print {
+    .navbar,
+    .footer,
+    [data-theme-toggle],
+    .js-only {
+      display: none !important;
+    }
+
+    body {
+      background: var(--paper-0);
+      color: var(--ink-900);
+    }
+  }
+  /* stylelint-enable declaration-no-important, declaration-property-value-disallowed-list */
 }

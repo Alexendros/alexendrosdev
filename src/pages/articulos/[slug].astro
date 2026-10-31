@@ -1,6 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Container from '../../components/Container.astro';
 import Link from '../../components/Link.astro';
 import Button from '../../components/Button.astro';
 import { articles } from '../../content/articles';
@@ -16,7 +15,7 @@ const { article } = Astro.props;
 ---
 
 <Layout title={`${article.title} — Alexendros`} description={article.description}>
-  <Container size="narrow" class="py-16 md:py-24">
+  <div class="mx-auto max-w-3xl px-4 py-16 md:py-24">
     <p class="text-xs text-muted">
       <Link href="/" variant="nav">Inicio</Link> / Artículo
     </p>
@@ -31,5 +30,5 @@ const { article } = Astro.props;
       <Button href="/contacto?motivo=propuestaComercial&origen=home">Solicitar propuesta</Button>
       <Link href="/servicios" variant="inline">Ver servicios</Link>
     </div>
-  </Container>
+  </div>
 </Layout>

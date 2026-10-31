@@ -1,7 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Container from '../../components/Container.astro';
-import Grid from '../../components/Grid.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import DetailIsland from '../../components/DetailIsland.astro';
 import { availabilityCtaLabels, productTypeLabels, projects } from '../../content/projects';
@@ -24,22 +22,22 @@ const detailItems = projects.map((p) => ({
   ogImage="/og/proyectos.png"
   ogImageAlt="Proyectos realizados por encargo"
 >
-  <Container class="py-16 md:py-24">
+  <div class="mx-auto max-w-6xl px-4 py-16 md:py-24">
     <header>
       <h1 class="text-step-3 break-words font-bold max-w-3xl text-balance">
         Proyectos realizados por encargo.
       </h1>
       <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
     </header>
-    <Grid gap="6" class="mt-8 md:grid-cols-2 lg:grid-cols-3">
+    <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {
         projects.map((p, i) => (
-          <div data-reveal={i >= 3 || undefined} style={i >= 3 ? `--i:${i - 3}` : undefined}>
+          <div>
             <ProjectCard project={p} priority={i === 0} />
           </div>
         ))
       }
-    </Grid>
+    </div>
     <DetailIsland basePath="/referencias" items={detailItems} />
-  </Container>
+  </div>
 </Layout>

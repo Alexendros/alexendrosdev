@@ -1,26 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PageHead from '../components/PageHead.astro';
-import Container from '../components/Container.astro';
 import Button from '../components/Button.astro';
 import Link from '../components/Link.astro';
-import BlueprintMotif from '../components/BlueprintMotif.astro';
 ---
 
 <Layout title="Página no encontrada — Alexendros" description="Esta página no existe.">
-  <Container size="narrow" class="relative py-16 md:py-24 overflow-hidden">
-    <BlueprintMotif
-      class="pointer-events-none absolute -right-12 top-8 h-48 w-auto aspect-[4/3] text-brand-line md:-right-16 md:h-72"
-    />
+  <div class="mx-auto max-w-3xl px-4 relative py-16 md:py-24 overflow-hidden">
     <PageHead
       title="Esta página no existe"
       description="La página que buscas se ha movido o ya no existe. Estas son las páginas disponibles."
     />
     <div class="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3">
       <Button href="/">Volver al inicio</Button>
-      <Link href="/contacto?motivo=propuestaComercial" variant="inline" class="text-muted"
-        >Contacto</Link
-      >
+      <Link href="/#contacto" variant="inline" class="text-muted">Contacto</Link>
     </div>
-  </Container>
+  </div>
 </Layout>

@@ -1,0 +1,85 @@
+---
+import { homeHero, homeStats } from '../../content/home';
+---
+
+<section id="top" class="hero scroll-mt-nav">
+  <div
+    class="hero-content w-full max-w-6xl flex-col items-center gap-10 px-4 py-14 lg:flex-row lg:py-20"
+  >
+    <div class="flex-1">
+      <p class="rise rise-1 mb-4 text-sm opacity-70" aria-hidden="true">
+        <span class="text-accent">{homeHero.prompt}</span>
+        {' '}
+        {homeHero.command}<span class="cursor-blink"></span>
+      </p>
+      <h1 class="rise rise-2 text-4xl font-extrabold leading-tight tracking-tight lg:text-5xl">
+        {homeHero.title}
+      </h1>
+      <p class="rise rise-3 mt-5 max-w-xl opacity-80">{homeHero.lead}</p>
+      <div class="rise rise-4 mt-8 flex flex-wrap gap-3">
+        <a class="btn btn-primary btn-lg" href={homeHero.primaryCta.href}
+          >{homeHero.primaryCta.label}</a
+        >
+        <a class="btn btn-outline btn-lg" href={homeHero.secondaryCta.href}
+          >{homeHero.secondaryCta.label}</a
+        >
+      </div>
+    </div>
+    <div class="rise rise-3 w-full max-w-xl flex-1" aria-hidden="true">
+      <div class="mockup-browser border border-base-300 bg-base-100">
+        <div class="mockup-browser-toolbar">
+          <div class="input">{homeHero.browserUrl}</div>
+        </div>
+        <div class="grid gap-4 border-t border-base-300 p-6">
+          <div class="h-3 w-2/3 rounded bg-base-300"></div>
+          <ul class="list">
+            {
+              homeHero.checklist.map((item, i) => (
+                <li class={`list-row rise rise-${i + 4}`}>
+                  <span class="badge badge-accent badge-sm">{i + 1}</span>
+                  <div>
+                    <div class="font-bold">{item.title}</div>
+                    <div class="text-xs opacity-60">{item.detail}</div>
+                  </div>
+                  <span class="badge badge-outline badge-success">{item.status}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <div>
+            <div class="mb-1 flex justify-between text-xs opacity-60">
+              <span>{homeHero.responseLabel}</span>
+              <span>{homeHero.responseValue}</span>
+            </div>
+            <progress class="progress progress-primary" value="100" max="100"></progress>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{/* Lista real accesible (fuera del mockup decorativo). */}
+<section class="mx-auto max-w-6xl px-4" aria-labelledby="compromisos-heading">
+  <h2 id="compromisos-heading" class="sr-only">Compromisos antes de empezar</h2>
+  <ul class="sr-only">
+    {
+      homeHero.checklist.map((item) => (
+        <li>
+          {item.title}: {item.detail}. {item.status}.
+        </li>
+      ))
+    }
+  </ul>
+  <div class="stats stats-vertical w-full border border-base-300 bg-base-100 sm:stats-horizontal">
+    {
+      homeStats.map((stat) => (
+        <div class="stat">
+          <div class="stat-title">{stat.title}</div>
+          <div class="stat-value text-xl">{stat.value}</div>
+          <div class="stat-desc">{stat.desc}</div>
+        </div>
+      ))
+    }
+  </div>
+</section>

@@ -1,7 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Container from '../components/Container.astro';
-import Grid from '../components/Grid.astro';
 import Button from '../components/Button.astro';
 import { processPage } from '../content/process';
 
@@ -14,7 +12,7 @@ const { seo, hero, steps, close } = processPage;
   ogImage="/og/proceso-y-entrega.png"
   ogImageAlt="Metodología clara. Desde la idea hasta el producto entregado"
 >
-  <Container class="py-16 md:py-24">
+  <div class="mx-auto max-w-6xl px-4 py-16 md:py-24">
     <header>
       <h1 id="delivery-hero-title" class="text-step-3 break-words font-bold max-w-3xl text-balance">
         {hero.h1Lead}<span class="text-primary">{hero.h1Accent}</span>
@@ -23,7 +21,7 @@ const { seo, hero, steps, close } = processPage;
     </header>
 
     <section id="proceso" class="mt-16" aria-labelledby="delivery-hero-title">
-      <Grid as="ol" gap="6" role="list" class="steps md:grid-cols-2 lg:grid-cols-4 list-none p-0">
+      <div class="grid steps md:grid-cols-2 lg:grid-cols-4 list-none p-0">
         {
           steps.map((step) => (
             <li class="min-w-0 border-t-2 border-primary pt-5">
@@ -36,7 +34,7 @@ const { seo, hero, steps, close } = processPage;
             </li>
           ))
         }
-      </Grid>
+      </div>
     </section>
 
     <section class="mt-16 max-w-2xl" aria-labelledby="metodo-close-heading">
@@ -48,5 +46,5 @@ const { seo, hero, steps, close } = processPage;
         <Button href={close.href}>{close.heading}</Button>
       </div>
     </section>
-  </Container>
+  </div>
 </Layout>

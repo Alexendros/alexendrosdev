@@ -1,14 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Container from '../components/Container.astro';
 import Button from '../components/Button.astro';
 import Link from '../components/Link.astro';
-import Grid from '../components/Grid.astro';
 import { profile } from '../content/profile';
 ---
 
 <Layout title={profile.pageTitle} description={profile.pageDescription}>
-  <Container class="py-16 md:py-24">
+  <div class="mx-auto max-w-6xl px-4 py-16 md:py-24">
     <p class="text-sm text-muted">{profile.metaLine}</p>
     <h1 class="mt-3 text-step-3 break-words font-bold max-w-3xl text-balance">
       {profile.headline}
@@ -20,7 +18,7 @@ import { profile } from '../content/profile';
 
     <section class="mt-16" aria-labelledby="why-heading">
       <h2 id="why-heading" class="text-2xl font-bold">Ventajas del encargo</h2>
-      <Grid gap="6" class="mt-8 md:grid-cols-3">
+      <div class="grid mt-8 md:grid-cols-3">
         {
           profile.workWithMe.map((item) => (
             <article class="border border-border rounded-lg p-5 bg-card">
@@ -29,7 +27,7 @@ import { profile } from '../content/profile';
             </article>
           ))
         }
-      </Grid>
+      </div>
     </section>
 
     <section class="mt-16" aria-labelledby="trajectory-heading">
@@ -49,5 +47,5 @@ import { profile } from '../content/profile';
         <Button href="/contacto?motivo=propuestaComercial&origen=home">Solicitar propuesta</Button>
       </div>
     </section>
-  </Container>
+  </div>
 </Layout>

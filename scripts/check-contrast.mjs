@@ -1,19 +1,20 @@
-// Valida el contraste WCAG de los pares semánticos del design system
-// (decisión 0011, tema claro editorial + tema oscuro opcional) y los
-// guardrails de fuente única: los literales viven en global.css
-// (primitivos hex + semánticos por var()); tailwind.config.mjs solo
-// referencia var()/color-mix. La matemática de color y el parsing de
-// tokens se comparten con src/pages/design-system.astro vía
-// scripts/contrast-lib.mjs.
-// Uso: node scripts/check-contrast.mjs — sale con 1 si algún par falla.
+// Valida el contraste WCAG de los tokens de producto (global.css) y de los
+// temas daisyUI alexlight/alexdark (theme.css). Uso: pnpm check:contrast.
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { extractThemes, resolveValue, toRgb, ratio } from './contrast-lib.mjs';
+import {
+  extractThemes,
+  extractDaisyThemes,
+  resolveValue,
+  toRgb,
+  ratio,
+  mix
+} from './contrast-lib.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const css = readFileSync(join(root, 'src/styles/global.css'), 'utf8');
-const tailwind = readFileSync(join(root, 'tailwind.config.mjs'), 'utf8');
+const themeCss = readFileSync(join(root, 'src/styles/theme.css'), 'utf8');
 
 const SEMANTIC = [
   'bg',
@@ -30,10 +31,6 @@ const SEMANTIC = [
   'primary-ghost'
 ];
 
-// [nombre, texto, fondo, mínimo]. --brand se usa como color de texto
-// (precios, enlaces, kickers), así que su mínimo es 4.5:1, no 3:1.
-// --border-strong es la frontera de componentes interactivos (inputs):
-// WCAG 1.4.11 pide 3:1 contra el fondo que la rodea (card y bg).
 const PAIRS = [
   ['fg/bg (texto principal)', 'fg', 'bg', 4.5],
   ['fg-muted/bg (texto secundario)', 'fg-muted', 'bg', 4.5],
@@ -51,7 +48,32 @@ const PAIRS = [
   ['border-strong/bg (frontera de inputs)', 'border-strong', 'bg', 3.0]
 ];
 
+const DAISY_ROLES = [
+  'base-100',
+  'base-200',
+  'base-300',
+  'base-content',
+  'primary',
+  'primary-content',
+  'secondary',
+  'secondary-content',
+  'accent',
+  'accent-content',
+  'neutral',
+  'neutral-content',
+  'info',
+  'info-content',
+  'success',
+  'success-content',
+  'warning',
+  'warning-content',
+  'error',
+  'error-content'
+];
+
 let failed = 0;
+/** @type {string[]} */
+const softWarnings = [];
 
 function validateTheme(label, props) {
   const resolved = {};
@@ -73,8 +95,6 @@ function validateTheme(label, props) {
 
   for (const [name, fgName, bgName, min] of PAIRS) {
     if (!resolved[fgName] || !resolved[bgName]) continue;
-    // Los pares son colores opacos: se comparan directamente sobre el
-    // fondo del propio par (bg, card, brand o brand-hover).
     const fgRgb = toRgb(resolved[fgName], bg);
     const backdrop = toRgb(resolved[bgName], bg);
     const r = ratio(fgRgb, backdrop);
@@ -83,9 +103,6 @@ function validateTheme(label, props) {
     console.log(`${ok ? 'PASS' : 'FAIL'}  ${label} ${name}: ${r.toFixed(2)}:1 (mínimo ${min}:1)`);
   }
 
-  // Indicador de foco: la clase .focus-ring usa outline sólido --brand
-  // (WCAG 1.4.11, ≥3:1 sobre fondo y tarjeta). El token --focus-ring es
-  // un color-mix al 55%: se informa compuesto sobre ambos fondos.
   if (resolved.brand) {
     const ringRaw = props['focus-ring'] ?? '';
     const ringMatch = ringRaw.match(
@@ -108,6 +125,95 @@ function validateTheme(label, props) {
   }
 }
 
+function daisyKey(role) {
+  return `color-${role}`;
+}
+
+function validateDaisyTheme(label, props) {
+  const resolved = {};
+  for (const role of DAISY_ROLES) {
+    const key = daisyKey(role);
+    if (!(key in props)) {
+      failed += 1;
+      console.log(`FAIL  ${label}: falta --${key}`);
+      continue;
+    }
+    try {
+      resolved[role] = resolveValue(props[key], props);
+    } catch (err) {
+      failed += 1;
+      console.log(`FAIL  ${label}: no se pudo resolver --${key}: ${err.message}`);
+    }
+  }
+
+  const contentPairs = [
+    ['primary', 'primary-content'],
+    ['secondary', 'secondary-content'],
+    ['accent', 'accent-content'],
+    ['neutral', 'neutral-content'],
+    ['info', 'info-content'],
+    ['success', 'success-content'],
+    ['warning', 'warning-content'],
+    ['error', 'error-content']
+  ];
+
+  for (const [bgRole, fgRole] of contentPairs) {
+    if (!resolved[bgRole] || !resolved[fgRole]) continue;
+    const r = ratio(toRgb(resolved[fgRole]), toRgb(resolved[bgRole]));
+    const ok = r >= 4.5;
+    if (!ok) failed += 1;
+    console.log(
+      `${ok ? 'PASS' : 'FAIL'}  ${label} ${fgRole}/${bgRole}: ${r.toFixed(2)}:1 (mínimo 4.5:1)`
+    );
+  }
+
+  for (const base of ['base-100', 'base-200', 'base-300']) {
+    if (!resolved['base-content'] || !resolved[base]) continue;
+    const r = ratio(toRgb(resolved['base-content']), toRgb(resolved[base]));
+    const ok = r >= 4.5;
+    if (!ok) failed += 1;
+    console.log(
+      `${ok ? 'PASS' : 'FAIL'}  ${label} base-content/${base}: ${r.toFixed(2)}:1 (mínimo 4.5:1)`
+    );
+  }
+
+  // text-accent y badge-accent sobre bases.
+  for (const base of ['base-100', 'base-200']) {
+    if (!resolved.accent || !resolved[base]) continue;
+    const r = ratio(toRgb(resolved.accent), toRgb(resolved[base]));
+    const ok = r >= 4.5;
+    if (!ok) failed += 1;
+    console.log(
+      `${ok ? 'PASS' : 'FAIL'}  ${label} text-accent/${base}: ${r.toFixed(2)}:1 (mínimo 4.5:1)`
+    );
+  }
+
+  if (resolved['accent-content'] && resolved.accent) {
+    const r = ratio(toRgb(resolved['accent-content']), toRgb(resolved.accent));
+    const ok = r >= 4.5;
+    if (!ok) failed += 1;
+    console.log(
+      `${ok ? 'PASS' : 'FAIL'}  ${label} badge-accent (accent-content/accent): ${r.toFixed(2)}:1 (mínimo 4.5:1)`
+    );
+  }
+
+  // badge-soft ≈ texto accent sobre mezcla 20% accent + base.
+  for (const base of ['base-100', 'base-200']) {
+    if (!resolved.accent || !resolved[base]) continue;
+    const softBg = mix(toRgb(resolved.accent), toRgb(resolved[base]), 0.2);
+    const r = ratio(toRgb(resolved.accent), softBg);
+    const ok = r >= 4.5;
+    if (!ok) {
+      softWarnings.push(`${label} badge-soft/accent sobre ${base}: ${r.toFixed(2)}:1`);
+      console.log(
+        `WARN  ${label} badge-soft accent/${base}: ${r.toFixed(2)}:1 (<4.5; fase 2 usa badge-outline)`
+      );
+    } else {
+      console.log(`PASS  ${label} badge-soft accent/${base}: ${r.toFixed(2)}:1 (mínimo 4.5:1)`);
+    }
+  }
+}
+
 const { light, dark, darkConsistent, darkPartial } = extractThemes(css);
 validateTheme('claro', light);
 if (darkPartial) {
@@ -122,34 +228,30 @@ if (darkPartial) {
   }
   validateTheme('oscuro', dark);
 } else {
-  console.log('INFO  tema oscuro no publicado (sin bloque @tema-oscuro)');
+  console.log('INFO  tema oscuro de producto no publicado (sin bloque @tema-oscuro)');
 }
 
-/* ---------- guardrails de fuente única ---------- */
+const daisyThemes = extractDaisyThemes(themeCss);
+for (const name of ['alexlight', 'alexdark']) {
+  if (!daisyThemes[name]) {
+    failed += 1;
+    console.log(`FAIL  falta tema daisyUI ${name} en theme.css`);
+    continue;
+  }
+  validateDaisyTheme(name, daisyThemes[name]);
+}
 
-const oklchInCss = (css.match(/oklch\(/g) ?? []).length;
-if (oklchInCss > 0) {
+/* Literales oklch: solo en theme.css. */
+const oklchInGlobal = (css.match(/oklch\(/g) ?? []).length;
+if (oklchInGlobal > 0) {
   failed += 1;
   console.log(
-    `FAIL  global.css contiene ${oklchInCss} literal(es) oklch (la paleta es hex en :root)`
+    `FAIL  global.css contiene ${oklchInGlobal} literal(es) oklch (deben vivir en theme.css)`
   );
 } else {
-  console.log('PASS  global.css sin literales oklch (paleta hex en :root)');
+  console.log('PASS  global.css sin literales oklch (paleta hex en @layer theme)');
 }
 
-const hexInTailwind = (tailwind.match(/#[0-9a-f]{3,8}\b/gi) ?? []).length;
-const oklchInTailwind = (tailwind.match(/oklch\(/g) ?? []).length;
-if (hexInTailwind + oklchInTailwind > 0) {
-  failed += 1;
-  console.log(
-    `FAIL  tailwind.config.mjs contiene ${hexInTailwind} hex y ${oklchInTailwind} oklch (usar var()/color-mix)`
-  );
-} else {
-  console.log('PASS  tailwind.config.mjs sin literales de color (referencia var()/color-mix)');
-}
-
-/* theme-color en Layout: hex fijos (meta no admite var()); deben
-   coincidir con --paper-50/--bg claro y --bg oscuro (excepción diseno.md §4). */
 const layout = readFileSync(join(root, 'src/layouts/Layout.astro'), 'utf8');
 const themeLight = layout.match(
   /theme-color[^>]*content="(#[0-9a-fA-F]{3,8})"[^>]*prefers-color-scheme:\s*light/
@@ -175,6 +277,12 @@ if (!themeLight || !themeDark || !paper50 || !darkBg) {
 } else {
   console.log(
     `PASS  theme-color alineado a tokens (${themeLight[1]} claro / ${themeDark[1]} oscuro)`
+  );
+}
+
+if (softWarnings.length) {
+  console.log(
+    `\nINFO  badge-soft por debajo de AA en ${softWarnings.length} par(es); la fase 2 usará badge-outline.`
   );
 }
 

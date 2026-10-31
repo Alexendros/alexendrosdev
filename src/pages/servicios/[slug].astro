@@ -1,6 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Container from '../../components/Container.astro';
 import Button from '../../components/Button.astro';
 import Link from '../../components/Link.astro';
 import { services } from '../../content/services';
@@ -55,7 +54,7 @@ const jsonLd = [
   ogImageAlt={`Ficha de ${service.title}`}
   jsonLd={jsonLd}
 >
-  <Container size="narrow" class="py-16 md:py-24">
+  <div class="mx-auto max-w-3xl px-4 py-16 md:py-24">
     <article data-product-detail={service.slug}>
       <nav class="text-xs text-muted" aria-label="Miga de pan">
         <Link href="/servicios" variant="nav">Servicios profesionales</Link> / {service.title}
@@ -219,5 +218,5 @@ const jsonLd = [
         </section>
       </div>
     </article>
-  </Container>
+  </div>
 </Layout>

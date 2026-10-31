@@ -1,7 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Container from '../../components/Container.astro';
-import Grid from '../../components/Grid.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
 import DetailIsland from '../../components/DetailIsland.astro';
 import NeedsConfigurator from '../../components/NeedsConfigurator.astro';
@@ -24,7 +22,7 @@ const detailItems = services.map((s) => ({
   ogImage="/og/servicios.png"
   ogImageAlt="Servicios profesionales de Alexendros.dev"
 >
-  <Container class="py-16 md:py-24">
+  <div class="mx-auto max-w-6xl px-4 py-16 md:py-24">
     <header>
       <h1 class="text-step-3 break-words font-bold max-w-3xl text-balance">
         Catálogo de servicios profesionales en{' '}
@@ -39,7 +37,7 @@ const detailItems = services.map((s) => ({
     <p class="mt-4 max-w-2xl text-sm text-muted" data-services-proposal-note>
       El alcance, el calendario y las condiciones económicas se detallan en cada propuesta.
     </p>
-    <Grid gap="6" class="mt-8 md:grid-cols-2" data-services-grid>
+    <div class="grid mt-8 md:grid-cols-2">
       {
         serviceProducts.map((product) => (
           <div class="h-full">
@@ -47,7 +45,7 @@ const detailItems = services.map((s) => ({
           </div>
         ))
       }
-    </Grid>
+    </div>
     <DetailIsland basePath="/servicios" items={detailItems} />
 
     <section class="mt-16" aria-labelledby="portal-heading">
@@ -65,5 +63,5 @@ const detailItems = services.map((s) => ({
         </p>
       </noscript>
     </section>
-  </Container>
+  </div>
 </Layout>
