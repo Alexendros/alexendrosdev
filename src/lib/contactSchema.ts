@@ -31,6 +31,17 @@ export const contactOrigins = [
   'home-ia'
 ] as const;
 
+/** Identificadores de vía del formulario (página única). */
+export const contactViaIds = ['revisar', 'crear', 'colaborar', 'otra'] as const;
+export type ContactViaId = (typeof contactViaIds)[number];
+
+export const contactViaLabels: Record<ContactViaId, string> = {
+  revisar: 'Revisar lo que ya existe',
+  crear: 'Crear una web o una tienda',
+  colaborar: 'Sumar un programador al equipo',
+  otra: 'Otra necesidad'
+};
+
 const PORTAL_MODULE_TITLES: Record<PortalModuleId, string> = Object.fromEntries(
   portalModules.map((m) => [m.id, m.title])
 ) as Record<PortalModuleId, string>;
@@ -53,6 +64,31 @@ function rejectUnsafe(value: string, ctx: z.RefinementCtx, path: string) {
   }
 }
 
+/** Sitio visible (no honeypot). Acepta dominio o URL http(s). */
+const sitioSchema = z.preprocess(
+  (v) => {
+    if (typeof v !== 'string') return undefined;
+    const trimmed = v.trim();
+    return trimmed === '' ? undefined : trimmed;
+  },
+  z
+    .string()
+    .max(200)
+    .regex(/^(https?:\/\/)?[^\s/.]+(\.[^\s/.]+)+(\/\S*)?$/i, { message: 'formato' })
+    .optional()
+);
+
+function normalizeVias(v: unknown): ContactViaId[] {
+  const raw = Array.isArray(v) ? v : typeof v === 'string' ? [v] : [];
+  const out: ContactViaId[] = [];
+  for (const item of raw) {
+    if (typeof item !== 'string') continue;
+    const id = item.trim() as ContactViaId;
+    if ((contactViaIds as readonly string[]).includes(id) && !out.includes(id)) out.push(id);
+  }
+  return out;
+}
+
 export const contactSchema = z
   .object({
     name: z.string().trim().min(2).max(100),
@@ -72,7 +108,15 @@ export const contactSchema = z
       if (typeof v === 'string' && (contactReasons as readonly string[]).includes(v)) return v;
       return 'informacionCliente';
     }, z.enum(contactReasons)),
+    /** Tope UI 600; servidor admite hasta 2000. */
     message: z.string().trim().min(10).max(2000),
+    vias: z.preprocess(normalizeVias, z.array(z.enum(contactViaIds)).min(1)),
+    otraDetalle: z.preprocess((v) => {
+      if (typeof v !== 'string') return undefined;
+      const trimmed = v.trim();
+      return trimmed === '' ? undefined : trimmed;
+    }, z.string().min(3).max(120).optional()),
+    sitio: sitioSchema,
     modules: z.preprocess((v) => {
       if (v === undefined || v === null) return undefined;
       if (typeof v === 'string' && v.trim() === '') return undefined;
@@ -94,11 +138,20 @@ export const contactSchema = z
   .superRefine((data, ctx) => {
     rejectUnsafe(data.name, ctx, 'name');
     rejectUnsafe(data.message, ctx, 'message');
+    if (data.otraDetalle) rejectUnsafe(data.otraDetalle, ctx, 'otraDetalle');
 
     if (data.channel === 'correo' && !data.email) {
       ctx.addIssue({
         code: 'custom',
         path: ['email'],
+        message: 'falta'
+      });
+    }
+
+    if (data.vias.includes('otra') && !data.otraDetalle) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['otraDetalle'],
         message: 'falta'
       });
     }
@@ -141,7 +194,10 @@ export const fieldLabels: Record<string, string> = {
   channel: 'Canal de respuesta',
   email: 'Correo electrónico',
   reason: 'Motivo',
-  message: 'La petición',
+  message: 'Mensaje',
+  vias: 'Vías',
+  otraDetalle: 'Otra necesidad',
+  sitio: 'Sitio web',
   modules: 'Módulos',
   serviceSlug: 'Servicio',
   projectSlug: 'Trabajo',
@@ -162,6 +218,12 @@ export function formatContactFieldErrors(error: z.ZodError): FieldError[] {
     let cause: string;
     if (field === 'consent') {
       cause = 'falta la aceptación del tratamiento';
+    } else if (field === 'vias') {
+      cause = 'marcar al menos una opción';
+    } else if (field === 'otraDetalle') {
+      cause = 'falta describir la otra necesidad';
+    } else if (field === 'sitio') {
+      cause = 'el sitio no parece válido';
     } else {
       const missing =
         issue.message === 'falta' || issue.code === 'invalid_type' || issue.code === 'too_small';
@@ -173,13 +235,20 @@ export function formatContactFieldErrors(error: z.ZodError): FieldError[] {
 }
 
 export function buildContactMessage(input: ContactInput): string {
+  const viaLines = input.vias.map((id) =>
+    id === 'otra' && input.otraDetalle
+      ? `Otra necesidad: ${input.otraDetalle}`
+      : contactViaLabels[id]
+  );
   const lines = [
     `Categoría: ${entityLabels[input.entityType]}`,
     'Canal preferido: Correo electrónico',
     `Motivo: ${reasonLabels[input.reason]}`,
+    `Vías: ${viaLines.join('; ')}`,
     `Petición:\n${input.message}`
   ];
   if (input.email) lines.push(`Email: ${input.email}`);
+  if (input.sitio) lines.push(`Sitio web: ${input.sitio}`);
   if (input.modules) {
     const names = portalModuleDisplayNames(input.modules);
     if (names) lines.push(`Módulos de portal: ${names}`);

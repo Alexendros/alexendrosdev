@@ -1,3 +1,5 @@
+import { isAllowedReferralCode } from '../content/referralCodes';
+
 export const REFERRAL_COOKIE = 'alexendros_ref';
 export const REFERRAL_MAX_AGE_SECONDS = 90 * 24 * 60 * 60;
 export const REFERRAL_PATTERN = /^[A-Z0-9][A-Z0-9-]{2,31}$/;
@@ -9,8 +11,9 @@ export function normalizeReferralCode(value: string | null | undefined): string 
   return code;
 }
 
+/** Cookie solo desde el servidor: HttpOnly + Secure + SameSite=Lax. */
 export function referralCookieHeader(code: string): string {
-  return `${REFERRAL_COOKIE}=${code}; Path=/; Max-Age=${REFERRAL_MAX_AGE_SECONDS}; SameSite=Lax`;
+  return `${REFERRAL_COOKIE}=${encodeURIComponent(code)}; Path=/; Max-Age=${REFERRAL_MAX_AGE_SECONDS}; SameSite=Lax; HttpOnly; Secure`;
 }
 
 export function parseCookieHeader(header: string | null): Record<string, string> {
@@ -32,27 +35,27 @@ export function referralFromCookieHeader(header: string | null): string | null {
 }
 
 /**
- * Si la URL trae `?ref=CODE`, guarda la cookie de atribución (90 días) y
- * limpia el parámetro del historial. Pensado para el cliente.
+ * Si la URL trae `?ref=`, limpia el parámetro del historial.
+ * Ya no escribe la cookie en el cliente (solo `/r/[code]` en el servidor).
  */
 export function captureReferralFromLocation(): string | null {
   if (typeof window === 'undefined') return null;
   try {
     const params = new URLSearchParams(window.location.search);
-    const code = normalizeReferralCode(params.get('ref'));
-    if (!code) return null;
-    document.cookie = referralCookieHeader(code);
+    const raw = params.get('ref');
+    if (!raw) return null;
+    const code = normalizeReferralCode(raw);
     params.delete('ref');
     const query = params.toString();
     const url = window.location.pathname + (query ? `?${query}` : '') + window.location.hash;
     window.history.replaceState(null, '', url);
-    return code;
+    return code && isAllowedReferralCode(code) ? code : null;
   } catch {
     return null;
   }
 }
 
-/** Lee el código de referido desde la cookie (cliente). */
+/** Lee el código de referido desde la cookie (cliente; HttpOnly → siempre null). */
 export function readReferralCookie(): string | null {
   if (typeof document === 'undefined') return null;
   return referralFromCookieHeader(document.cookie);

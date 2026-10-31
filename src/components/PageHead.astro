@@ -1,8 +1,4 @@
 ---
-// Cabecera de página: título, regla hairline y descripción opcional.
-// El kicker mono (ÍNDICE · …, CONTACTO, etc.) queda fuera del patrón vivo.
-import Eyebrow from './Eyebrow.astro';
-
 interface Props {
   kicker?: string;
   title: string;
@@ -12,15 +8,12 @@ const { kicker, title, description } = Astro.props;
 ---
 
 <div>
-  {kicker ? <Eyebrow>{kicker}</Eyebrow> : null}
+  {kicker ? <p class="eyebrow">{kicker}</p> : null}
   <h1
-    class:list={[
-      kicker ? 'mt-2' : null,
-      'text-step-3 break-words font-bold max-w-3xl text-balance'
-    ]}
+    class:list={[kicker ? 'mt-2' : null, 'break-words text-3xl font-bold text-balance max-w-3xl']}
   >
     {title}
   </h1>
-  <div class="pagehead-rule mt-4 h-px bg-border" aria-hidden="true"></div>
-  {description && <p class="text-muted mt-3 max-w-2xl">{description}</p>}
+  <div class="mt-4 h-px bg-base-300" aria-hidden="true"></div>
+  {description && <p class="mt-3 max-w-2xl opacity-70">{description}</p>}
 </div>

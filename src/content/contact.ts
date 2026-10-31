@@ -56,7 +56,7 @@ export const contact = contactSchema.parse({
     }
   ],
   messages: {
-    success: 'Mensaje enviado. Respuesta en un día laborable por el canal elegido.',
+    success: 'Solicitud enviada. La respuesta llegará por correo en un día laborable.',
     error: 'No se pudo enviar. Contacto: contratacion@alexendros.dev'
   },
   bookings: {

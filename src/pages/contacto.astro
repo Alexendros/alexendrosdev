@@ -1,15 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PageHead from '../components/PageHead.astro';
-import Container from '../components/Container.astro';
 import Link from '../components/Link.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { contact } from '../content/contact';
 import { normalizeProjectSlug, normalizeServiceSlug } from '../content/contactContext';
 import { normalizePortalModuleIds, serializePortalModuleIds } from '../content/portalModules';
 import { contactOrigins, contactReasons, type ContactInput } from '../lib/contactSchema';
-import { site } from '../content/site';
-
 const params = Astro.url.searchParams;
 const motivoParam = params.get('motivo');
 const initialReason: ContactInput['reason'] =
@@ -32,7 +29,7 @@ const initialModules = serializePortalModuleIds(normalizePortalModuleIds(params.
   ogImage="/og/contacto.png"
   ogImageAlt="Formulario de contacto de Alexendros.dev"
 >
-  <Container size="narrow" class="py-16 md:py-24">
+  <div class="mx-auto max-w-3xl px-4 py-16 md:py-24">
     <PageHead
       title="Contacto"
       description="Propuesta comercial o información sobre un servicio. Alcance, plazo y condiciones quedan por escrito."
@@ -51,37 +48,9 @@ const initialModules = serializePortalModuleIds(normalizePortalModuleIds(params.
       />
     </div>
 
-    <!-- Visible hasta que la isla React marca hidratación usable (data-contact-hydrated). -->
-    <p
-      id="contact-nojs"
-      data-contact-nojs
-      class="mt-6 rounded-lg border border-border bg-card p-4 text-sm"
-    >
-      El formulario interactivo necesita JavaScript. Mientras tanto puedes escribir a{' '}
-      <a
-        href={site.social.email}
-        class="underline decoration-dotted underline-offset-2 text-primary"
-      >
-        contratacion@alexendros.dev
-      </a>
-      {' '}indicando el motivo del encargo y el canal preferido de respuesta.
-    </p>
-    <noscript>
-      <p class="mt-6 rounded-lg border border-border bg-card p-4 text-sm">
-        Sin JavaScript puedes escribir a{' '}
-        <a
-          href={site.social.email}
-          class="underline decoration-dotted underline-offset-2 text-primary"
-        >
-          contratacion@alexendros.dev
-        </a>
-        .
-      </p>
-    </noscript>
-
     <p class="mt-8 text-sm text-muted">
       Los datos se usan solo para responder a esta petición. Consulta la{' '}
       <Link href="/privacidad" variant="inline">política de privacidad</Link> antes de enviar.
     </p>
-  </Container>
+  </div>
 </Layout>

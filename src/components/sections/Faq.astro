@@ -1,0 +1,23 @@
+---
+import { homeFaq } from '../../content/home';
+---
+
+<div id="faq" class="scroll-mt-nav">
+  <h3 class="mb-4 text-xl font-bold">Preguntas frecuentes</h3>
+  <div class="flex w-full flex-col gap-2">
+    {
+      homeFaq.map((item, i) => (
+        <details
+          class="collapse collapse-plus border border-base-300 bg-base-100"
+          name="faq"
+          open={i === 0}
+        >
+          <summary class="collapse-title font-semibold min-h-12">{item.q}</summary>
+          <div class="collapse-content text-sm opacity-80">
+            <p>{item.a}</p>
+          </div>
+        </details>
+      ))
+    }
+  </div>
+</div>

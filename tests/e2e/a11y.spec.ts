@@ -3,15 +3,11 @@ import AxeBuilder from '@axe-core/playwright';
 
 const routes = [
   '/',
-  '/servicios',
   '/servicios/informe-comercial',
-  '/servicios/cumplimiento-normativo',
-  '/servicios/ciberseguridad',
-  '/referencias',
   '/referencias/front-valencia',
+  '/experiencia',
   '/metodo',
   '/identidad',
-  '/contacto',
   '/cookies',
   '/privacidad'
 ];

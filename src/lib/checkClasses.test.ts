@@ -26,4 +26,14 @@ describe('check:classes (C-08)', () => {
     const ok = `<div class="bg-card text-fg border-border shadow-none"></div>`;
     expect(scanSource(ok)).toEqual([]);
   });
+
+  it('falla con style=, is:inline e innerHTML', () => {
+    expect(
+      scanSource('<p style="color:red">x</p>', 's.astro').some((h) => h.id === 'style-attr')
+    ).toBe(true);
+    expect(
+      scanSource('<script is:inline></script>', 'i.astro').some((h) => h.id === 'is-inline')
+    ).toBe(true);
+    expect(scanSource('el.innerHTML = "x"', 'x.ts').some((h) => h.id === 'inner-html')).toBe(true);
+  });
 });

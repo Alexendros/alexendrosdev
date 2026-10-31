@@ -1,127 +1,45 @@
 ---
 import { site } from '../content/site';
-import Link from './Link.astro';
-
-const iconClass = 'shrink-0';
 ---
 
-<footer class="border-t border-border mt-0 cv-auto backdrop-blur glass-bg">
-  <div class="h-[3px] bp-hatch opacity-60" aria-hidden="true"></div>
-  <div
-    class="mx-auto max-w-[var(--container)] px-[var(--gutter)] py-16 md:py-24 grid md:grid-cols-2 gap-10 text-sm"
-  >
-    <div>
-      <div class="font-mono font-bold">Alexendros<span class="text-primary">.dev</span></div>
-      <ul class="mt-4 space-y-3 text-muted">
-        <li>
-          <Link
-            href={site.social.email}
-            variant="nav"
-            class="inline-flex items-center gap-2 hover:text-fg"
-          >
-            <svg
-              class={iconClass}
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path>
-              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-            </svg>
-            Contratación
-          </Link>
-        </li>
-        <li>
-          <Link
-            href={site.social.github}
-            variant="nav"
-            class="inline-flex items-center gap-2 hover:text-fg"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <svg
-              class={iconClass}
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path
-                d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"
-              ></path>
-            </svg>
-            GitHub
-          </Link>
-        </li>
-        <li>
-          <Link
-            href={site.social.linkedin}
-            variant="nav"
-            class="inline-flex items-center gap-2 hover:text-fg"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <svg
-              class={iconClass}
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"></path>
-              <rect x="2" y="9" width="4" height="12"></rect>
-              <circle cx="4" cy="4" r="2"></circle>
-            </svg>
-            LinkedIn
-          </Link>
-        </li>
-      </ul>
-    </div>
-    <div class="flex gap-10">
-      <div>
-        <div class="font-medium mb-2">Navegación</div>
-        <ul class="space-y-1 text-muted">
-          {
-            [...site.nav, ...site.footerExtraNav].map((i) => (
-              <li>
-                <Link href={i.href} variant="nav">
-                  {i.label}
-                </Link>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-      <div>
-        <div class="font-medium mb-2">Legal</div>
-        <ul class="space-y-1 text-muted">
-          {
-            site.footerNav.map((i) => (
-              <li>
-                <Link href={i.href} variant="nav">
-                  {i.label}
-                </Link>
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-    </div>
-  </div>
+<footer class="footer border-t border-base-300 bg-base-100 p-10 sm:footer-horizontal">
+  <aside>
+    <p class="text-lg font-extrabold">Alexendros.dev</p>
+    <p class="opacity-70">
+      Servicios informáticos y tecnológicos.<br />Valencia y en remoto.
+    </p>
+  </aside>
+  <nav aria-label="Navegación">
+    <h2 class="footer-title">Navegación</h2>
+    {
+      site.nav.map((item) => (
+        <a class="link link-hover" href={item.href}>
+          {item.label}
+        </a>
+      ))
+    }
+    {
+      site.footerExtraNav.map((item) => (
+        <a class="link link-hover" href={item.href}>
+          {item.label}
+        </a>
+      ))
+    }
+  </nav>
+  <nav aria-label="Legal">
+    <h2 class="footer-title">Legal</h2>
+    {
+      site.footerNav.map((item) => (
+        <a class="link link-hover" href={item.href}>
+          {item.label}
+        </a>
+      ))
+    }
+  </nav>
+  <nav aria-label="Enlaces">
+    <h2 class="footer-title">Enlaces</h2>
+    <a class="link link-hover" href={site.social.github} rel="noopener">GitHub</a>
+    <a class="link link-hover" href={site.social.linkedin} rel="noopener">LinkedIn</a>
+    <a class="link link-hover" href={site.social.email}>Correo</a>
+  </nav>
 </footer>
