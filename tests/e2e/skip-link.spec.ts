@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test('skip link salta al contenido principal con teclado', async ({ page }) => {
   await page.goto('/');
   const skip = page.getByRole('link', { name: 'Saltar al contenido' });
-  const main = page.locator('#contenido');
+  const main = page.locator('#main');
 
   await expect(main).toBeAttached();
 
@@ -12,8 +12,8 @@ test('skip link salta al contenido principal con teclado', async ({ page }) => {
   await expect(skip).toBeFocused();
 
   await page.keyboard.press('Enter');
-  await expect(page).toHaveURL(/#contenido$/);
-  // Tras activar el ancla, el destino #contenido queda en viewport y
+  await expect(page).toHaveURL(/#main$/);
+  // Tras activar el ancla, el destino #main queda en viewport y
   // el hash del documento apunta al main.
   await expect(main).toBeInViewport();
 });

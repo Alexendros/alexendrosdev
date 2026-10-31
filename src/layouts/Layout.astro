@@ -31,6 +31,52 @@ const extraJsonLd = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 const pathname = Astro.url.pathname;
 const canonical = new URL(pathname, site.url).href;
 const ogImageUrl = new URL(ogImage, site.url).href;
+const graph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${site.url}/#persona`,
+      name: profile.name,
+      alternateName: profile.alternateName,
+      jobTitle: profile.jobTitle,
+      description: profile.summary,
+      url: site.url,
+      sameAs: [site.social.github, site.social.linkedin],
+      email: 'contratacion@alexendros.dev',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Valencia',
+        addressCountry: 'ES'
+      }
+    },
+    {
+      '@type': 'ProfessionalService',
+      '@id': `${site.url}/#alexendros`,
+      name: 'Alexendros',
+      founder: { '@id': `${site.url}/#persona` },
+      description: site.descriptionDefault,
+      url: site.url,
+      email: 'contratacion@alexendros.dev',
+      areaServed: { '@type': 'City', name: 'Valencia' },
+      knowsAbout: [
+        'auditoría técnica SEO',
+        'privacidad, cookies y accesibilidad web',
+        'seguridad web básica',
+        'colaboración en proyectos de software',
+        'sitios web profesionales',
+        'integración de catálogo y pagos'
+      ],
+      sameAs: [site.social.github, site.social.linkedin],
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Valencia',
+        addressCountry: 'ES'
+      }
+    },
+    ...extraJsonLd
+  ]
+};
 ---
 
 <!doctype html>
@@ -60,83 +106,25 @@ const ogImageUrl = new URL(ogImage, site.url).href;
     <meta name="theme-color" content="#f6f8fc" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0a1224" media="(prefers-color-scheme: dark)" />
     <meta property="og:image:alt" content={resolvedOgAlt} />
-    <script is:inline>
-      // Gate de JS antes del primer paint: activa las animaciones de
-      // entrada del hero y el fundido de imágenes. Sin JS la clase no
-      // existe y todo el contenido se muestra directamente.
-      document.documentElement.classList.add('js');
-    </script>
+    <Fragment set:html={'<script src="/theme-init.js"></script>'} />
+    <script type="application/ld+json" set:html={JSON.stringify(graph)} />
   </head>
-  <body class="bg-bg text-fg antialiased min-h-screen flex flex-col">
+  <body class="bg-base-200 text-base-content antialiased min-h-screen flex flex-col">
     <SkipLink />
-    <div data-header-sentinel class="h-px" aria-hidden="true"></div>
     <Header />
-    <main id="contenido" class="flex-1">
+    <main id="main" class="flex-1" tabindex="-1">
       <slot />
     </main>
     <Footer />
     <script>
-      import '../scripts/reveal.ts';
-      import '../scripts/header.ts';
       import { initTracking } from '../lib/tracking/loaders';
       import { setupFunnelTracking } from '../lib/tracking/events';
       import { captureReferralFromLocation } from '../lib/referral';
       import { initCookieBanner } from '../scripts/cookieBanner';
-      /* Vercel Analytics/Speed Insights: loadVercelPlatform() tras consentimiento. */
       initTracking();
       setupFunnelTracking();
       captureReferralFromLocation();
       initCookieBanner();
     </script>
-    <script
-      is:inline
-      type="application/ld+json"
-      set:html={JSON.stringify({
-        '@context': 'https://schema.org',
-        '@graph': [
-          {
-            '@type': 'Person',
-            '@id': `${site.url}/#persona`,
-            name: profile.name,
-            alternateName: profile.alternateName,
-            jobTitle: profile.jobTitle,
-            description: profile.summary,
-            url: site.url,
-            sameAs: [site.social.github, site.social.linkedin],
-            email: 'contratacion@alexendros.dev',
-            address: {
-              '@type': 'PostalAddress',
-              addressLocality: 'Valencia',
-              addressCountry: 'ES'
-            }
-          },
-          {
-            '@type': 'ProfessionalService',
-            '@id': `${site.url}/#alexendros`,
-            name: 'Alexendros',
-            founder: { '@id': `${site.url}/#persona` },
-            description: site.descriptionDefault,
-            url: site.url,
-            email: 'contratacion@alexendros.dev',
-            areaServed: { '@type': 'City', name: 'Valencia' },
-            knowsAbout: [
-              'auditoría técnica SEO',
-              'privacidad, cookies y accesibilidad web',
-              'seguridad web básica',
-              'colaboración en proyectos de software',
-              'sitios web profesionales',
-              'integración de catálogo y pagos'
-            ],
-            sameAs: [site.social.github, site.social.linkedin],
-            address: {
-              '@type': 'PostalAddress',
-              addressLocality: 'Valencia',
-              addressCountry: 'ES'
-            }
-          },
-          ...extraJsonLd
-        ]
-      })}
-    />
   </body>
 </html>

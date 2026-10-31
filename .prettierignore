@@ -11,3 +11,4 @@ public/og
 *.png
 *.svg
 CHANGELOG.md
+docs/design/mock-v4-singlepage.html

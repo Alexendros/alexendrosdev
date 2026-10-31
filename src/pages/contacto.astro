@@ -8,8 +8,6 @@ import { contact } from '../content/contact';
 import { normalizeProjectSlug, normalizeServiceSlug } from '../content/contactContext';
 import { normalizePortalModuleIds, serializePortalModuleIds } from '../content/portalModules';
 import { contactOrigins, contactReasons, type ContactInput } from '../lib/contactSchema';
-import { site } from '../content/site';
-
 const params = Astro.url.searchParams;
 const motivoParam = params.get('motivo');
 const initialReason: ContactInput['reason'] =
@@ -50,34 +48,6 @@ const initialModules = serializePortalModuleIds(normalizePortalModuleIds(params.
         initialModules={initialModules}
       />
     </div>
-
-    <!-- Visible hasta que la isla React marca hidratación usable (data-contact-hydrated). -->
-    <p
-      id="contact-nojs"
-      data-contact-nojs
-      class="mt-6 rounded-lg border border-border bg-card p-4 text-sm"
-    >
-      El formulario interactivo necesita JavaScript. Mientras tanto puedes escribir a{' '}
-      <a
-        href={site.social.email}
-        class="underline decoration-dotted underline-offset-2 text-primary"
-      >
-        contratacion@alexendros.dev
-      </a>
-      {' '}indicando el motivo del encargo y el canal preferido de respuesta.
-    </p>
-    <noscript>
-      <p class="mt-6 rounded-lg border border-border bg-card p-4 text-sm">
-        Sin JavaScript puedes escribir a{' '}
-        <a
-          href={site.social.email}
-          class="underline decoration-dotted underline-offset-2 text-primary"
-        >
-          contratacion@alexendros.dev
-        </a>
-        .
-      </p>
-    </noscript>
 
     <p class="mt-8 text-sm text-muted">
       Los datos se usan solo para responder a esta petición. Consulta la{' '}

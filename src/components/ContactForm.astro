@@ -1,5 +1,7 @@
 ---
+import { homeVias } from '../content/home';
 import { portalModuleDisplayNames, type ContactInput } from '../lib/contactSchema';
+import { site } from '../content/site';
 
 interface Props {
   successMessage: string;
@@ -22,29 +24,38 @@ const {
   initialProjectSlug = '',
   initialModules = ''
 } = Astro.props;
-const inputClass =
-  'focus-ring mt-1 w-full bg-bg border border-border-strong rounded-lg px-3 py-2 focus:outline-none';
-const errorClass = 'mt-1 text-sm text-danger';
 const moduleLabels = initialModules ? portalModuleDisplayNames(initialModules) : '';
+const vias = [
+  ...homeVias.map((v) => ({
+    id: v.id,
+    label: v.formLabel,
+    hint: v.formHint
+  })),
+  {
+    id: 'otra' as const,
+    label: 'Otra necesidad',
+    hint: 'Algo que no encaja en las anteriores'
+  }
+];
 ---
 
 <p
   role="status"
   tabindex="-1"
-  class="focus-ring rounded-lg border border-primarySoft bg-primaryGhost p-4 text-sm focus:outline-none"
+  class="focus-ring alert alert-success mb-4 rounded-box focus:outline-none"
   data-contact-success
   data-success-message={successMessage}
   hidden
 >
 </p>
 
-<form class="relative space-y-4" novalidate aria-busy="false" data-contact-form>
+<form class="relative space-y-5" novalidate aria-busy="false" data-contact-form>
   <h2
     id="contact-form-heading"
     tabindex="-1"
     class="focus-ring text-base font-bold focus:outline-none"
   >
-    La petición
+    La solicitud
   </h2>
 
   <div class="honeypot" aria-hidden="true">
@@ -57,150 +68,209 @@ const moduleLabels = initialModules ? portalModuleDisplayNames(initialModules) :
   <input type="hidden" id="contact-project" name="projectSlug" value={initialProjectSlug} />
   <input type="hidden" name="origin" value={initialOrigin} />
   <input type="hidden" name="modules" value={initialModules} />
+  <input type="hidden" name="channel" value="correo" />
 
   {
     moduleLabels && (
-      <p class="text-sm text-muted" data-contact-modules>
+      <p class="text-sm opacity-70" data-contact-modules>
         Módulos indicados:{' '}
-        <strong class="text-fg" data-contact-module-labels>
+        <strong class="opacity-100" data-contact-module-labels>
           {moduleLabels}
         </strong>
       </p>
     )
   }
 
-  <div>
-    <label for="contact-message" class="text-sm">Mensaje*</label>
-    <textarea
-      id="contact-message"
-      name="message"
-      rows="5"
-      class={inputClass}
-      aria-required="true"
-      placeholder="Descripción del encargo o de la consulta."></textarea>
-    <p id="contact-message-error" role="alert" class={errorClass} hidden></p>
-  </div>
+  <fieldset class="fieldset" id="contact-ways" data-contact-ways>
+    <legend class="fieldset-legend">Por dónde empezar</legend>
+    <p class="label mb-1">Marcar una o varias opciones</p>
+    <div class="grid gap-2">
+      {
+        vias.map((via) => (
+          <label class="flex min-h-11 cursor-pointer items-start gap-3 rounded-box border border-base-300 p-3 transition-colors hover:border-primary has-checked:border-primary has-checked:bg-base-200">
+            <input
+              type="checkbox"
+              name="via"
+              value={via.id}
+              id={via.id === 'otra' ? 'contact-via-otra' : `contact-via-${via.id}`}
+              class="checkbox checkbox-primary mt-0.5"
+              data-via={via.id}
+            />
+            <span>
+              <span class="block font-medium">{via.label}</span>
+              <span class="text-sm opacity-70">{via.hint}</span>
+            </span>
+          </label>
+        ))
+      }
+    </div>
+    <div class="mt-2" data-otra-wrap>
+      <label class="sr-only" for="contact-otra">Describir la otra necesidad</label>
+      <input
+        id="contact-otra"
+        name="otraDetalle"
+        class="input w-full"
+        maxlength="120"
+        minlength="3"
+        placeholder="Describir la otra necesidad"
+        aria-describedby="contact-otra-error"
+      />
+      <p id="contact-otra-error" role="alert" class="mt-1 text-sm text-error" hidden></p>
+    </div>
+    <p id="contact-vias-error" role="alert" class="mt-1 text-sm text-error" hidden></p>
+  </fieldset>
 
-  <div>
-    <label for="contact-name" class="text-sm">Nombre*</label>
+  <fieldset class="fieldset">
+    <label class="fieldset-legend" for="contact-name">Nombre</label>
     <input
       id="contact-name"
       name="name"
       autocomplete="name"
-      class={inputClass}
+      class="input validator w-full"
+      required
+      minlength="2"
       aria-required="true"
+      aria-describedby="contact-name-error"
     />
-    <p id="contact-name-error" role="alert" class={errorClass} hidden></p>
-  </div>
+    <p id="contact-name-error" role="alert" class="validator-hint mt-1 text-sm text-error" hidden>
+    </p>
+  </fieldset>
 
-  <input type="hidden" name="channel" value="correo" />
+  <fieldset class="fieldset" data-contact-email-wrapper>
+    <label class="fieldset-legend" for="contact-email">Correo electrónico</label>
+    <input
+      id="contact-email"
+      name="email"
+      type="email"
+      autocomplete="email"
+      class="input validator w-full"
+      required
+      aria-required="true"
+      aria-describedby="contact-email-error"
+    />
+    <p id="contact-email-error" role="alert" class="validator-hint mt-1 text-sm text-error" hidden>
+    </p>
+  </fieldset>
 
-  <div data-contact-email-wrapper>
-    <label for="contact-email" class="text-sm">Correo electrónico*</label>
-    <input id="contact-email" name="email" type="email" autocomplete="email" class={inputClass} />
-    <p id="contact-email-error" role="alert" class={errorClass} hidden></p>
-  </div>
+  <fieldset class="fieldset">
+    <label class="fieldset-legend" for="contact-sitio">
+      Sitio web actual <span class="opacity-60">(si existe)</span>
+    </label>
+    <input
+      id="contact-sitio"
+      name="sitio"
+      class="input validator w-full"
+      inputmode="url"
+      autocomplete="url"
+      pattern="(https?://)?[^\s/.]+(\.[^\s/.]+)+(/\S*)?"
+      aria-describedby="contact-sitio-error"
+    />
+    <p id="contact-sitio-error" role="alert" class="validator-hint mt-1 text-sm text-error" hidden>
+    </p>
+  </fieldset>
 
-  <label class="flex items-start gap-2 text-sm" for="contact-consent">
-    <input id="contact-consent" type="checkbox" name="consent" class="mt-1" />
+  <fieldset class="fieldset">
+    <label class="fieldset-legend" for="contact-message">Mensaje</label>
+    <textarea
+      id="contact-message"
+      name="message"
+      class="textarea validator h-32 w-full"
+      required
+      minlength="10"
+      maxlength="600"
+      aria-required="true"
+      aria-describedby="contact-message-hint contact-message-error contact-message-count"
+    ></textarea>
+    <p
+      id="contact-message-error"
+      role="alert"
+      class="validator-hint mt-1 text-sm text-error"
+      hidden
+    >
+    </p>
+    <p class="label mt-1 justify-between" id="contact-message-hint">
+      <span>Qué se necesita, para cuándo y enlaces de referencia.</span>
+      <span aria-live="polite" id="contact-message-count" data-message-count>0 / 600</span>
+    </p>
+  </fieldset>
+
+  <label class="flex flex-wrap items-start gap-x-3 gap-y-1 text-sm" for="contact-consent">
+    <input
+      id="contact-consent"
+      type="checkbox"
+      name="consent"
+      class="checkbox checkbox-primary checkbox-sm mt-0.5"
+      required
+    />
     <span>
-      Acepto el tratamiento de mis datos para responder a esta petición según la{' '}
-      <a
-        href="/privacidad"
-        class="focus-ring rounded underline decoration-dotted underline-offset-2"
-      >
-        política de privacidad
-      </a>
-      .
+      Acepto el tratamiento de mis datos para responder a esta solicitud según la{' '}
+      <a href="/privacidad" class="link link-hover">política de privacidad</a>.
     </span>
   </label>
-  <p id="contact-consent-error" role="alert" class={errorClass} hidden></p>
+  <p id="contact-consent-error" role="alert" class="text-sm text-error" hidden></p>
 
   {turnstileSiteKey && <div class="cf-turnstile" data-turnstile data-site-key={turnstileSiteKey} />}
 
-  <div role="alert" class="space-y-1 text-sm text-danger" data-contact-errors hidden>
+  <div role="alert" class="space-y-1 text-sm text-error" data-contact-errors hidden>
     <p data-contact-error-count></p>
     <ul class="list-disc pl-5" data-contact-error-list></ul>
   </div>
 
-  <p role="alert" class="text-sm text-danger" data-contact-status="error" hidden>
+  <p role="alert" class="text-sm text-error" data-contact-status="error" hidden>
     {errorMessage} Alternativa:{' '}
-    <a
-      href="mailto:contratacion@alexendros.dev"
-      class="underline decoration-dotted underline-offset-2"
-    >
-      contratacion@alexendros.dev
-    </a>
-    .
+    <a href="mailto:contratacion@alexendros.dev" class="link">contratacion@alexendros.dev</a>.
   </p>
-  <p role="alert" class="text-sm text-danger" data-contact-status="rate_limited" hidden>
+  <p role="alert" class="text-sm text-error" data-contact-status="rate_limited" hidden>
     Demasiados intentos. Esperar un minuto antes de reintentar, o escribir a{' '}
-    <a
-      href="mailto:contratacion@alexendros.dev"
-      class="underline decoration-dotted underline-offset-2"
-    >
-      contratacion@alexendros.dev
-    </a>
-    .
+    <a href="mailto:contratacion@alexendros.dev" class="link">contratacion@alexendros.dev</a>.
   </p>
-  <p role="alert" class="text-sm text-danger" data-contact-status="unavailable" hidden>
+  <p role="alert" class="text-sm text-error" data-contact-status="unavailable" hidden>
     Servicio temporalmente no disponible. Contacto:{' '}
-    <a
-      href="mailto:contratacion@alexendros.dev"
-      class="underline decoration-dotted underline-offset-2"
-    >
-      contratacion@alexendros.dev
-    </a>
-    .
+    <a href="mailto:contratacion@alexendros.dev" class="link">contratacion@alexendros.dev</a>.
   </p>
-  <p role="status" class="text-sm text-muted" data-contact-status="processing" hidden>
+  <p role="status" class="text-sm opacity-70" data-contact-status="processing" hidden>
     La petición se está procesando. Esperar unos segundos antes de reintentar; no se confirma aún la
     recepción.
   </p>
-  <p role="alert" class="text-sm text-danger" data-contact-status="conflict" hidden>
+  <p role="alert" class="text-sm text-error" data-contact-status="conflict" hidden>
     Esta petición no coincide con un envío anterior. Comprobar los datos o escribir a{' '}
-    <a
-      href="mailto:contratacion@alexendros.dev"
-      class="underline decoration-dotted underline-offset-2"
-    >
-      contratacion@alexendros.dev
-    </a>
-    .
+    <a href="mailto:contratacion@alexendros.dev" class="link">contratacion@alexendros.dev</a>.
   </p>
-  <p role="alert" class="text-sm text-danger" data-contact-status="unknown" hidden>
+  <p role="alert" class="text-sm text-error" data-contact-status="unknown" hidden>
     No se puede confirmar si el mensaje llegó. Evitar reenvío inmediato; esperar un momento o
-    escribe a{' '}
-    <a
-      href="mailto:contratacion@alexendros.dev"
-      class="underline decoration-dotted underline-offset-2"
-    >
-      contratacion@alexendros.dev
-    </a>
-    .
+    escribe a <a href="mailto:contratacion@alexendros.dev" class="link"
+      >contratacion@alexendros.dev</a
+    >.
   </p>
-  <p role="alert" class="text-sm text-danger" data-contact-status="timeout" hidden>
+  <p role="alert" class="text-sm text-error" data-contact-status="timeout" hidden>
     La respuesta tarda más de lo esperado. No sabemos si el mensaje llegó: espera un momento antes
     de reintentar o escribe a{' '}
-    <a
-      href="mailto:contratacion@alexendros.dev"
-      class="underline decoration-dotted underline-offset-2"
-    >
-      contratacion@alexendros.dev
-    </a>
-    .
+    <a href="mailto:contratacion@alexendros.dev" class="link">contratacion@alexendros.dev</a>.
   </p>
-  <p role="status" class="text-sm text-muted" data-contact-status="loading" hidden>
-    Enviando la petición…
+  <p role="status" class="text-sm opacity-70" data-contact-status="loading" hidden>
+    Enviando la solicitud…
   </p>
 
-  <button
-    type="submit"
-    class="btn focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 font-medium text-ink transition-colors hover:bg-primaryHover disabled:opacity-60"
-    data-contact-submit
-  >
-    Enviar
+  <button type="submit" class="btn btn-primary btn-block btn-lg" data-contact-submit>
+    Solicitar propuesta
   </button>
 </form>
+
+<p
+  id="contact-nojs"
+  data-contact-nojs
+  class="mt-6 rounded-box border border-base-300 bg-base-100 p-4 text-sm"
+>
+  El formulario interactivo necesita JavaScript. Mientras tanto puedes escribir a{' '}
+  <a href={site.social.email} class="link">contratacion@alexendros.dev</a>
+  {' '}indicando el motivo del encargo.
+</p>
+<noscript>
+  <p class="mt-6 rounded-box border border-base-300 bg-base-100 p-4 text-sm">
+    Sin JavaScript puedes escribir a{' '}
+    <a href={site.social.email} class="link">contratacion@alexendros.dev</a>.
+  </p>
+</noscript>
 
 <script>
   import '../scripts/contactForm';
