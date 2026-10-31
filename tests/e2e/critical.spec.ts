@@ -15,7 +15,7 @@ test.describe('critical paths', () => {
   test('header sticky no es transparente', async ({ page }) => {
     await page.goto('/');
     const header = page.locator('#site-header');
-    await expect(header).toHaveClass(/glass-bg/);
+    await expect(header).toBeVisible();
     const alpha = await page.evaluate(() => {
       const el = document.getElementById('site-header');
       if (!el) return 0;

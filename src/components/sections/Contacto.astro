@@ -1,0 +1,58 @@
+---
+import { homeContactoIntro, homeExperienciaTeaser } from '../../content/home';
+import { site } from '../../content/site';
+import ContactForm from '../ContactForm.astro';
+
+interface Props {
+  turnstileSiteKey?: string;
+}
+
+const { turnstileSiteKey } = Astro.props;
+---
+
+<section
+  id="contacto"
+  class="mx-auto max-w-6xl scroll-mt-nav px-4 py-20"
+  aria-labelledby="contacto-heading"
+>
+  <div class="grid gap-10 lg:grid-cols-5">
+    <div class="lg:col-span-2">
+      <p class="eyebrow">{homeContactoIntro.eyebrow}</p>
+      <h2 id="contacto-heading" class="text-3xl font-extrabold tracking-tight">
+        {homeContactoIntro.title}
+      </h2>
+      <p class="mt-3 opacity-70">{homeContactoIntro.lead}</p>
+      <div class="mt-6 flex flex-wrap gap-2">
+        {homeContactoIntro.badges.map((b) => <span class="badge badge-outline">{b}</span>)}
+      </div>
+      <div class="mt-6 flex flex-wrap gap-2">
+        <a class="btn btn-outline btn-sm" href={site.social.github} rel="noopener">GitHub</a>
+        <a class="btn btn-outline btn-sm" href={site.social.linkedin} rel="noopener">LinkedIn</a>
+      </div>
+      <aside class="card card-border bg-base-100 mt-8">
+        <div class="card-body">
+          <h3 class="card-title text-base">{homeExperienciaTeaser.title}</h3>
+          <p class="text-sm opacity-80">{homeExperienciaTeaser.body}</p>
+          <div class="card-actions">
+            <a class="btn btn-ghost btn-sm" href={homeExperienciaTeaser.href}
+              >{homeExperienciaTeaser.cta}</a
+            >
+          </div>
+        </div>
+      </aside>
+    </div>
+    <div class="lg:col-span-3">
+      <div class="card card-border bg-base-100">
+        <div class="card-body gap-5">
+          <ContactForm
+            successMessage="Solicitud enviada. La respuesta llegará por correo en un día laborable."
+            errorMessage="No se pudo enviar. Revisa los campos o escribe a contratacion@alexendros.dev."
+            turnstileSiteKey={turnstileSiteKey}
+            initialReason="propuestaComercial"
+            initialOrigin="home"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

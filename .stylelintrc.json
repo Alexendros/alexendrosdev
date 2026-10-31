@@ -4,8 +4,25 @@
   "rules": {
     "at-rule-no-unknown": [
       true,
-      { "ignoreAtRules": ["tailwind", "apply", "layer", "screen", "variants"] }
+      {
+        "ignoreAtRules": [
+          "tailwind",
+          "apply",
+          "layer",
+          "screen",
+          "variants",
+          "plugin",
+          "theme",
+          "source",
+          "utility",
+          "custom-variant",
+          "config"
+        ]
+      }
     ],
+    "import-notation": null,
+    "at-rule-empty-line-before": null,
+    "no-invalid-position-at-import-rule": null,
     "selector-pseudo-element-no-unknown": true,
     "alpha-value-notation": null,
     "media-feature-range-notation": null,
@@ -29,8 +46,19 @@
       },
       {
         "severity": "error",
-        "message": "Color literal, oklch/rgb() o transition:all fuera de @layer tokens: usa tokens semánticos (var()) o color-mix (docs/standards/website/diseno.md)"
+        "message": "Color literal, oklch/rgb() o transition:all fuera de theme.css / @layer theme: usa tokens semánticos (var()) o color-mix"
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["src/styles/theme.css"],
+      "rules": {
+        "declaration-property-value-disallowed-list": null,
+        "hue-degree-notation": null,
+        "custom-property-empty-line-before": null,
+        "at-rule-empty-line-before": null
+      }
+    }
+  ]
 }

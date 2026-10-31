@@ -5,8 +5,7 @@ export type ProcessStep = {
   receive: string;
 };
 
-const ORIGIN = 'origen=proceso';
-
+/** Pasos alineados al mock v4 (copia aprobada). */
 export const processPage = {
   seo: {
     title: 'Metodología clara — Alexendros',
@@ -15,42 +14,40 @@ export const processPage = {
     ogTitle: 'Metodología clara'
   },
   hero: {
-    h1Lead: 'Metodología clara.',
-    h1Accent: ' Desde la idea hasta el producto entregado.'
+    h1Lead: 'Cómo se trabaja, paso a paso.',
+    h1Accent: ''
   },
-  /** Pendiente (evt-metodo-steps-review): revisar copy de pasos con datos reales. */
+  eyebrow: '// 03',
+  title: 'Cómo se trabaja, paso a paso',
   steps: [
     {
-      id: 'hablamos',
-      title: 'Conversación inicial',
-      description: 'El cliente explica el objetivo, el alcance y el resultado que busca.',
-      receive: 'Propuesta con alcance y plazo en un día laborable.'
+      id: 'propuesta',
+      title: 'Propuesta',
+      description: 'Llega en un día laborable con alcance, plazo y condiciones.',
+      receive: 'Propuesta por escrito.'
     },
     {
-      id: 'escrito',
-      title: 'Acuerdo por escrito',
-      description:
-        'Queda definido qué incluye, qué no, el alcance económico y la fecha de entrega.',
-      receive: 'un acuerdo por escrito.'
+      id: 'acuerdo',
+      title: 'Acuerdo',
+      description: 'Se confirma por escrito y se fija el calendario de revisiones.',
+      receive: 'Acuerdo y calendario.'
     },
     {
-      id: 'construyo',
-      title: 'Desarrollo y construcción',
-      description:
-        'Se muestran avances en 2–3 momentos. Si el alcance crece, se comunica el cambio antes de seguir.',
-      receive: 'Versiones para revisar y comentar.'
+      id: 'desarrollo',
+      title: 'Desarrollo',
+      description: 'Se avanza con dos o tres momentos de revisión, sin sorpresas.',
+      receive: 'Versiones para revisar.'
     },
     {
-      id: 'publico',
-      title: 'Previsualización y entrega',
-      description:
-        'Se comprueba el funcionamiento con el cliente y se entrega la formación de uso.',
-      receive: 'Producto acordado con instrucciones de uso y soporte para incidencias.'
+      id: 'entrega',
+      title: 'Entrega',
+      description: 'Se publica, se documenta y se explica cómo mantenerlo.',
+      receive: 'Producto documentado.'
     }
   ] satisfies ProcessStep[],
   close: {
     heading: 'Solicitar propuesta',
     body: 'La respuesta llega en un día laborable.',
-    href: `/contacto?motivo=propuestaComercial&${ORIGIN}`
+    href: '/#contacto'
   }
 } as const;

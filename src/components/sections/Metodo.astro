@@ -1,0 +1,28 @@
+---
+import { processPage } from '../../content/process';
+import Faq from './Faq.astro';
+---
+
+<section
+  id="metodo"
+  class="mx-auto max-w-6xl scroll-mt-nav px-4 py-20"
+  aria-labelledby="metodo-heading"
+>
+  <p class="eyebrow">{processPage.eyebrow}</p>
+  <h2 id="metodo-heading" class="text-3xl font-extrabold tracking-tight">{processPage.title}</h2>
+  <div class="mt-10 grid gap-12 lg:grid-cols-2">
+    <ul class="steps steps-vertical lg:steps-horizontal w-full" id="steps">
+      {
+        processPage.steps.map((step, i) => (
+          <li class="step" data-content={String(i + 1)}>
+            <div class="py-2 text-left">
+              <h3 class="font-bold">{step.title}</h3>
+              <p class="text-sm opacity-70">{step.description}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+    <Faq />
+  </div>
+</section>
