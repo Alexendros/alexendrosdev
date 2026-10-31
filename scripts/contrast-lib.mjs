@@ -69,9 +69,40 @@ const VAR_RE = /^var\(\s*--([\w-]+)\s*\)$/;
 
 // Resuelve un valor de token a RGB: hex directo, var() encadenado o
 // color-mix(in srgb, X%%, transparent) sobre un fondo dado.
+/** Convierte oklch(L% C H[/A]) a sRGB 0–255 (aproximación CSS Color 4). */
+export function oklchToRgb(raw) {
+  const m = raw
+    .replace(/\s+/g, ' ')
+    .trim()
+    .match(/^oklch\(\s*([\d.]+)%?\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*[\d.%]+)?\s*\)$/i);
+  if (!m) throw new Error(`oklch inválido: ${raw}`);
+  let L = Number(m[1]);
+  if (L > 1) L /= 100;
+  const C = Number(m[2]);
+  const H = Number(m[3]);
+  const hRad = (H * Math.PI) / 180;
+  const a = C * Math.cos(hRad);
+  const b = C * Math.sin(hRad);
+  const l_ = L + 0.3963377774 * a + 0.2158037573 * b;
+  const m_ = L - 0.1055613458 * a - 0.0638541728 * b;
+  const s_ = L - 0.0894841775 * a - 1.291485548 * b;
+  const l = l_ ** 3;
+  const mm = m_ ** 3;
+  const s = s_ ** 3;
+  const rLin = 4.0767416621 * l - 3.3077115913 * mm + 0.2309699292 * s;
+  const gLin = -1.2684380046 * l + 2.6097574011 * mm - 0.3413193965 * s;
+  const bLin = -0.0041960863 * l - 0.7034186147 * mm + 1.707614701 * s;
+  const toSrgb = (c) => {
+    const v = c <= 0.0031308 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055;
+    return Math.round(Math.min(255, Math.max(0, v * 255)));
+  };
+  return [toSrgb(rLin), toSrgb(gLin), toSrgb(bLin)];
+}
+
 export function resolveValue(raw, props, chain = []) {
   const value = raw.replace(/\s+/g, ' ').trim();
   if (HEX_RE.test(value)) return hexToRgb(value);
+  if (/^oklch\(/i.test(value)) return oklchToRgb(value);
   const varMatch = value.match(VAR_RE);
   if (varMatch) {
     const name = varMatch[1];
@@ -121,4 +152,46 @@ export function extractThemes(css) {
     }
   }
   return { light, dark, darkConsistent, darkPartial };
+}
+
+/**
+ * Extrae bloques `@plugin "daisyui/theme" { … }` de theme.css.
+ * Devuelve un mapa name → declaraciones (sin las claves name/default/…).
+ */
+export function extractDaisyThemes(css) {
+  const themes = {};
+  const re = /@plugin\s+"daisyui\/theme"\s*\{/g;
+  let match;
+  while ((match = re.exec(css)) !== null) {
+    const open = css.indexOf('{', match.index);
+    let depth = 0;
+    let end = -1;
+    for (let i = open; i < css.length; i += 1) {
+      if (css[i] === '{') depth += 1;
+      else if (css[i] === '}') {
+        depth -= 1;
+        if (depth === 0) {
+          end = i;
+          break;
+        }
+      }
+    }
+    if (end === -1) throw new Error('Bloque daisyui/theme sin cerrar');
+    const body = css.slice(open + 1, end);
+    const props = {};
+    for (const line of body.split(';')) {
+      const trimmed = line.replace(/\/\*[\s\S]*?\*\//g, '').trim();
+      if (!trimmed) continue;
+      const colon = trimmed.indexOf(':');
+      if (colon === -1) continue;
+      let key = trimmed.slice(0, colon).trim();
+      const val = trimmed.slice(colon + 1).trim();
+      if (key.startsWith('--')) key = key.slice(2);
+      props[key] = val;
+    }
+    const name = (props.name || '').replace(/^["']|["']$/g, '');
+    if (!name) throw new Error('Tema daisyUI sin name');
+    themes[name] = props;
+  }
+  return themes;
 }

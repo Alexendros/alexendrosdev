@@ -1,15 +1,50 @@
 /* Tema claro editorial azul #0f3778 (ADR 0011, supersedes 0006 y 0007).
-   Fuente única de verdad de color: esta hoja. tailwind.config.mjs solo
-   referencia var(); la validación de contraste vive en
-   scripts/check-contrast.mjs (job quality / pnpm check:contrast). */
+   Tokens semánticos de producto: esta hoja. Temas daisyUI: theme.css.
+   Contraste: scripts/check-contrast.mjs. */
 
-/* Capas propias en orden; las directivas @tailwind se integran en las
-   capas base/components/utilities ya ordenadas aquí. */
-@layer reset, tokens, base, components, utilities;
+@import 'tailwindcss';
+@plugin "daisyui" {
+  themes: false;
+}
+@import './theme.css';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@layer reset, design-references, theme, base, components, utilities;
+
+/* Mapa Tailwind v4 de los tokens existentes (sin cambio visual buscado).
+   Los nombres camelCase (primaryHover…) replican las utilidades de la
+   config Tailwind 3 retirada. */
+/* stylelint-disable custom-property-pattern -- compat con clases TW3 */
+@theme {
+  --color-bg: var(--bg);
+  --color-subtle: var(--bg-subtle);
+  --color-scrim: var(--scrim);
+  --color-fg: var(--fg);
+  --color-primary: var(--brand);
+  --color-primaryHover: var(--brand-hover);
+  --color-primarySoft: color-mix(in srgb, var(--brand) 40%, transparent);
+  --color-primaryGhost: var(--primary-ghost);
+  --color-muted: var(--fg-muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-card: var(--card);
+  --color-ink: var(--brand-fg);
+  --color-danger: var(--danger);
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', monospace;
+  --text-step--1: var(--step--1);
+  --text-step-0: var(--step-0);
+  --text-step-1: var(--step-1);
+  --text-step-2: var(--step-2);
+  --text-step-3: var(--step-3);
+  --text-step-4: var(--step-4);
+  --text-step-4--line-height: var(--leading-tight);
+  --height-header: var(--header-h);
+}
+/* stylelint-enable custom-property-pattern */
+
+@layer design-references {
+  /* Reservado: design-references.alexendros.dev (fuera de alcance). */
+}
 
 /* ------------------------------------------------------------------ */
 
@@ -43,14 +78,14 @@
 
 /* ------------------------------------------------------------------ */
 
-/* tokens: primitivos (nunca se consumen directamente desde             */
+/* theme: primitivos (nunca se consumen directamente desde              */
 
 /* componentes), semánticos (los únicos que usan componentes),          */
 
 /* tipografía fluida, espaciado, radios, sombras, layout y motion.      */
 
 /* ------------------------------------------------------------------ */
-@layer tokens {
+@layer theme {
   /* stylelint-disable declaration-property-value-disallowed-list --
      Única zona con literales: primitivos hex y overrides del tema
      oscuro. Los semánticos referencian estos valores vía var(); el
