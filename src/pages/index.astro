@@ -1,52 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
-import Container from '../components/Container.astro';
-import Grid from '../components/Grid.astro';
-import ServiceCard from '../components/ServiceCard.astro';
-import type { ProductCard } from '../content/services';
+import Hero from '../components/sections/Hero.astro';
+import Servicios from '../components/sections/Servicios.astro';
+import Referencias from '../components/sections/Referencias.astro';
+import Metodo from '../components/sections/Metodo.astro';
+import Contacto from '../components/sections/Contacto.astro';
 
-const paths = [
-  {
-    slug: 'sitio-web',
-    title: 'Sitio web profesional',
-    short:
-      'Presencia clara para recibir consultas, con alcance y condiciones acordados por escrito.',
-    href: '/servicios?origen=home#portal-heading',
-    ctaLabel: 'Ver módulos del sitio web'
-  },
-  {
-    slug: 'catalogo-pagos',
-    title: 'Integración de catálogo y pagos',
-    short: 'Catálogo y cobro conectados al sitio, con el alcance definido en cada caso.',
-    href: '/servicios?origen=home#portal-heading',
-    ctaLabel: 'Ver módulo de catálogo y pagos'
-  },
-  {
-    slug: 'auditoria-seo',
-    title: 'Auditoría técnica SEO',
-    short: 'Revisión de indexación, estructura y rendimiento, con incidencias priorizadas.',
-    href: '/servicios/informe-comercial?origen=home',
-    ctaLabel: 'Ver auditoría SEO'
-  },
-  {
-    slug: 'colaboracion-software',
-    title: 'Colaboración en proyectos de software',
-    short: 'Trabajo por fases con equipos que ya tienen un producto en marcha.',
-    href: '/servicios/software-a-medida?origen=home',
-    ctaLabel: 'Ver colaboración'
-  }
-] satisfies ProductCard[];
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY as string | undefined;
 ---
 
-<Layout ogImage="/og/home.png" ogImageAlt="Alexendros.dev — servicios informáticos y tecnologías">
+<Layout ogImage="/og/home.png" ogImageAlt="Alexendros.dev — auditoría, diseño y construcción">
   <Hero />
-  <Container class="pb-16 md:pb-24">
-    <section aria-labelledby="home-paths-heading" class="mt-4">
-      <h2 id="home-paths-heading" class="text-step-2 font-bold">Encargos habituales</h2>
-      <Grid gap="6" class="mt-8 md:grid-cols-2">
-        {paths.map((product) => <ServiceCard product={product} headingLevel="h3" />)}
-      </Grid>
-    </section>
-  </Container>
+  <Servicios />
+  <Referencias />
+  <Metodo />
+  <Contacto turnstileSiteKey={turnstileSiteKey} />
 </Layout>

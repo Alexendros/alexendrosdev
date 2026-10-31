@@ -46,3 +46,7 @@ reason = "zod 3.x residual de chromium-bidi/Playwright; 4.x forzado a >=4.6.6"
 [[IgnoredVulns]]
 id = "GHSA-9wv6-86v2-598j"
 reason = "path-to-regexp override a 6.3.0; residual si queda copia antigua en toolchain"
+
+[[IgnoredVulns]]
+id = "GHSA-g3hv-75wg-m249"
+reason = "minimatch 3.x solo CI/toolchain (@lhci/cli > rimraf > glob 7); la línea 10.x se fuerza a >=11.0.1 por override"

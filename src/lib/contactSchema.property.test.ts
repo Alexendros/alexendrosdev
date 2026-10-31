@@ -9,6 +9,7 @@ const baseValid = {
   email: 'alex@example.com',
   reason: 'propuestaComercial' as const,
   message: 'Quiero un informe comercial para mi dominio.',
+  vias: ['revisar'] as const,
   consent: true as const
 };
 

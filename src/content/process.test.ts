@@ -50,58 +50,32 @@ function wordCount(text: string): number {
 }
 
 describe('processPage — copy público de metodología', () => {
-  it('tiene seo, hero, 4 pasos y cierre con CTA medible', () => {
+  it('tiene seo, hero, 4 pasos del mock y cierre', () => {
     nonEmpty(processPage.seo.title, 'seo.title');
     nonEmpty(processPage.seo.description, 'seo.description');
     expect(processPage.seo.description).toMatch(/desde la idea hasta el producto entregado/i);
     nonEmpty(processPage.hero.h1Lead, 'hero.h1Lead');
-    expect(processPage.hero.h1Lead).toBe('Metodología clara.');
-    expect(processPage.hero.h1Accent).toMatch(/^\sDesde/);
-    expect(processPage.hero).not.toHaveProperty('lead');
-    expect(processPage.hero).not.toHaveProperty('primaryCta');
-    expect(processPage).not.toHaveProperty('processSection');
+    expect(processPage.title).toMatch(/paso a paso/i);
 
     expect(processPage.steps).toHaveLength(4);
     const stepIds = processPage.steps.map((s: ProcessStep) => s.id);
     expect(new Set(stepIds).size).toBe(stepIds.length);
     for (const step of processPage.steps) {
       nonEmpty(step.title, `step.${step.id}.title`);
-      expect(step).not.toHaveProperty('duration');
       nonEmpty(step.description, `step.${step.id}.description`);
       nonEmpty(step.receive, `step.${step.id}.receive`);
     }
 
-    expect(processPage.steps.find((s) => s.id === 'escrito')?.receive).toBe(
-      'un acuerdo por escrito.'
-    );
-    expect(processPage.steps.find((s) => s.id === 'construyo')?.title).toBe(
-      'Desarrollo y construcción'
-    );
-    expect(processPage.steps.find((s) => s.id === 'publico')?.title).toBe(
-      'Previsualización y entrega'
-    );
-    expect(processPage.steps.find((s) => s.id === 'publico')?.receive).toMatch(
-      /Producto acordado con instrucciones de uso y soporte para incidencias/
-    );
+    expect(processPage.steps.map((s) => s.id)).toEqual([
+      'propuesta',
+      'acuerdo',
+      'desarrollo',
+      'entrega'
+    ]);
 
     expect(processPage.close.heading).toBe('Solicitar propuesta');
     expect(processPage.close.body).toMatch(/en un día laborable/i);
-    expect(processPage.close).not.toHaveProperty('primaryCta');
-  });
-
-  it('usa CTA de cierre con origen=proceso hacia presupuesto', () => {
-    expect(processPage.close.href).toContain('/contacto');
-    expect(processPage.close.href).toContain('origen=proceso');
-    expect(processPage.close.href).toContain('motivo=propuestaComercial');
-  });
-
-  it('ordena las cuatro fases hablamos → escrito → construyo → publico', () => {
-    expect(processPage.steps.map((s) => s.id)).toEqual([
-      'hablamos',
-      'escrito',
-      'construyo',
-      'publico'
-    ]);
+    expect(processPage.close.href).toBe('/#contacto');
   });
 
   it('mantiene densidad baja y evita el glosario técnico', () => {

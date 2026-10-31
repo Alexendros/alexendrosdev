@@ -15,6 +15,7 @@ const validCorreo = {
   email: 'alex@example.com',
   reason: 'propuestaComercial' as const,
   message: 'Quiero un informe comercial para mi dominio.',
+  vias: ['revisar'] as const,
   consent: true as const
 };
 
@@ -148,12 +149,31 @@ describe('parseContactBody (formulario mínimo)', () => {
       channel: 'correo',
       email: 'alex@example.com',
       message: 'Quiero un informe comercial para mi dominio.',
+      vias: ['crear'],
       consent: true
     });
     expect(parsed.success).toBe(true);
     if (!parsed.success) return;
     expect(parsed.data.entityType).toBe('particular');
     expect(parsed.data.reason).toBe('informacionCliente');
+  });
+
+  it('exige al menos una vía y otraDetalle si la vía es otra', () => {
+    expect(parseContactBody({ ...validCorreo, vias: [] }).success).toBe(false);
+    expect(
+      parseContactBody({ ...validCorreo, vias: ['otra'], otraDetalle: undefined }).success
+    ).toBe(false);
+    const ok = parseContactBody({
+      ...validCorreo,
+      vias: ['otra'],
+      otraDetalle: 'Integración con ERP'
+    });
+    expect(ok.success).toBe(true);
+  });
+
+  it('acepta sitio opcional válido y rechaza sitio inválido', () => {
+    expect(parseContactBody({ ...validCorreo, sitio: 'empresa.es' }).success).toBe(true);
+    expect(parseContactBody({ ...validCorreo, sitio: 'nope' }).success).toBe(false);
   });
 
   it('rechaza un canal distinto de correo', () => {
@@ -177,9 +197,7 @@ describe('formatContactFieldErrors', () => {
     expect(parsed.success).toBe(false);
     if (parsed.success) return;
     const errors = formatContactFieldErrors(parsed.error);
-    expect(errors.some((e) => e.label === 'La petición' && e.cause === 'falta contenido')).toBe(
-      true
-    );
+    expect(errors.some((e) => e.label === 'Mensaje' && e.cause === 'falta contenido')).toBe(true);
   });
 
   it('relaciona el error de consent con la aceptación del tratamiento', () => {

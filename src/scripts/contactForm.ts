@@ -4,10 +4,12 @@ import { track } from '../lib/tracking/events';
 import {
   contactOrigins,
   contactReasons,
+  contactViaIds,
   formatContactFieldErrors,
   parseContactBody,
   portalModuleDisplayNames,
   type ContactInput,
+  type ContactViaId,
   type FieldError
 } from '../lib/contactSchema';
 
@@ -20,7 +22,10 @@ const FIELD_IDS: Record<string, string> = {
   channel: 'contact-channel',
   email: 'contact-email',
   message: 'contact-message',
-  consent: 'contact-consent'
+  consent: 'contact-consent',
+  vias: 'contact-via-revisar',
+  otraDetalle: 'contact-otra',
+  sitio: 'contact-sitio'
 };
 
 type TurnstileApi = {
@@ -60,6 +65,9 @@ function logicalPayloadKey(data: ContactInput): string {
     email: data.email ?? null,
     reason: data.reason,
     message: data.message,
+    vias: data.vias,
+    otraDetalle: data.otraDetalle ?? null,
+    sitio: data.sitio ?? null,
     modules: data.modules ?? null,
     serviceSlug: data.serviceSlug ?? null,
     projectSlug: data.projectSlug ?? null,
@@ -92,6 +100,25 @@ function loadTurnstileScript(): Promise<void> {
   });
 }
 
+function collectVias(form: HTMLFormElement): ContactViaId[] {
+  const boxes = form.querySelectorAll<HTMLInputElement>('input[name="via"]:checked');
+  const out: ContactViaId[] = [];
+  boxes.forEach((box) => {
+    const id = box.value as ContactViaId;
+    if ((contactViaIds as readonly string[]).includes(id) && !out.includes(id)) out.push(id);
+  });
+  return out;
+}
+
+function markVia(id: ContactViaId): void {
+  if (!(contactViaIds as readonly string[]).includes(id)) return;
+  const input = document.querySelector<HTMLInputElement>(`input[name="via"][value="${id}"]`);
+  if (input) {
+    input.checked = true;
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+}
+
 function initContactForm(form: HTMLFormElement): void {
   if (form.dataset.contactInitialized === 'true') return;
   form.dataset.contactInitialized = 'true';
@@ -102,9 +129,13 @@ function initContactForm(form: HTMLFormElement): void {
   const errorSummary = form.querySelector<HTMLElement>('[data-contact-errors]')!;
   const errorCount = form.querySelector<HTMLElement>('[data-contact-error-count]')!;
   const errorList = form.querySelector<HTMLElement>('[data-contact-error-list]')!;
-  const modulesWrapper = form.querySelector<HTMLElement>('[data-contact-modules]')!;
-  const moduleLabels = form.querySelector<HTMLElement>('[data-contact-module-labels]')!;
+  const modulesWrapper = form.querySelector<HTMLElement>('[data-contact-modules]');
+  const moduleLabels = form.querySelector<HTMLElement>('[data-contact-module-labels]');
   const turnstileContainer = form.querySelector<HTMLElement>('[data-turnstile]');
+  const messageField = form.querySelector<HTMLTextAreaElement>('#contact-message');
+  const messageCount = form.querySelector<HTMLElement>('[data-message-count]');
+  const otraCheckbox = form.querySelector<HTMLInputElement>('#contact-via-otra');
+  const otraField = form.querySelector<HTMLInputElement>('#contact-otra');
   if (!success || !submit || !emailWrapper || !errorSummary || !errorCount || !errorList) {
     delete form.dataset.contactInitialized;
     return;
@@ -144,6 +175,11 @@ function initContactForm(form: HTMLFormElement): void {
   setHiddenValue('modules', modules);
   updateModuleLabels(modules);
 
+  const viaParam = params.get('via');
+  if (viaParam && (contactViaIds as readonly string[]).includes(viaParam)) {
+    markVia(viaParam as ContactViaId);
+  }
+
   function formValue(name: string): string {
     const field = form.elements.namedItem(name);
     if (field instanceof RadioNodeList) return field.value;
@@ -166,24 +202,18 @@ function initContactForm(form: HTMLFormElement): void {
     if (modulesWrapper && moduleLabels) {
       moduleLabels.textContent = labels;
       modulesWrapper.hidden = false;
-      return;
     }
-    const wrapper = document.createElement('p');
-    wrapper.className = 'text-sm text-muted';
-    wrapper.dataset.contactModules = '';
-    wrapper.append('Módulos indicados: ');
-    const strong = document.createElement('strong');
-    strong.className = 'text-fg';
-    strong.dataset.contactModuleLabels = '';
-    strong.textContent = labels;
-    wrapper.appendChild(strong);
-    form.querySelector('h2')?.after(wrapper);
+  }
+
+  function updateMessageCount(): void {
+    if (!messageField || !messageCount) return;
+    messageCount.textContent = `${messageField.value.length} / 600`;
   }
 
   function setSending(sending: boolean): void {
     form.setAttribute('aria-busy', String(sending));
     submit.disabled = sending;
-    submit.textContent = sending ? 'Enviando…' : 'Enviar';
+    submit.textContent = sending ? 'Enviando…' : 'Solicitar propuesta';
     for (const element of form.querySelectorAll('input, textarea, button, fieldset')) {
       if (element !== submit) (element as HTMLInputElement).disabled = sending;
     }
@@ -223,6 +253,11 @@ function initContactForm(form: HTMLFormElement): void {
         error.textContent = '';
       }
     }
+    const viasError = document.getElementById('contact-vias-error');
+    if (viasError) {
+      viasError.hidden = true;
+      viasError.textContent = '';
+    }
     errorSummary.hidden = true;
     errorCount.textContent = '';
     errorList.replaceChildren();
@@ -231,6 +266,14 @@ function initContactForm(form: HTMLFormElement): void {
   function showFieldErrors(errors: FieldError[]): void {
     clearFieldErrors();
     for (const error of errors) {
+      if (error.field === 'vias') {
+        const viasError = document.getElementById('contact-vias-error');
+        if (viasError) {
+          viasError.textContent = 'Marcar al menos una opción.';
+          viasError.hidden = false;
+        }
+        continue;
+      }
       const control = document.getElementById(FIELD_IDS[error.field] ?? `contact-${error.field}`);
       const errorElement = document.getElementById(
         `${FIELD_IDS[error.field] ?? `contact-${error.field}`}-error`
@@ -240,7 +283,20 @@ function initContactForm(form: HTMLFormElement): void {
         control.setAttribute('aria-describedby', `${control.id}-error`);
       }
       if (errorElement) {
-        errorElement.textContent = error.cause;
+        errorElement.textContent =
+          error.field === 'name'
+            ? 'Falta el nombre.'
+            : error.field === 'email'
+              ? 'El correo no es válido. Ejemplo: nombre@empresa.es.'
+              : error.field === 'message'
+                ? 'Falta el mensaje. Bastan una o dos frases sobre qué se necesita.'
+                : error.field === 'otraDetalle'
+                  ? 'Falta describir la otra necesidad.'
+                  : error.field === 'sitio'
+                    ? 'El sitio no parece válido. Ejemplo: empresa.es.'
+                    : error.field === 'consent'
+                      ? 'Hace falta aceptar el tratamiento de datos para poder responder.'
+                      : error.cause;
         errorElement.hidden = false;
       }
     }
@@ -251,7 +307,7 @@ function initContactForm(form: HTMLFormElement): void {
         const item = document.createElement('li');
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'underline decoration-dotted underline-offset-2';
+        button.className = 'link';
         button.textContent = `${error.label}: ${error.cause}`;
         button.addEventListener('click', () => focusField(error.field));
         item.appendChild(button);
@@ -293,6 +349,9 @@ function initContactForm(form: HTMLFormElement): void {
       email: data.get('email') || undefined,
       reason: data.get('reason'),
       message: data.get('message'),
+      vias: collectVias(form),
+      otraDetalle: data.get('otraDetalle') || undefined,
+      sitio: data.get('sitio') || undefined,
       modules: data.get('modules') || undefined,
       serviceSlug: data.get('serviceSlug') || undefined,
       projectSlug: data.get('projectSlug') || undefined,
@@ -363,6 +422,12 @@ function initContactForm(form: HTMLFormElement): void {
 
   form.addEventListener('submit', submitForm);
   emailWrapper.hidden = false;
+  messageField?.addEventListener('input', updateMessageCount);
+  updateMessageCount();
+
+  otraCheckbox?.addEventListener('change', () => {
+    if (otraCheckbox.checked) otraField?.focus();
+  });
 
   if (turnstileContainer) {
     const siteKey = turnstileContainer.dataset.siteKey;
@@ -393,3 +458,14 @@ function initContactForm(form: HTMLFormElement): void {
 for (const form of document.querySelectorAll<HTMLFormElement>('[data-contact-form]')) {
   initContactForm(form);
 }
+
+document.querySelectorAll<HTMLAnchorElement>('[data-pick-via]').forEach((link) => {
+  link.addEventListener('click', () => {
+    const id = link.getAttribute('data-pick-via');
+    if (id && (contactViaIds as readonly string[]).includes(id)) {
+      markVia(id as ContactViaId);
+    }
+  });
+});
+
+export { markVia };

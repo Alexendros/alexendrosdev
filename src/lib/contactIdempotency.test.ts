@@ -17,6 +17,7 @@ const basePayload: ContactInput = {
   email: 'alex@example.com',
   reason: 'propuestaComercial',
   message: 'Quiero un informe comercial para mi dominio.',
+  vias: ['revisar'],
   consent: true
 };
 
